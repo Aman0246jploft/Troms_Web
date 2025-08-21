@@ -1,0 +1,261 @@
+'use client';
+
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import { apiService } from "../../../lib/api";
+import Alert from "../../../Components/Alert";
+
+function RegisterPage() {
+  const router = useRouter();
+  const { state, setUser, setLoading, setError, updateStep } = useOnboarding();
+  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+  useEffect(() => {
+    // If user is already authenticated, redirect to next step
+    if (state.isAuthenticated) {
+      router.push('/select-gender');
+    }
+
+    // Load Google OAuth script
+    const loadGoogleScript = () => {
+      if (!window.google) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    };
+
+    loadGoogleScript();
+  }, [state.isAuthenticated, router]);
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: '', message: '' });
+  };
+
+  const handleSocialLoginAPI = async (userData) => {
+    setLoading(true);
+    hideAlert();
+
+    try {
+      const payload = {
+        email: userData.email,
+        username: userData.username || userData.email.split('@')[0],
+        platform: userData.platform,
+        userInfoId: userData.userInfoId || ''
+      };
+
+      console.log('Calling social login API with:', payload);
+      const response = await apiService.socialLogin(payload);
+      
+      if (response.success) {
+        // Check if user information is required (new user) or user is already registered
+        const needsOnboarding = response.message === "User information is required";
+        
+        // Update user state with userInfoId from response if available
+        const finalUserData = {
+          ...payload,
+          userInfoId: response.result?.userInfoId || payload.userInfoId
+        };
+        
+        setUser({
+          userData: finalUserData,
+          needsOnboarding: needsOnboarding
+        });
+        updateStep(2);
+        
+        if (needsOnboarding) {
+          // New user - proceed to onboarding
+          showAlert('success', 'Registration successful! Let\'s set up your profile.');
+          
+          setTimeout(() => {
+            router.push('/select-gender');
+          }, 1500);
+        } else {
+          // Existing user - has completed onboarding, redirect to dashboard/home
+          showAlert('success', 'Welcome back! You\'ve already completed setup.');
+          
+          setTimeout(() => {
+            // Redirect to BMR page or dashboard since onboarding is complete
+            router.push('/bmr');
+          }, 1500);
+        }
+      } else {
+        showAlert('error', response.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Social login error:', error);
+      showAlert('error', error.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    if (typeof window === 'undefined') return;
+
+    // Initialize Google OAuth
+    if (window.google && window.google.accounts) {
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+        callback: handleGoogleCallback,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      // Prompt the OAuth flow
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // Fallback to popup if prompt is not shown
+          window.google.accounts.id.renderButton(
+            document.getElementById('google-signin-button'),
+            {
+              theme: 'outline',
+              size: 'large',
+              width: '100%',
+            }
+          );
+        }
+      });
+    } else {
+      // Fallback: simulate Google login for development
+      const mockGoogleUser = {
+        email: "user@gmail.com",
+        username: "testuser",
+        platform: "android",
+        userInfoId: "google_" + Date.now()
+      };
+      handleSocialLoginAPI(mockGoogleUser);
+    }
+  };
+
+  const handleGoogleCallback = (response) => {
+    try {
+      // Decode the JWT token to get user information
+      const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+      
+      const userData = {
+        email: userInfo.email,
+        username: userInfo.name || userInfo.email.split('@')[0],
+        platform: "android",
+        userInfoId: userInfo.sub // Google's unique user ID
+      };
+
+      handleSocialLoginAPI(userData);
+    } catch (error) {
+      console.error('Error processing Google callback:', error);
+      showAlert('error', 'Failed to process Google login. Please try again.');
+    }
+  };
+
+  const handleAppleLogin = () => {
+    // For Apple Sign-In, you would typically use Apple's JavaScript SDK
+    // For now, using a mock implementation
+    if (typeof window !== 'undefined' && window.AppleID) {
+      window.AppleID.auth.signIn().then((response) => {
+        const userData = {
+          email: response.authorization.id_token ? 
+            JSON.parse(atob(response.authorization.id_token.split('.')[1])).email : 
+            'user@icloud.com',
+          username: response.user?.name?.firstName || 'Apple User',
+          platform: "ios",
+          userInfoId: response.user?.sub || 'apple_' + Date.now()
+        };
+        handleSocialLoginAPI(userData);
+      }).catch((error) => {
+        console.error('Apple Sign-In error:', error);
+        showAlert('error', 'Apple Sign-In failed. Please try again.');
+      });
+    } else {
+      // Fallback: simulate Apple login for development
+      const mockAppleUser = {
+        email: "user@icloud.com",
+        username: "appleuser",
+        platform: "ios",
+        userInfoId: "apple_" + Date.now()
+      };
+      handleSocialLoginAPI(mockAppleUser);
+    }
+  };
+
+  return (
+    <>
+      <section className="auth-section">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-lg-7">
+              <div className="auth-logo text-center">
+                <Link href="/">
+                  <img src="/images/dark-logo.svg" alt="Logo" />
+                </Link>
+              </div>
+              
+              <Alert 
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
+              <div className="auth-cards login">
+                <h3>Register Yourself!</h3>
+                <p>
+                  Sign up to track your progress and get personalized fitness
+                  insights with AI.
+                </p>
+                <div className="login-innr">
+                  <div className="login-btn">
+                    <button 
+                      onClick={handleAppleLogin}
+                      disabled={state.loading}
+                      className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border-0 rounded"
+                      style={{ backgroundColor: '#000', color: '#fff' }}
+                    >
+                      <img src="/images/apple-logo.svg" className="me-2" alt="Apple" />
+                      {state.loading ? 'Signing up...' : 'Sign Up with Apple'}
+                    </button>
+                    <button 
+                      onClick={handleGoogleLogin}
+                      disabled={state.loading}
+                      className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border rounded"
+                      style={{ backgroundColor: '#fff', color: '#000' }}
+                    >
+                      <img src="/images/google-logo.svg" className="me-2" alt="Google" />
+                      {state.loading ? 'Signing up...' : 'Sign Up with Google'}
+                    </button>
+                    
+                    {/* Hidden div for Google OAuth button fallback */}
+                    <div id="google-signin-button" className="d-none"></div>
+                  </div>
+                  <p className="or-line">
+                    <span>or</span>
+                  </p>
+                  <p className="fz-16 fw-400">
+                    Already have an account?{" "}
+                    <Link href="/login" className="fw-600 clr">
+                      Sign In
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
+        </div>
+      </section>
+    </>
+  );
+}
+
+export default RegisterPage;
