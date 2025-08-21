@@ -19,28 +19,28 @@ function BornDatePage() {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  useEffect(() => {
-    // Redirect if not authenticated or gender not selected
-    if (!state.isAuthenticated) {
-      router.push('/register');
-      return;
-    }
-    if (!state.gender) {
-      router.push('/select-gender');
-      return;
-    }
-    
-    // Update step
-    updateStep(3);
+useEffect(() => {
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+  } else if (!state.gender) {
+    router.push('/select-gender');
+  }
+}, [state.isAuthenticated, state.gender, router]);
 
-    // Parse existing date if available
-    if (state.dateOfBirth) {
-      const date = new Date(state.dateOfBirth);
-      setSelectedMonth(months[date.getMonth()]);
-      setSelectedDay(date.getDate().toString());
-      setSelectedYear(date.getFullYear().toString());
-    }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, router, updateStep]);
+
+useEffect(() => {
+  updateStep(3);
+
+  if (state.dateOfBirth) {
+    const date = new Date(state.dateOfBirth);
+    setSelectedMonth(months[date.getMonth()]);
+    setSelectedDay(date.getDate().toString());
+    setSelectedYear(date.getFullYear().toString());
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // empty array = run once on mount
+
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });

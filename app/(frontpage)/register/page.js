@@ -100,43 +100,55 @@ function RegisterPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    if (typeof window === 'undefined') return;
+const handleGoogleLogin = () => {
+  if (typeof window === 'undefined') return;
 
-    // Initialize Google OAuth
-    if (window.google && window.google.accounts) {
-      window.google.accounts.id.initialize({
-        client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
-        callback: handleGoogleCallback,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-
-      // Prompt the OAuth flow
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback to popup if prompt is not shown
-          window.google.accounts.id.renderButton(
-            document.getElementById('google-signin-button'),
-            {
-              theme: 'outline',
-              size: 'large',
-              width: '100%',
-            }
-          );
+  if (window.google && window.google.accounts) {
+    const client = window.google.accounts.oauth2.initTokenClient({
+      client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+      scope: 'email profile openid',
+      callback: (response) => {
+        if (response && response.access_token) {
+          // Get user info with access_token
+          fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: {
+              Authorization: `Bearer ${response.access_token}`,
+            },
+          })
+            .then(res => res.json())
+            .then(userInfo => {
+              const userData = {
+                email: userInfo.email,
+                username: userInfo.name || userInfo.email.split('@')[0],
+                platform: "android",
+                // userInfoId: userInfo.sub,
+              };
+              handleSocialLoginAPI(userData);
+            })
+            .catch(err => {
+              console.error("Google userinfo fetch error:", err);
+              showAlert('error', 'Google login failed. Please try again.');
+            });
+        } else {
+          showAlert('error', 'Google login failed. No token received.');
         }
-      });
-    } else {
-      // Fallback: simulate Google login for development
-      const mockGoogleUser = {
-        email: "user@gmail.com",
-        username: "testuser",
-        platform: "android",
-        userInfoId: "google_" + Date.now()
-      };
-      handleSocialLoginAPI(mockGoogleUser);
-    }
-  };
+      },
+    });
+
+    // Open the popup
+    client.requestAccessToken();
+  } else {
+    // Mock fallback for dev
+    const mockGoogleUser = {
+      email: "user@gmail.com",
+      username: "testuser",
+      platform: "android",
+      userInfoId: "google_" + Date.now(),
+    };
+    handleSocialLoginAPI(mockGoogleUser);
+  }
+};
+
 
 
 
@@ -151,10 +163,10 @@ function RegisterPage() {
     cancel_on_tap_outside: true,
   });
 
-  window.google.accounts.id.renderButton(
-    document.getElementById('google-signin-button'),
-    { theme: 'outline', size: 'large', width: '100%' }
-  );
+  // window.google.accounts.id.renderButton(
+  //   document.getElementById('google-signin-button'),
+  //   { theme: 'outline', size: 'large', width: '100%' }
+  // );
 }, [window.google]);
 
 
@@ -165,7 +177,8 @@ const handleGoogleCallback = (response) => {
       email: userInfo.email,
       username: userInfo.name || userInfo.email.split('@')[0],
       platform: "android",
-      userInfoId: userInfo.sub
+       userInfoId: userInfo.sub
+      // userInfoId: userInfo.sub
     };
     handleSocialLoginAPI(userData);
   } catch (error) {

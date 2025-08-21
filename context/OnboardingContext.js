@@ -156,7 +156,7 @@ export function OnboardingProvider({ children }) {
         case 7: // Weight goal
           return state.weightGoal !== '';
         case 8: // Desired weight
-          return state.desiredWeight > 0;
+          return state.desiredWeight > 0 && value.validateDesiredWeight(state);
         case 9: // Workout location
           return state.workoutLocation !== '';
         case 10: // Equipment
@@ -168,6 +168,38 @@ export function OnboardingProvider({ children }) {
         default:
           return true;
       }
+    },
+    
+    // Validate desired weight based on goal
+    validateDesiredWeight: (state) => {
+      if (!state.weightGoal || !state.desiredWeight || !state.weight) return false;
+      
+      const currentWeight = state.weight;
+      const desiredWeight = state.desiredWeight;
+      const goal = state.weightGoal;
+      
+      // Convert to same unit for comparison
+      let currentWeightInUnit, desiredWeightInUnit;
+      
+      if (state.weightUnit === 'kg') {
+        currentWeightInUnit = currentWeight;
+        desiredWeightInUnit = desiredWeight;
+      } else {
+        // Convert kg to lbs for comparison
+        currentWeightInUnit = currentWeight * 2.20462;
+        desiredWeightInUnit = desiredWeight * 2.20462;
+      }
+      
+      if (goal === 'LOSE_WEIGHT') {
+        return desiredWeightInUnit < currentWeightInUnit;
+      } else if (goal === 'GAIN_WEIGHT') {
+        return desiredWeightInUnit > currentWeightInUnit;
+      } else if (goal === 'MAINTAIN') {
+        const tolerance = state.weightUnit === 'kg' ? 2 : 5;
+        return Math.abs(desiredWeightInUnit - currentWeightInUnit) <= tolerance;
+      }
+      
+      return false;
     },
     
     // Get final payload for API

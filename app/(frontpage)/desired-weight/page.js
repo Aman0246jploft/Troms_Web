@@ -1,7 +1,157 @@
-import Link from "next/link";
-import React from "react";
+'use client';
 
-function page() {
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
+
+function DesiredWeightPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const [isMetric, setIsMetric] = useState(state.weightUnit === 'kg');
+const [desiredWeight, setDesiredWeight] = useState(() => {
+  if (!state.desiredWeight || state.desiredWeight <= 0) {
+    if (state.weightGoal === 'MAINTAIN') return state.weight;
+    if (state.weightGoal === 'LOSE_WEIGHT') return Math.round(state.weight * 0.95 * 10) / 10;
+    if (state.weightGoal === 'GAIN_WEIGHT') return Math.round(state.weight * 1.05 * 10) / 10;
+    return 0;
+  }
+  return state.desiredWeight;
+});
+  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+
+useEffect(() => {
+  // Redirect if previous steps not completed
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+    return;
+  }
+  if (!state.weightGoal) {
+    router.push('/weight-goal');
+    return;
+  }
+
+  // Update step
+  updateStep(8);
+  // no setDesiredWeight here to prevent infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // run only once on mount
+
+
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: '', message: '' });
+  };
+
+  const handleUnitToggle = () => {
+    const newIsMetric = !isMetric;
+    setIsMetric(newIsMetric);
+    
+    if (newIsMetric) {
+      // Convert to metric
+      const kg = desiredWeight * 0.453592;
+      setDesiredWeight(Math.round(kg * 10) / 10);
+      updateField('weightUnit', 'kg');
+    } else {
+      // Convert to imperial
+      const lbs = desiredWeight / 0.453592;
+      setDesiredWeight(Math.round(lbs * 10) / 10);
+      updateField('weightUnit', 'lbs');
+    }
+  };
+
+  const handleWeightChange = (value) => {
+    setDesiredWeight(value);
+    updateField('desiredWeight', value);
+    hideAlert();
+  };
+
+  const validateWeight = () => {
+    const currentWeight = state.weight;
+    const goal = state.weightGoal;
+    
+    if (isMetric) {
+      // Convert current weight to kg for comparison
+      const currentWeightKg = state.weightUnit === 'lbs' ? currentWeight * 0.453592 : currentWeight;
+      
+      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightKg) {
+        return 'Desired weight must be less than current weight to lose weight.';
+      }
+      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightKg) {
+        return 'Desired weight must be greater than current weight to gain weight.';
+      }
+      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightKg) > 2) {
+        return 'For maintenance, desired weight should be close to current weight (±2 kg).';
+      }
+    } else {
+      // Convert current weight to lbs for comparison
+      const currentWeightLbs = state.weightUnit === 'kg' ? currentWeight / 0.453592 : currentWeight;
+      
+      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightLbs) {
+        return 'Desired weight must be less than current weight to lose weight.';
+      }
+      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightLbs) {
+        return 'Desired weight must be greater than current weight to gain weight.';
+      }
+      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightLbs) > 5) {
+        return 'For maintenance, desired weight should be close to current weight (±5 lbs).';
+      }
+    }
+    
+    return null; // No validation error
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+    
+    if (!desiredWeight || desiredWeight <= 0) {
+      showAlert('warning', 'Please enter your desired weight to continue.');
+      return;
+    }
+
+    const validationError = validateWeight();
+    if (validationError) {
+      showAlert('warning', validationError);
+      return;
+    }
+
+    if (isStepValid(8)) {
+      updateStep(9);
+      router.push('/workout-location');
+    }
+  };
+
+  const getWeightRange = () => {
+    const currentWeight = state.weight;
+    const goal = state.weightGoal;
+    
+    if (goal === 'MAINTAIN') {
+      const tolerance = isMetric ? 2 : 5;
+      return `±${tolerance} ${isMetric ? 'kg' : 'lbs'} from current weight`;
+    } else if (goal === 'LOSE_WEIGHT') {
+      return `Less than ${isMetric ? Math.round(currentWeight * 0.453592) : currentWeight} ${isMetric ? 'kg' : 'lbs'}`;
+    } else if (goal === 'GAIN_WEIGHT') {
+      return `Greater than ${isMetric ? Math.round(currentWeight * 0.453592) : currentWeight} ${isMetric ? 'kg' : 'lbs'}`;
+    }
+    return '';
+  };
+
+  const getCurrentWeightDisplay = () => {
+    if (isMetric) {
+      const currentWeightKg = state.weightUnit === 'lbs' ? state.weight * 0.453592 : state.weight;
+      return `${Math.round(currentWeightKg * 10) / 10} kg`;
+    } else {
+      const currentWeightLbs = state.weightUnit === 'kg' ? state.weight / 0.453592 : state.weight;
+      return `${Math.round(currentWeightLbs * 10) / 10} lbs`;
+    }
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -13,36 +163,74 @@ function page() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
+              
+              <Alert 
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
               <div className="auth-cards weight">
                 <p className="text-uppercase mb-5">Desired Weight</p>
-                <h3 className="mb-2">What is desired weight?</h3>
-                <form>
+                <h3 className="mb-2">What is your desired weight?</h3>
+                <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
+                
+                {/* <div className="mb-4 p-3 bg-light rounded">
+                  <p className="mb-1"><strong>Current Weight:</strong> {getCurrentWeightDisplay()}</p>
+                  <p className="mb-0"><strong>Target Range:</strong> {getWeightRange()}</p>
+                </div> */}
+
+                <form onSubmit={handleContinue}>
                   <div className="weight-switch">
                     <span>Imperial</span>
                     <label className="switch">
-                      <input type="checkbox" className="d-none" />
+                      <input 
+                        type="checkbox" 
+                        className="d-none"
+                        checked={isMetric}
+                        onChange={handleUnitToggle}
+                      />
                       <span className="slider"></span>
                     </label>
                     <span>Metric</span>
                   </div>
                   <div className="weight-input">
                     <div className="height-bx-main">
-                      <p className="text-center mb-2">Weight</p>
+                      <p className="text-center mb-2">Desired Weight</p>
                       <div className="height-bx lbs-weight">
                         <div className="height-input border-0">
-                          <input type="number" min="0" value="170" />
-                          <span>lbs</span>
+                          <input 
+                            type="number" 
+                            min={isMetric ? "30" : "60"}
+                            max={isMetric ? "300" : "600"}
+                            step="0.1"
+                            value={desiredWeight}
+                            onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
+                            required
+                          />
+                          <span>{isMetric ? 'kg' : 'lbs'}</span>
                         </div>
                       </div>
                     </div>
                   </div>
+                  
+                  {state.weightGoal === 'MAINTAIN' && (
+                    <div className="mt-3 p-3 bg-info bg-opacity-10 rounded">
+                      <p className="mb-0 text-center small text-info">
+                        <strong>Note:</strong> For maintenance, your desired weight will be set to your current weight.
+                      </p>
+                    </div>
+                  )}
+                  
                   <div className="text-center mt-5">
-                    <Link
-                      href="/workout-location"
+                    <button
+                      type="submit"
                       className="custom-btn continue-btn"
+                      disabled={!desiredWeight || desiredWeight <= 0}
                     >
                       Continue
-                    </Link>
+                    </button>
                   </div>
                 </form>
               </div>
@@ -51,7 +239,7 @@ function page() {
         </div>
         <div className="auth-bttm">
           <p>
-            <span>8/</span> 25
+            <span>{state.currentStep}/</span> {state.totalSteps}
           </p>
         </div>
       </section>
@@ -59,4 +247,4 @@ function page() {
   );
 }
 
-export default page;
+export default DesiredWeightPage;

@@ -16,40 +16,33 @@ function WeightPage() {
   const [weight, setWeight] = useState(state.weight || 150);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
-  useEffect(() => {
-    // Redirect if previous steps not completed
-    if (!state.isAuthenticated) {
-      router.push('/register');
-      return;
-    }
-    if (!state.gender) {
-      router.push('/select-gender');
-      return;
-    }
-    if (!state.dateOfBirth || state.age < 13) {
-      router.push('/borndate');
-      return;
-    }
-    if (!state.trainingDays) {
-      router.push('/training-days');
-      return;
-    }
-    
-    // Update step
-    updateStep(6);
+useEffect(() => {
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+  } else if (!state.gender) {
+    router.push('/select-gender');
+  } else if (!state.dateOfBirth || state.age < 13) {
+    router.push('/borndate');
+  } else if (!state.trainingDays) {
+    router.push('/training-days');
+  }
+}, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, router]);
 
-    // Initialize values from state
-    if (state.height > 0) {
-      if (isMetric) {
-        setHeightCm(Math.round(state.height));
-      } else {
-        // Convert cm to feet and inches
-        const totalInches = state.height / 2.54;
-        setHeightFeet(Math.floor(totalInches / 12));
-        setHeightInches(Math.round(totalInches % 12));
-      }
+
+useEffect(() => {
+  updateStep(6);
+
+  if (state.height > 0) {
+    if (isMetric) {
+      setHeightCm(Math.round(state.height));
+    } else {
+      const totalInches = state.height / 2.54;
+      setHeightFeet(Math.floor(totalInches / 12));
+      setHeightInches(Math.round(totalInches % 12));
     }
-  }, [state, router, updateStep, isMetric]);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // empty deps = run only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });

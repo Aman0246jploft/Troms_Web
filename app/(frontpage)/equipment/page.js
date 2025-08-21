@@ -17,20 +17,20 @@ function EquipmentPage() {
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   useEffect(() => {
-    // Redirect if previous steps not completed
-    if (!state.isAuthenticated) {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push('/register');
-      return;
     }
-    
-    // Update step
+  }, [state.isAuthenticated, router]);
+
+  useEffect(() => {
     updateStep(10);
-    
-    // If location is already selected, fetch equipments
+
     if (workoutLocation) {
       fetchEquipments(workoutLocation);
     }
-  }, [state.isAuthenticated, router, updateStep]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run only once
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -49,9 +49,9 @@ function EquipmentPage() {
       if (apiLocation === 'outdoors') {
         apiLocation = 'outdoors';
       }
-      
+
       const response = await apiService.getEquipments(apiLocation);
-      
+
       if (response.success) {
         setEquipments(response.result || []);
       } else {
@@ -78,7 +78,7 @@ function EquipmentPage() {
       const newSelection = prev.includes(equipmentId)
         ? prev.filter(id => id !== equipmentId)
         : [...prev, equipmentId];
-      
+
       updateField('selectedEquipments', newSelection);
       return newSelection;
     });
@@ -86,7 +86,7 @@ function EquipmentPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!workoutLocation) {
       showAlert('warning', 'Please select your workout location.');
       return;
@@ -114,8 +114,8 @@ function EquipmentPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -181,7 +181,7 @@ function EquipmentPage() {
                       </label>
                     </div>
                   </div>
-                  
+
                   {workoutLocation && (
                     <>
                       {loading ? (
@@ -203,7 +203,7 @@ function EquipmentPage() {
                                 checked={selectedEquipments.includes(equipment.id)}
                                 onChange={() => handleEquipmentToggle(equipment.id)}
                               />
-                              <label 
+                              <label
                                 htmlFor={`equipment-${equipment.id}`}
                                 className={selectedEquipments.includes(equipment.id) ? 'selected' : ''}
                               >
@@ -216,7 +216,7 @@ function EquipmentPage() {
                           ))}
                         </div>
                       )}
-                      
+
                       {equipments.length === 0 && !loading && (
                         <div className="text-center py-4">
                           <p>No equipment options available for your selected location.</p>
@@ -224,7 +224,7 @@ function EquipmentPage() {
                       )}
                     </>
                   )}
-                  
+
                   <div className="text-center">
                     <button
                       type="submit"

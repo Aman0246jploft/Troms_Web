@@ -12,24 +12,20 @@ function TrainingDaysPage() {
   const [selectedDays, setSelectedDays] = useState(state.trainingDays);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
+  // Redirects based on previous steps
   useEffect(() => {
-    // Redirect if previous steps not completed
-    if (!state.isAuthenticated) {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push('/register');
-      return;
-    }
-    if (!state.gender) {
+    } else if (!state.gender) {
       router.push('/select-gender');
-      return;
-    }
-    if (!state.dateOfBirth || state.age < 13) {
+    } else if (!state.dateOfBirth || state.age < 13) {
       router.push('/borndate');
-      return;
     }
-    
-    // Update step
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, router]);
+  useEffect(() => {
     updateStep(4);
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, router, updateStep]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -47,7 +43,7 @@ function TrainingDaysPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!selectedDays || selectedDays < 1) {
       showAlert('warning', 'Please select how many days per week you can train.');
       return;
@@ -70,8 +66,8 @@ function TrainingDaysPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -98,7 +94,7 @@ function TrainingDaysPage() {
                           checked={selectedDays === day}
                           onChange={() => handleDaysChange(day)}
                         />
-                        <label 
+                        <label
                           htmlFor={`day-${day}`}
                           className={selectedDays === day ? 'selected' : ''}
                         >
@@ -108,7 +104,7 @@ function TrainingDaysPage() {
                     ))}
                   </div>
                   <div className="text-center mt-5">
-                    <button 
+                    <button
                       type="submit"
                       className="custom-btn continue-btn"
                       disabled={!selectedDays || selectedDays < 1}

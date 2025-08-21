@@ -1,99 +1,132 @@
-import Link from "next/link";
-import React from "react";
+'use client';
 
-function page() {
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
+
+function PreferredDietPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const [selectedDiet, setSelectedDiet] = useState(state.dietType || '');
+  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push('/register');
+    }
+  }, [state.isAuthenticated, state.isAuthChecked, router]);
+
+  // Set current step
+  useEffect(() => {
+    updateStep(15);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: '', message: '' });
+  };
+
+  const handleDietChange = (diet) => {
+    setSelectedDiet(diet);
+    updateField('dietType', diet); // update context immediately
+    hideAlert();
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+
+    if (!selectedDiet) {
+      showAlert('warning', 'Please select a diet type to continue.');
+      return;
+    }
+
+    if (isStepValid(15)) {
+      updateStep(16);
+      router.push('/favorite-food');
+    }
+  };
+
+  const options = [
+    { id: 'Anything', label: 'Anything' },
+    { id: 'Keto', label: 'Keto' },
+    { id: 'Mediterranean', label: 'Mediterranean' },
+    { id: 'Paleo', label: 'Paleo' },
+    { id: 'Vegan', label: 'Vegan' },
+    { id: 'Vegetarian', label: 'Vegetarian' },
+  ];
+
   return (
-    <>
-      <section className="auth-section">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-7">
-              <div className="auth-logo text-center">
-                <Link href="/">
-                  <img src="/images/dark-logo.svg" alt="Logo" />
-                </Link>
-              </div>
-              <div className="auth-cards weight-goal">
-                <p className="text-uppercase mb-5">Preferred Diet</p>
-                <h3 className="mb-4">Do you have a preferred diet?</h3>
-                <div className="px-135">
-                  <form>
-                    <div className="custom-check">
+    <section className="auth-section">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-lg-7">
+            <div className="auth-logo text-center">
+              <Link href="/">
+                <img src="/images/dark-logo.svg" alt="Logo" />
+              </Link>
+            </div>
+
+            <Alert
+              type={alert.type}
+              message={alert.message}
+              show={alert.show}
+              onClose={hideAlert}
+            />
+
+            <div className="auth-cards weight-goal">
+              <p className="text-uppercase mb-5">Preferred Diet</p>
+              <h3 className="mb-4">Do you have a preferred diet?</h3>
+              <div className="px-135">
+                <form onSubmit={handleContinue}>
+                  {options.map(option => (
+                    <div className="custom-check" key={option.id}>
                       <input
                         type="radio"
-                        id="Anything"
-                        name="achieving-goal"
+                        id={option.id}
+                        name="preferred-diet"
                         className="d-none"
+                        value={option.id}
+                        checked={selectedDiet === option.id}
+                        onChange={() => handleDietChange(option.id)}
                       />
-                      <label htmlFor="Anything">Anything</label>
-                    </div>
-                    <div className="custom-check">
-                      <input
-                        type="radio"
-                        id="Keto"
-                        name="achieving-goal"
-                        className="d-none"
-                      />
-                      <label htmlFor="Keto">Keto</label>
-                    </div>
-                    <div className="custom-check">
-                      <input
-                        type="radio"
-                        id="Mediterranean"
-                        name="achieving-goal"
-                        className="d-none"
-                      />
-                      <label htmlFor="Mediterranean">Mediterranean</label>
-                    </div>
-                    <div className="custom-check">
-                      <input
-                        type="radio"
-                        id="Paleo"
-                        name="achieving-goal"
-                        className="d-none"
-                      />
-                      <label htmlFor="Paleo">Paleo</label>
-                    </div>
-                    <div className="custom-check">
-                      <input
-                        type="radio"
-                        id="Vegan"
-                        name="achieving-goal"
-                        className="d-none"
-                      />
-                      <label htmlFor="Vegan">Vegan</label>
-                    </div>
-                    <div className="custom-check">
-                      <input
-                        type="radio"
-                        id="Vegetarian"
-                        name="achieving-goal"
-                        className="d-none"
-                      />
-                      <label htmlFor="Vegetarian">Vegetarian</label>
-                    </div>
-                    <div className="text-center mt-3">
-                      <Link
-                        href="/favorite-food"
-                        className="custom-btn continue-btn"
+                      <label
+                        htmlFor={option.id}
+                        className={selectedDiet === option.id ? 'selected' : ''}
                       >
-                        Continue
-                      </Link>
+                        {option.label}
+                      </label>
                     </div>
-                  </form>
-                </div>
+                  ))}
+
+                  <div className="text-center mt-3">
+                    <button
+                      type="submit"
+                      className="custom-btn continue-btn"
+                      disabled={!selectedDiet}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
-        <div className="auth-bttm">
-          <p>
-            <span>15/</span> 25
-          </p>
-        </div>
-      </section>
-    </>
+      </div>
+      <div className="auth-bttm">
+        <p>
+          <span>{state.currentStep}/</span> {state.totalSteps}
+        </p>
+      </div>
+    </section>
   );
 }
 
-export default page;
+export default PreferredDietPage;

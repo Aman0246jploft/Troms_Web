@@ -12,22 +12,24 @@ function SelectGenderPage() {
   const [selectedGender, setSelectedGender] = useState(state.gender);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
-  useEffect(() => {
-    // Redirect to register if not authenticated
-    if (!state.isAuthenticated) {
-      router.push('/register');
-      return;
-    }
+useEffect(() => {
+  // Redirect if not authenticated
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+    return;
+  }
 
-    // If user doesn't need onboarding, redirect to BMR/dashboard
-    if (!state.needsOnboarding) {
-      router.push('/bmr');
-      return;
-    }
-    
-    // Update step
-    updateStep(2);
-  }, [state.isAuthenticated, state.needsOnboarding, router, updateStep]);
+  // Redirect if onboarding is not needed
+  if (!state.needsOnboarding) {
+    router.push('/bmr');
+    return;
+  }
+
+  // Update step once on mount
+  updateStep(2);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // empty dependency array ensures this runs only once
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });

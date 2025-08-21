@@ -16,7 +16,7 @@ function ApproachPage() {
 
   useEffect(() => {
     // Redirect if not authenticated
-    if (!state.isAuthenticated) {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push('/register');
       return;
     }
