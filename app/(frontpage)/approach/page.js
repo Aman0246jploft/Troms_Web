@@ -25,9 +25,10 @@ function ApproachPage() {
     const requiredFields = [
       'gender', 'dateOfBirth', 'age', 'trainingDays', 'weight', 'weightGoal',
       'desiredWeight', 'workoutLocation', 'selectedEquipments', 'reachingGoals',
-      'realisticTarget', 'accomplish', 'dietType', 'cheatMealFoodItems',
+       'accomplish', 'dietType', 'cheatMealFoodItems',
       'cookingLevel', 'allergicFoodItems', 'dislikedFoodItems', 'injuries'
     ];
+    // 'realisticTarget'
 
     const missingFields = requiredFields.filter(field => {
       const value = state[field];

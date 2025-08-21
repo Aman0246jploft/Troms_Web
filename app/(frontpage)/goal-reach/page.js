@@ -13,22 +13,27 @@ function GoalRangePage() {
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   // Update CSS variable for fill
-  useEffect(() => {
-    const percent = ((value - 0.5) / (2 - 0.5)) * 100;
-    document.documentElement.style.setProperty("--range-percent", `${percent}%`);
-  }, [value]);
+useEffect(() => {
+  const percent = ((value - 0.5) / (2 - 0.5)) * 100;
+  document.documentElement.style.setProperty("--range-percent", `${percent}%`);
+}, [value]);
+
 
   // Redirect if not authenticated
-  useEffect(() => {
-    if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
-    }
-  }, [state.isAuthenticated, router]);
+useEffect(() => {
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+  }
+}, [state.isAuthChecked, state.isAuthenticated, router]);
+
 
   // Set current step
   useEffect(() => {
+  if (state.currentStep !== 11) {
     updateStep(11);
-  }, []);
+  }
+}, [state.currentStep, updateStep]);
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -44,19 +49,19 @@ function GoalRangePage() {
     hideAlert();
   };
 
-  const handleContinue = (e) => {
-    e.preventDefault();
+const handleContinue = () => {
+  if (!value || isNaN(value)) {
+    showAlert('warning', 'Please select your weekly weight loss goal.');
+    return;
+  }
 
-    if (!value) {
-      showAlert('warning', 'Please select your weekly weight loss goal.');
-      return;
-    }
+  // Optional: skip isStepValid if you want to debug
+  // console.log("isStepValid:", isStepValid(11));
 
-    if (isStepValid(11)) {
-      updateStep(12);
-      router.push('/realistic-target');
-    }
-  };
+  updateStep(12);
+  router.push('/realistic-target');
+};
+
 
   return (
     <section className="auth-section">

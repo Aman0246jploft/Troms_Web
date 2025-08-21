@@ -23,7 +23,6 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
 
 
 useEffect(() => {
-  // Redirect if previous steps not completed
   if (state.isAuthChecked && state.isAuthenticated === false) {
     router.push('/register');
     return;
@@ -33,11 +32,10 @@ useEffect(() => {
     return;
   }
 
-  // Update step
-  updateStep(8);
-  // no setDesiredWeight here to prevent infinite loop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // run only once on mount
+  if (state.currentStep !== 8) {
+    updateStep(8);
+  }
+}, []);
 
 
 
@@ -109,6 +107,7 @@ useEffect(() => {
 
   const handleContinue = (e) => {
     e.preventDefault();
+    console.log("KKKKKKKKKK")
     
     if (!desiredWeight || desiredWeight <= 0) {
       showAlert('warning', 'Please enter your desired weight to continue.');
