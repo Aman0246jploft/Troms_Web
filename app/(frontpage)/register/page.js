@@ -13,24 +13,26 @@ function RegisterPage() {
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   useEffect(() => {
-    // If user is already authenticated, redirect to next step
     if (state.isAuthenticated) {
       router.push('/select-gender');
     }
+  }, [state.isAuthenticated, router]);
 
-    // Load Google OAuth script
-    const loadGoogleScript = () => {
-      if (!window.google) {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-      }
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      console.log("Google Identity Services script loaded");
     };
 
-    loadGoogleScript();
-  }, [state.isAuthenticated, router]);
+    document.head.appendChild(script);
+  }, []);
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -54,34 +56,34 @@ function RegisterPage() {
 
       console.log('Calling social login API with:', payload);
       const response = await apiService.socialLogin(payload);
-      
+
       if (response.success) {
         // Check if user information is required (new user) or user is already registered
         const needsOnboarding = response.message === "User information is required";
-        
+
         // Update user state with userInfoId from response if available
         const finalUserData = {
           ...payload,
           userInfoId: response.result?.userInfoId || payload.userInfoId
         };
-        
+
         setUser({
           userData: finalUserData,
           needsOnboarding: needsOnboarding
         });
         updateStep(2);
-        
+
         if (needsOnboarding) {
           // New user - proceed to onboarding
           showAlert('success', 'Registration successful! Let\'s set up your profile.');
-          
+
           setTimeout(() => {
             router.push('/select-gender');
           }, 1500);
         } else {
           // Existing user - has completed onboarding, redirect to dashboard/home
           showAlert('success', 'Welcome back! You\'ve already completed setup.');
-          
+
           setTimeout(() => {
             // Redirect to BMR page or dashboard since onboarding is complete
             router.push('/bmr');
@@ -104,7 +106,7 @@ function RegisterPage() {
     // Initialize Google OAuth
     if (window.google && window.google.accounts) {
       window.google.accounts.id.initialize({
-        client_id:  '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+        client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
         callback: handleGoogleCallback,
         auto_select: false,
         cancel_on_tap_outside: true,
@@ -136,24 +138,42 @@ function RegisterPage() {
     }
   };
 
-  const handleGoogleCallback = (response) => {
-    try {
-      // Decode the JWT token to get user information
-      const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
-      
-      const userData = {
-        email: userInfo.email,
-        username: userInfo.name || userInfo.email.split('@')[0],
-        platform: "android",
-        userInfoId: userInfo.sub // Google's unique user ID
-      };
 
-      handleSocialLoginAPI(userData);
-    } catch (error) {
-      console.error('Error processing Google callback:', error);
-      showAlert('error', 'Failed to process Google login. Please try again.');
-    }
-  };
+
+
+  useEffect(() => {
+  if (!window.google || !window.google.accounts) return;
+
+  window.google.accounts.id.initialize({
+    client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+    callback: handleGoogleCallback,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+
+  window.google.accounts.id.renderButton(
+    document.getElementById('google-signin-button'),
+    { theme: 'outline', size: 'large', width: '100%' }
+  );
+}, [window.google]);
+
+
+const handleGoogleCallback = (response) => {
+  try {
+    const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+    const userData = {
+      email: userInfo.email,
+      username: userInfo.name || userInfo.email.split('@')[0],
+      platform: "android",
+      userInfoId: userInfo.sub
+    };
+    handleSocialLoginAPI(userData);
+  } catch (error) {
+    console.error('Error processing Google callback:', error);
+    showAlert('error', 'Failed to process Google login. Please try again.');
+  }
+};
+
 
   const handleAppleLogin = () => {
     // For Apple Sign-In, you would typically use Apple's JavaScript SDK
@@ -161,8 +181,8 @@ function RegisterPage() {
     if (typeof window !== 'undefined' && window.AppleID) {
       window.AppleID.auth.signIn().then((response) => {
         const userData = {
-          email: response.authorization.id_token ? 
-            JSON.parse(atob(response.authorization.id_token.split('.')[1])).email : 
+          email: response.authorization.id_token ?
+            JSON.parse(atob(response.authorization.id_token.split('.')[1])).email :
             'user@icloud.com',
           username: response.user?.name?.firstName || 'Apple User',
           platform: "ios",
@@ -196,8 +216,8 @@ function RegisterPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -212,7 +232,7 @@ function RegisterPage() {
                 </p>
                 <div className="login-innr">
                   <div className="login-btn">
-                    <button 
+                    <button
                       onClick={handleAppleLogin}
                       disabled={state.loading}
                       className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border-0 rounded"
@@ -221,7 +241,7 @@ function RegisterPage() {
                       <img src="/images/apple-logo.svg" className="me-2" alt="Apple" />
                       {state.loading ? 'Signing up...' : 'Sign Up with Apple'}
                     </button>
-                    <button 
+                    <button
                       onClick={handleGoogleLogin}
                       disabled={state.loading}
                       className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border rounded"
@@ -230,9 +250,10 @@ function RegisterPage() {
                       <img src="/images/google-logo.svg" className="me-2" alt="Google" />
                       {state.loading ? 'Signing up...' : 'Sign Up with Google'}
                     </button>
-                    
+
                     {/* Hidden div for Google OAuth button fallback */}
-                    <div id="google-signin-button" className="d-none"></div>
+                    <div id="google-signin-button"></div>
+
                   </div>
                   <p className="or-line">
                     <span>or</span>
