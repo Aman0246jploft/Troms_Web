@@ -104,7 +104,7 @@ function RegisterPage() {
     // Initialize Google OAuth
     if (window.google && window.google.accounts) {
       window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+        client_id:  '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
         callback: handleGoogleCallback,
         auto_select: false,
         cancel_on_tap_outside: true,
