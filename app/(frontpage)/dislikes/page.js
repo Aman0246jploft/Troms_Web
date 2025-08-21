@@ -1,7 +1,140 @@
-import Link from "next/link";
-import React from "react";
+'use client';
 
-function page() {
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import { apiService } from "../../../lib/api";
+import Alert from "../../../Components/Alert";
+
+function DislikesPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const [dislikedFoods, setDislikedFoods] = useState([]);
+  const [selectedDislikes, setSelectedDislikes] = useState(state.dislikedFoodItems || []);
+  const [customDislike, setCustomDislike] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+  useEffect(() => {
+    if (!state.isAuthChecked) return; // wait for auth check
+
+    if (state.isAuthenticated === false) {
+      router.push('/register');
+      return;
+    }
+    // Note: allergicFoodItems can be empty array, so we check if it exists
+    if (state.allergicFoodItems === undefined) {
+      router.push('/allergies');
+      return;
+    }
+
+    // Only update step if it's not already set
+    if (state.currentStep !== 20) {
+      updateStep(20);
+    }
+  }, [state.isAuthChecked, state.isAuthenticated, state.allergicFoodItems, state.currentStep, router, updateStep]);
+
+  useEffect(() => {
+    fetchDislikedFoodItems();
+  }, []);
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: '', message: '' });
+  };
+
+  const fetchDislikedFoodItems = async () => {
+    setLoading(true);
+    hideAlert();
+
+    try {
+      const response = await apiService.getDislikedFoodItems();
+      
+      if (response.success) {
+        const apiDislikes = response.result || [];
+        
+        // Add custom dislikes that were previously selected but not in API
+        const customDislikes = selectedDislikes
+          .filter(selectedDislike => !apiDislikes.some(food => food.ingredients_name === selectedDislike))
+          .map(customDislike => ({
+            id: `custom-${customDislike.replace(/\s+/g, '-').toLowerCase()}`,
+            ingredients_name: customDislike
+          }));
+        
+        setDislikedFoods([...apiDislikes, ...customDislikes]);
+      } else {
+        showAlert('error', 'Failed to load disliked food items. Please try again.');
+      }
+    } catch (error) {
+      console.error('Disliked food items fetch error:', error);
+      showAlert('error', 'Failed to load disliked food items. Please check your internet connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDislikeToggle = (dislikeName) => {
+    setSelectedDislikes(prev => {
+      const newSelection = prev.includes(dislikeName)
+        ? prev.filter(name => name !== dislikeName)
+        : [...prev, dislikeName];
+      
+      updateField('dislikedFoodItems', newSelection);
+      return newSelection;
+    });
+    hideAlert();
+  };
+
+  const handleCustomDislikeAdd = () => {
+    if (customDislike.trim()) {
+      const newDislike = customDislike.trim();
+      if (!selectedDislikes.includes(newDislike) && !dislikedFoods.some(food => food.ingredients_name === newDislike)) {
+        // Add to the disliked foods list for immediate display
+        const customDislikeObj = {
+          id: `custom-${Date.now()}`,
+          ingredients_name: newDislike
+        };
+        setDislikedFoods(prev => [...prev, customDislikeObj]);
+        
+        // Also add to selected dislikes
+        const newSelection = [...selectedDislikes, newDislike];
+        setSelectedDislikes(newSelection);
+        updateField('dislikedFoodItems', newSelection);
+        setCustomDislike('');
+        hideAlert();
+      } else {
+        showAlert('warning', 'This dislike is already in the list or selected.');
+      }
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCustomDislikeAdd();
+    }
+  };
+
+  const handleRemoveDislike = (dislikeName) => {
+    const newSelection = selectedDislikes.filter(name => name !== dislikeName);
+    setSelectedDislikes(newSelection);
+    updateField('dislikedFoodItems', newSelection);
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+    
+    // Dislikes are optional, so we can continue even with no selections
+    if (isStepValid(20)) {
+      updateStep(21);
+      router.push('/injuries');
+    }
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -13,69 +146,87 @@ function page() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
+              
+              <Alert 
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
               <div className="auth-cards food">
                 <p className="text-uppercase mb-5">Dislikes</p>
                 <h3 className="mb-4">
                   Are there any ingredients <br /> you'd prefer to avoid?
                 </h3>
-                <div className="food-card px-135">
-                  <div className="food-bx">
-                    <input type="checkbox" className="d-none" id="peanuts" />
-                    <label htmlFor="peanuts">
-                      peanuts
-                      <button type="button">
-                        <img src="/images/close.svg" />
-                      </button>
-                    </label>
+                
+                {loading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading disliked food items...</span>
+                    </div>
+                    <p className="mt-2">Loading available disliked food items...</p>
                   </div>
-                  <div className="food-bx">
-                    <input type="checkbox" className="d-none" id="mushrooms" />
-                    <label htmlFor="mushrooms">
-                      mushrooms
-                      <button type="button">
-                        <img src="/images/close.svg" />
-                      </button>
-                    </label>
-                  </div>
-                  <div className="food-bx">
-                    <input type="checkbox" className="d-none" id="Lamb" />
-                    <label htmlFor="Lamb">
-                      Lamb
-                      <button type="button">
-                        <img src="/images/close.svg" />
-                      </button>
-                    </label>
-                  </div>
-                  <div className="food-bx">
-                    <input type="checkbox" className="d-none" id="Tomatoes" />
-                    <label htmlFor="Tomatoes">
-                      Tomatoes
-                      <button type="button">
-                        <img src="/images/close.svg" />
-                      </button>
-                    </label>
-                  </div>
-                  <div className="food-bx">
-                    <input type="checkbox" className="d-none" id="tofu" />
-                    <label htmlFor="tofu">
-                      tofu
-                      <button type="button">
-                        <img src="/images/close.svg" />
-                      </button>
-                    </label>
-                  </div>
-                </div>
-                <div className="custom-frm-bx mt-4 px-135">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="If other (please specify)"
-                  />
-                </div>
+                ) : (
+                  <>
+                    <div className="food-card px-135">
+                      {dislikedFoods.map((food) => (
+                        <div key={food.id} className="food-bx">
+                          <input 
+                            type="checkbox" 
+                            className="d-none" 
+                            id={`dislike-${food.id}`}
+                            checked={selectedDislikes.includes(food.ingredients_name)}
+                            onChange={() => handleDislikeToggle(food.ingredients_name)}
+                          />
+                          <label 
+                            htmlFor={`dislike-${food.id}`}
+                            className={selectedDislikes.includes(food.ingredients_name) ? 'selected' : ''}
+                          >
+                            {food.ingredients_name}
+                            {selectedDislikes.includes(food.ingredients_name) && (
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleRemoveDislike(food.ingredients_name);
+                                }}
+                              >
+                                <img src="/images/close.svg" alt="Remove" />
+                              </button>
+                            )}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="custom-frm-bx mt-4 px-135">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="If other (please specify)"
+                        value={customDislike}
+                        onChange={(e) => setCustomDislike(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                      />
+                    </div>
+                    
+                    {dislikedFoods.length === 0 && !loading && (
+                      <div className="text-center py-4">
+                        <p>No disliked food items available at the moment.</p>
+                      </div>
+                    )}
+                  </>
+                )}
+                
                 <div className="text-center mt-3">
-                  <Link href="/injuries" className="custom-btn continue-btn">
+                  <button
+                    onClick={handleContinue}
+                    className="custom-btn continue-btn"
+                    disabled={loading}
+                  >
                     Continue
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -83,7 +234,7 @@ function page() {
         </div>
         <div className="auth-bttm">
           <p>
-            <span>20/</span> 25
+            <span>{state.currentStep}/</span> {state.totalSteps}
           </p>
         </div>
       </section>
@@ -91,4 +242,4 @@ function page() {
   );
 }
 
-export default page;
+export default DislikesPage;

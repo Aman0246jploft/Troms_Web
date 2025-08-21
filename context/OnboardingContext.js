@@ -33,7 +33,7 @@ const initialState = {
   workoutLocation: '',
   selectedEquipments: [],
   reachingGoals: '',
-  realisticTarget: 0,
+  // realisticTarget: 0,
   accomplish: [],
   isNotification: false,
   dietType: '',

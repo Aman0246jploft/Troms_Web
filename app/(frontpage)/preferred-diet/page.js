@@ -54,13 +54,14 @@ function PreferredDietPage() {
   };
 
   const options = [
-    { id: 'Anything', label: 'Anything' },
-    { id: 'Keto', label: 'Keto' },
-    { id: 'Mediterranean', label: 'Mediterranean' },
-    { id: 'Paleo', label: 'Paleo' },
-    { id: 'Vegan', label: 'Vegan' },
-    { id: 'Vegetarian', label: 'Vegetarian' },
-  ];
+  { id: 'ANYTHING', label: 'Anything' },
+  { id: 'KETO', label: 'Keto' },
+  { id: 'MEDITERRANEAN', label: 'Mediterranean' },
+  { id: 'PALEO', label: 'Paleo' },
+  { id: 'VEGAN', label: 'Vegan' },
+  { id: 'VEGETARIAN', label: 'Vegetarian' },
+];
+
 
   return (
     <section className="auth-section">
