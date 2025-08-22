@@ -39,7 +39,8 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
 
   // Sync local state with context state when context updates
   useEffect(() => {
-    if (state.desiredWeight && state.desiredWeight > 0 && desiredWeight !== state.desiredWeight) {
+    // Only sync if context has a significantly different value (not just from unit conversion)
+    if (state.desiredWeight && state.desiredWeight > 0) {
       // Apply unit conversion if needed when syncing from context
       const currentUnitIsMetric = state.weightUnit === 'kg';
       const displayUnitIsMetric = isMetric;
@@ -55,9 +56,13 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
         }
       }
       
-      setDesiredWeight(convertedWeight);
+      // Only update if the converted value is significantly different from current local state
+      const difference = Math.abs(convertedWeight - desiredWeight);
+      if (difference > 0.1 && desiredWeight === 0) {
+        setDesiredWeight(convertedWeight);
+      }
     }
-  }, [state.desiredWeight, state.weightUnit, isMetric]);
+  }, [state.desiredWeight]); // Removed state.weightUnit and isMetric to avoid conflicts
 
   useEffect(() => {
   if (state.isAuthChecked && state.isAuthenticated === false) {
@@ -94,17 +99,22 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
     const newIsMetric = !isMetric;
     setIsMetric(newIsMetric);
     
+    let convertedWeight = desiredWeight;
+    
     if (newIsMetric) {
-      // Convert to metric
-      const kg = desiredWeight * 0.453592;
-      setDesiredWeight(Math.round(kg * 10) / 10);
+      // Convert to metric (lbs to kg)
+      convertedWeight = Math.round(desiredWeight * 0.453592 * 10) / 10;
       updateField('weightUnit', 'kg');
     } else {
-      // Convert to imperial
-      const lbs = desiredWeight / 0.453592;
-      setDesiredWeight(Math.round(lbs * 10) / 10);
+      // Convert to imperial (kg to lbs)
+      convertedWeight = Math.round(desiredWeight / 0.453592 * 10) / 10;
       updateField('weightUnit', 'lbs');
     }
+    
+    // Update both local state and context
+    setDesiredWeight(convertedWeight);
+    updateField('desiredWeight', convertedWeight);
+    hideAlert();
   };
 
   const handleWeightChange = (value) => {
