@@ -7,7 +7,7 @@ import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
 import Alert from "../../../Components/Alert";
 
-function EquipmentPage() {
+function EquipmentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
@@ -121,7 +121,6 @@ function EquipmentPage() {
 
   return (
     <>
-     <Suspense fallback={<div></div>}>  
       <section className="auth-section">
         <div className="container">
           <div className="row justify-content-center">
@@ -262,9 +261,18 @@ function EquipmentPage() {
           </p>
         </div>
       </section>
-       </Suspense>
     </>
   );
 }
 
-export default EquipmentPage;
+
+
+export default function EquipmentPage() {
+  return (
+    <Suspense fallback={<div></div>}>
+      <EquipmentContent />
+    </Suspense>
+  );
+}
+
+
