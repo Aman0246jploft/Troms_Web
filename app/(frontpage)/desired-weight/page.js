@@ -226,7 +226,7 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
               <div className="auth-cards weight">
                 <p className="text-uppercase mb-5">Desired Weight</p>
                 <h3 className="mb-2">What is your desired weight?</h3>
-                <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
+                {/* <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p> */}
                 
                 {/* <div className="mb-4 p-3 bg-light rounded">
                   <p className="mb-1"><strong>Current Weight:</strong> {getCurrentWeightDisplay()}</p>
@@ -266,7 +266,7 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
                       </div>
                     </div>
                   </div>
-                  
+{/*                   
                   {state.weightGoal === 'MAINTAIN' && (
                     <div className="mt-3 p-3 bg-info bg-opacity-10 rounded">
                       <p className="mb-0 text-center small text-info">
@@ -274,7 +274,7 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
                       </p>
                     </div>
                   )}
-                  
+                   */}
                   <div className="text-center mt-5">
                     <button
                       type="submit"
