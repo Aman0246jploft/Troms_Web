@@ -1,13 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect , Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
 import Alert from "../../../Components/Alert";
 
-function EquipmentPage() {
+function EquipmentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
@@ -265,4 +265,14 @@ function EquipmentPage() {
   );
 }
 
-export default EquipmentPage;
+
+
+export default function EquipmentPage() {
+  return (
+    <Suspense fallback={<div></div>}>
+      <EquipmentContent />
+    </Suspense>
+  );
+}
+
+

@@ -236,12 +236,7 @@ function RegisterPage() {
                 </Link>
               </div>
 
-              <Alert
-                type={alert.type}
-                message={alert.message}
-                show={alert.show}
-                onClose={hideAlert}
-              />
+      
 
               <div className="auth-cards login">
                 <h3>Register Yourself!</h3>
