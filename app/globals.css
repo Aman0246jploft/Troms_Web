@@ -868,7 +868,7 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  margin-bottom: 68px;
+  margin-bottom: 38px;
 }
 .gender-cards .gender-img {
   height: 150px;
@@ -1101,8 +1101,8 @@ input[type="number"]::-webkit-outer-spin-button {
   content: "";
   width: 25px;
   height: 30px;
-  top: 18px;
-  right: 20px;
+  top: 13px;
+  right: 15px;
   background-image: url(/images/grn-check.svg);
   background-repeat: no-repeat;
   display: none;
@@ -1235,7 +1235,12 @@ input[type="number"]::-webkit-outer-spin-button {
 .food-card input[type="checkbox"]:checked + label button {
   opacity: 1;
 }
-
+.text-center.mt-5 {
+  margin-top: 1.5rem !important;
+}
+.auth-cards.preferre-diet {
+  margin-bottom: 75px;
+}
 /* responsive-css-start */
 @media (max-width: 1399px) {
   .login-btn a,
@@ -1804,6 +1809,10 @@ input[type="number"]::-webkit-outer-spin-button {
   .gender-cards .gender-img {
     width: 80px;
     height: 80px;
+  }
+  .theme-footer {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 

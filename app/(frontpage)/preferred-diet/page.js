@@ -80,7 +80,7 @@ function PreferredDietPage() {
               onClose={hideAlert}
             />
 
-            <div className="auth-cards weight-goal">
+            <div className="auth-cards preferre-diet">
               <p className="text-uppercase mb-2">Preferred Diet</p>
               <h3 className="mb-4">Do you have a preferred diet?</h3>
               <div className="px-135">

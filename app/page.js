@@ -34,7 +34,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-6 col-md-6 order-1 order-lg-2 order-md-2">
+            <div className="col-lg-6 col-md-6 order-1 order-lg-2 order-md-2 text-end">
               <img src="/images/banner-img.png" alt="banner" />
             </div>
           </div>

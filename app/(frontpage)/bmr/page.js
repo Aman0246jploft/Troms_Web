@@ -22,11 +22,11 @@ function page() {
                   <img src="/images/loader.svg" alt="BMR Graph" />
                 </div>
 
-                <div className="text-center mt-3">
+                {/* <div className="text-center mt-3">
                   <Link href="/bmr" className="custom-btn continue-btn">
                     Continue
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

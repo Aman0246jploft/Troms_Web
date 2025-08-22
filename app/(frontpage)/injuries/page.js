@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -11,30 +11,39 @@ function InjuriesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [injuryList, setInjuryList] = useState([]);
-  const [selectedInjuries, setSelectedInjuries] = useState(state.injuries || []);
-  const [customInjury, setCustomInjury] = useState('');
+  const [selectedInjuries, setSelectedInjuries] = useState(
+    state.injuries || []
+  );
+  const [customInjury, setCustomInjury] = useState("");
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     // Note: dislikedFoodItems can be empty array, so we check if it exists
     if (state.dislikedFoodItems === undefined) {
-      router.push('/dislikes');
+      router.push("/dislikes");
       return;
     }
 
     // Only update step if it's not already set
-    
+
     if (state.currentStep !== 21) {
       updateStep(21);
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.dislikedFoodItems, state.currentStep, router, updateStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.dislikedFoodItems,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   useEffect(() => {
     fetchInjuries();
@@ -45,7 +54,7 @@ function InjuriesPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const fetchInjuries = async () => {
@@ -54,37 +63,45 @@ function InjuriesPage() {
 
     try {
       const response = await apiService.getInjuries();
-      
+
       if (response.success) {
         const apiInjuries = response.result || [];
-        
+
         // Add custom injuries that were previously selected but not in API
         const customInjuries = selectedInjuries
-          .filter(selectedInjury => !apiInjuries.some(injury => injury.injury_name === selectedInjury))
-          .map(customInjury => ({
-            id: `custom-${customInjury.replace(/\s+/g, '-').toLowerCase()}`,
-            injury_name: customInjury
+          .filter(
+            (selectedInjury) =>
+              !apiInjuries.some(
+                (injury) => injury.injury_name === selectedInjury
+              )
+          )
+          .map((customInjury) => ({
+            id: `custom-${customInjury.replace(/\s+/g, "-").toLowerCase()}`,
+            injury_name: customInjury,
           }));
-        
+
         setInjuryList([...apiInjuries, ...customInjuries]);
       } else {
-        showAlert('error', 'Failed to load injuries. Please try again.');
+        showAlert("error", "Failed to load injuries. Please try again.");
       }
     } catch (error) {
-      console.error('Injuries fetch error:', error);
-      showAlert('error', 'Failed to load injuries. Please check your internet connection.');
+      console.error("Injuries fetch error:", error);
+      showAlert(
+        "error",
+        "Failed to load injuries. Please check your internet connection."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleInjuryToggle = (injuryName) => {
-    setSelectedInjuries(prev => {
+    setSelectedInjuries((prev) => {
       const newSelection = prev.includes(injuryName)
-        ? prev.filter(name => name !== injuryName)
+        ? prev.filter((name) => name !== injuryName)
         : [...prev, injuryName];
-      
-      updateField('injuries', newSelection);
+
+      updateField("injuries", newSelection);
       return newSelection;
     });
     hideAlert();
@@ -93,44 +110,47 @@ function InjuriesPage() {
   const handleCustomInjuryAdd = () => {
     if (customInjury.trim()) {
       const newInjury = customInjury.trim();
-      if (!selectedInjuries.includes(newInjury) && !injuryList.some(injury => injury.injury_name === newInjury)) {
+      if (
+        !selectedInjuries.includes(newInjury) &&
+        !injuryList.some((injury) => injury.injury_name === newInjury)
+      ) {
         // Add to the injury list for immediate display
         const customInjuryObj = {
           id: `custom-${Date.now()}`,
-          injury_name: newInjury
+          injury_name: newInjury,
         };
-        setInjuryList(prev => [...prev, customInjuryObj]);
-        
+        setInjuryList((prev) => [...prev, customInjuryObj]);
+
         // Also add to selected injuries
         const newSelection = [...selectedInjuries, newInjury];
         setSelectedInjuries(newSelection);
-        updateField('injuries', newSelection);
-        setCustomInjury('');
+        updateField("injuries", newSelection);
+        setCustomInjury("");
         hideAlert();
       } else {
-        showAlert('warning', 'This injury is already in the list or selected.');
+        showAlert("warning", "This injury is already in the list or selected.");
       }
     }
   };
 
   const handleRemoveInjury = (injuryName) => {
-    const newSelection = selectedInjuries.filter(name => name !== injuryName);
+    const newSelection = selectedInjuries.filter((name) => name !== injuryName);
     setSelectedInjuries(newSelection);
-    updateField('injuries', newSelection);
+    updateField("injuries", newSelection);
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     // Injuries are optional, so we can continue even with no selections
     if (isStepValid(21)) {
       updateStep(22);
-      router.push('/crash-goal');
+      router.push("/crash-goal");
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleCustomInjuryAdd();
     }
@@ -147,8 +167,8 @@ function InjuriesPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -158,13 +178,15 @@ function InjuriesPage() {
               <div className="auth-cards food">
                 <p className="text-uppercase mb-5">Injuries</p>
                 <h3 className="mb-4">
-                  Do you have any injuries <br /> we should be aware of?
+                  Do you have any past injuries <br /> or movement limitations?
                 </h3>
-                
+
                 {loading ? (
                   <div className="text-center py-4">
                     <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading injuries...</span>
+                      <span className="visually-hidden">
+                        Loading injuries...
+                      </span>
                     </div>
                     <p className="mt-2">Loading available injuries...</p>
                   </div>
@@ -173,20 +195,28 @@ function InjuriesPage() {
                     <div className="food-card px-135">
                       {injuryList.map((injury) => (
                         <div key={injury.id} className="food-bx">
-                          <input 
-                            type="checkbox" 
-                            className="d-none" 
+                          <input
+                            type="checkbox"
+                            className="d-none"
                             id={`injury-${injury.id}`}
-                            checked={selectedInjuries.includes(injury.injury_name)}
-                            onChange={() => handleInjuryToggle(injury.injury_name)}
+                            checked={selectedInjuries.includes(
+                              injury.injury_name
+                            )}
+                            onChange={() =>
+                              handleInjuryToggle(injury.injury_name)
+                            }
                           />
-                          <label 
+                          <label
                             htmlFor={`injury-${injury.id}`}
-                            className={selectedInjuries.includes(injury.injury_name) ? 'selected' : ''}
+                            className={
+                              selectedInjuries.includes(injury.injury_name)
+                                ? "selected"
+                                : ""
+                            }
                           >
                             {injury.injury_name}
                             {selectedInjuries.includes(injury.injury_name) && (
-                              <button 
+                              <button
                                 type="button"
                                 onClick={(e) => {
                                   e.preventDefault();
@@ -200,7 +230,7 @@ function InjuriesPage() {
                         </div>
                       ))}
                     </div>
-                    
+
                     <div className="custom-frm-bx mt-4 px-135">
                       <input
                         type="text"
@@ -211,7 +241,7 @@ function InjuriesPage() {
                         onKeyPress={handleKeyPress}
                       />
                     </div>
-                    
+
                     {injuryList.length === 0 && !loading && (
                       <div className="text-center py-4">
                         <p>No injuries available at the moment.</p>
@@ -219,7 +249,7 @@ function InjuriesPage() {
                     )}
                   </>
                 )}
-                
+
                 <div className="text-center mt-3">
                   <button
                     onClick={handleContinue}
