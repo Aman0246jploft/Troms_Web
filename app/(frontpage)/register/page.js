@@ -11,12 +11,16 @@ function RegisterPage() {
   const router = useRouter();
   const { state, setUser, setLoading, setError, updateStep, resetState } = useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-
   useEffect(() => {
-    if (state.isAuthenticated) {
-      router.push("/select-gender");
-    }
-  }, [state.isAuthenticated, router]);
+    localStorage.removeItem("onboardingState");
+    resetState();
+  }, [])
+
+  // useEffect(() => {
+  //   if (state.isAuthenticated) {
+  //     router.push("/select-gender");
+  //   }
+  // }, [state.isAuthenticated, router]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
