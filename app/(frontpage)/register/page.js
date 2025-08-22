@@ -9,7 +9,7 @@ import Alert from "../../../Components/Alert";
 
 function RegisterPage() {
   const router = useRouter();
-  const { state, setUser, setLoading, setError, updateStep } = useOnboarding();
+  const { state, setUser, setLoading, setError, updateStep, resetState } = useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
@@ -108,6 +108,8 @@ function RegisterPage() {
 
   const handleGoogleLogin = () => {
     if (typeof window === "undefined") return;
+    localStorage.removeItem("onboardingState");
+    resetState();
 
     if (window.google && window.google.accounts) {
       const client = window.google.accounts.oauth2.initTokenClient({
@@ -200,7 +202,7 @@ function RegisterPage() {
           const userData = {
             email: response.authorization.id_token
               ? JSON.parse(atob(response.authorization.id_token.split(".")[1]))
-                  .email
+                .email
               : "user@icloud.com",
             username: response.user?.name?.firstName || "Apple User",
             platform: "ios",
@@ -236,7 +238,7 @@ function RegisterPage() {
                 </Link>
               </div>
 
-      
+
 
               <div className="auth-cards login">
                 <h3>Register Yourself!</h3>
