@@ -262,7 +262,7 @@ function RegisterPage() {
                         className="me-2"
                         alt="Apple"
                       />
-                      {state.loading ? "Signing in..." : "Continue with Apple"}
+                      {state.loading ? "Signing in..." : "Sign Up with Apple"}
                     </button>
 
                     <button
@@ -275,7 +275,7 @@ function RegisterPage() {
                         className="me-2"
                         alt="Google"
                       />
-                      {state.loading ? "Signing in..." : "Continue with Google"}
+                      {state.loading ? "Signing in..." : "Sign Up with Google"}
                     </button>
                   </div>
 
