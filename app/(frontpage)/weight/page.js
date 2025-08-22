@@ -16,33 +16,33 @@ function WeightPage() {
   const [weight, setWeight] = useState(state.weight || 150);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
-useEffect(() => {
-  if (state.isAuthChecked && state.isAuthenticated === false) {
-    router.push('/register');
-  } else if (!state.gender) {
-    router.push('/select-gender');
-  } else if (!state.dateOfBirth || state.age < 13) {
-    router.push('/borndate');
-  } else if (!state.trainingDays) {
-    router.push('/training-days');
-  }
-}, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, router]);
-
-
-useEffect(() => {
-  updateStep(6);
-
-  if (state.height > 0) {
-    if (isMetric) {
-      setHeightCm(Math.round(state.height));
-    } else {
-      const totalInches = state.height / 2.54;
-      setHeightFeet(Math.floor(totalInches / 12));
-      setHeightInches(Math.round(totalInches % 12));
+  useEffect(() => {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push('/register');
+    } else if (!state.gender) {
+      router.push('/select-gender');
+    } else if (!state.dateOfBirth || state.age < 13) {
+      router.push('/borndate');
+    } else if (!state.trainingDays) {
+      router.push('/training-days');
     }
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // empty deps = run only once
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, router]);
+
+
+  useEffect(() => {
+    updateStep(6);
+
+    if (state.height > 0) {
+      if (isMetric) {
+        setHeightCm(Math.round(state.height));
+      } else {
+        const totalInches = state.height / 2.54;
+        setHeightFeet(Math.floor(totalInches / 12));
+        setHeightInches(Math.round(totalInches % 12));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // empty deps = run only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -55,26 +55,26 @@ useEffect(() => {
   const handleUnitToggle = () => {
     const newIsMetric = !isMetric;
     setIsMetric(newIsMetric);
-    
+
     if (newIsMetric) {
       // Convert to metric
       const totalInches = (heightFeet * 12) + heightInches;
       const cm = totalInches * 2.54;
       setHeightCm(Math.round(cm));
-      
+
       const kg = weight * 0.453592;
       setWeight(Math.round(kg * 10) / 10);
-      
+
       updateField('weightUnit', 'kg');
     } else {
       // Convert to imperial
       const totalInches = heightCm / 2.54;
       setHeightFeet(Math.floor(totalInches / 12));
       setHeightInches(Math.round(totalInches % 12));
-      
+
       const lbs = weight / 0.453592;
       setWeight(Math.round(lbs * 10) / 10);
-      
+
       updateField('weightUnit', 'lbs');
     }
   };
@@ -100,7 +100,7 @@ useEffect(() => {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!weight || weight <= 0) {
       showAlert('warning', 'Please enter a valid weight.');
       return;
@@ -149,8 +149,8 @@ useEffect(() => {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -166,8 +166,8 @@ useEffect(() => {
                   <div className="weight-switch">
                     <span>Imperial</span>
                     <label className="switch">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="d-none"
                         checked={isMetric}
                         onChange={handleUnitToggle}
@@ -182,12 +182,16 @@ useEffect(() => {
                       {isMetric ? (
                         <div className="height-bx">
                           <div className="height-input border-0">
-                            <input 
-                              type="number" 
-                              min="100" 
+                            <input
+                              type="number"
+                              min="100"
                               max="250"
                               value={heightCm}
-                              onChange={(e) => setHeightCm(parseInt(e.target.value) || 0)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setHeightCm(val === "" ? "" : parseInt(val));
+                              }}
+                            // onChange={(e) => setHeightCm(parseInt(e.target.value) || 0)}
                             />
                             <span>cm</span>
                           </div>
@@ -195,22 +199,35 @@ useEffect(() => {
                       ) : (
                         <div className="height-bx">
                           <div className="height-input">
-                            <input 
-                              type="number" 
-                              min="3" 
+                            <input
+                              type="number"
+                              min="3"
                               max="8"
                               value={heightFeet}
-                              onChange={(e) => setHeightFeet(parseInt(e.target.value) || 0)}
+
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setHeightFeet(val === "" ? "" : parseInt(val));
+                              }}
+
+                              // onChange={(e) => setHeightFeet(parseInt(e.target.value) || 0)}
                             />
                             <span>ft</span>
                           </div>
                           <div className="height-input">
-                            <input 
-                              type="number" 
-                              min="0" 
+                            <input
+                              type="number"
+                              min="0"
                               max="11"
                               value={heightInches}
-                              onChange={(e) => setHeightInches(parseInt(e.target.value) || 0)}
+
+
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setHeightInches(val === "" ? "" : parseInt(val));
+                              }}
+
+                              // onChange={(e) => setHeightInches(parseInt(e.target.value) || 0)}
                             />
                             <span>in</span>
                           </div>
@@ -222,13 +239,20 @@ useEffect(() => {
                       <p className="text-center mb-2">Weight</p>
                       <div className="height-bx lbs-weight">
                         <div className="height-input border-0">
-                          <input 
-                            type="number" 
+                          <input
+                            type="number"
                             min={isMetric ? "30" : "60"}
                             max={isMetric ? "300" : "600"}
                             step={isMetric ? "0.1" : "0.1"}
                             value={weight}
-                            onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
+
+                               onChange={(e) => {
+                                const val = e.target.value;
+                                setWeight(val === "" ? "" : parseInt(val));
+                              }}
+
+
+                            // onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
                           />
                           <span>{isMetric ? 'kg' : 'lbs'}</span>
                         </div>
