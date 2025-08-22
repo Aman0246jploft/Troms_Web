@@ -100,98 +100,96 @@ function RegisterPage() {
     }
   };
 
-const handleGoogleLogin = () => {
-console.log("window.location.origin>>>>>>>HELLOW",)
+  const handleGoogleLogin = () => {
 
-console.log("window.location.origin>>>>>>>",window.location.origin)
 
-  if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return;
 
-console.log("window.location.origin>>>>>>>",window.location.origin)
 
-  if (window.google && window.google.accounts) {
-    const client = window.google.accounts.oauth2.initTokenClient({
-      client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
-      scope: 'email profile openid',
-      callback: (response) => {
-        if (response && response.access_token) {
-          // Get user info with access_token
-          fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-            headers: {
-              Authorization: `Bearer ${response.access_token}`,
-            },
-          })
-            .then(res => res.json())
-            .then(userInfo => {
-              const userData = {
-                email: userInfo.email,
-                username: userInfo.name || userInfo.email.split('@')[0],
-                platform: "android",
-                // userInfoId: userInfo.sub,
-              };
-              handleSocialLoginAPI(userData);
+
+    if (window.google && window.google.accounts) {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+        scope: 'email profile openid',
+        callback: (response) => {
+          if (response && response.access_token) {
+            // Get user info with access_token
+            fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: {
+                Authorization: `Bearer ${response.access_token}`,
+              },
             })
-            .catch(err => {
-              console.error("Google userinfo fetch error:", err);
-              showAlert('error', 'Google login failed. Please try again.');
-            });
-        } else {
-          showAlert('error', 'Google login failed. No token received.');
-        }
-      },
-    });
+              .then(res => res.json())
+              .then(userInfo => {
+                const userData = {
+                  email: userInfo.email,
+                  username: userInfo.name || userInfo.email.split('@')[0],
+                  platform: "android",
+                  // userInfoId: userInfo.sub,
+                };
+                handleSocialLoginAPI(userData);
+              })
+              .catch(err => {
+                console.error("Google userinfo fetch error:", err);
+                showAlert('error', 'Google login failed. Please try again.');
+              });
+          } else {
+            showAlert('error', 'Google login failed. No token received.');
+          }
+        },
+      });
 
-    // Open the popup
-    client.requestAccessToken();
-  } else {
-    // Mock fallback for dev
-    const mockGoogleUser = {
-      email: "user@gmail.com",
-      username: "testuser",
-      platform: "android",
-      userInfoId: "google_" + Date.now(),
-    };
-    handleSocialLoginAPI(mockGoogleUser);
-  }
-};
+      // Open the popup
+      client.requestAccessToken();
+    } else {
+      // Mock fallback for dev
+      const mockGoogleUser = {
+        email: "user@gmail.com",
+        username: "testuser",
+        platform: "android",
+        userInfoId: "google_" + Date.now(),
+      };
+      handleSocialLoginAPI(mockGoogleUser);
+    }
+  };
 
 
 
 
 
   useEffect(() => {
-  if (!window.google || !window.google.accounts) return;
+    if (!window.google || !window.google.accounts) return;
 
-  window.google.accounts.id.initialize({
-    client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
-    callback: handleGoogleCallback,
-    auto_select: false,
-    cancel_on_tap_outside: true,
-  });
+    window.google.accounts.id.initialize({
+      client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+      callback: handleGoogleCallback,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
 
-  // window.google.accounts.id.renderButton(
-  //   document.getElementById('google-signin-button'),
-  //   { theme: 'outline', size: 'large', width: '100%' }
-  // );
-}, [window.google]);
+    // window.google.accounts.id.renderButton(
+    //   document.getElementById('google-signin-button'),
+    //   { theme: 'outline', size: 'large', width: '100%' }
+    // );
+  }, [window.google]);
 
 
-const handleGoogleCallback = (response) => {
-  try {
-    const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
-    const userData = {
-      email: userInfo.email,
-      username: userInfo.name || userInfo.email.split('@')[0],
-      platform: "android",
-       userInfoId: userInfo.sub
-      // userInfoId: userInfo.sub
-    };
-    handleSocialLoginAPI(userData);
-  } catch (error) {
-    console.error('Error processing Google callback:', error);
-    showAlert('error', 'Failed to process Google login. Please try again.');
-  }
-};
+  const handleGoogleCallback = (response) => {
+    try {
+      const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+      const userData = {
+        email: userInfo.email,
+        username: userInfo.name || userInfo.email.split('@')[0],
+        platform: "android",
+        userInfoId: userInfo.sub
+        // userInfoId: userInfo.sub
+      };
+      handleSocialLoginAPI(userData);
+    } catch (error) {
+      console.error('Error processing Google callback:', error);
+      showAlert('error', 'Failed to process Google login. Please try again.');
+    }
+  };
 
 
   const handleAppleLogin = () => {
@@ -250,30 +248,33 @@ const handleGoogleCallback = (response) => {
                   insights with AI.
                 </p>
                 <div className="login-innr">
+
+
+
+
+
+
+
                   <div className="login-btn">
                     <button
                       onClick={handleAppleLogin}
                       disabled={state.loading}
-                      className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border-0 rounded"
-                      style={{ backgroundColor: '#000', color: '#fff' }}
+                      className="btn w-100 mb-3 d-flex align-items-center justify-content-center border rounded-pill bg-white text-dark"
                     >
                       <img src="/images/apple-logo.svg" className="me-2" alt="Apple" />
-                      {state.loading ? 'Signing up...' : 'Sign Up with Apple'}
+                      {state.loading ? "Signing in..." : "Continue with Apple"}
                     </button>
+
                     <button
                       onClick={handleGoogleLogin}
                       disabled={state.loading}
-                      className="d-flex bg-red-500 align-items-center justify-content-center w-100 mb-3 p-3 border rounded"
-                      style={{ backgroundColor: '#fff', color: '#000' }}
+                      className="btn w-100 d-flex align-items-center justify-content-center border rounded-pill bg-white text-dark"
                     >
                       <img src="/images/google-logo.svg" className="me-2" alt="Google" />
-                      {state.loading ? 'Signing up...' : 'Sign Up with Google'}
+                      {state.loading ? "Signing in..." : "Continue with Google"}
                     </button>
-
-                    {/* Hidden div for Google OAuth button fallback */}
-                    {/* <div id="google-signin-button"></div> */}
-
                   </div>
+
                   <p className="or-line">
                     <span>or</span>
                   </p>
