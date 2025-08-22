@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect , Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
@@ -121,6 +121,7 @@ function EquipmentPage() {
 
   return (
     <>
+     <Suspense fallback={<div></div>}>  
       <section className="auth-section">
         <div className="container">
           <div className="row justify-content-center">
@@ -261,6 +262,7 @@ function EquipmentPage() {
           </p>
         </div>
       </section>
+       </Suspense>
     </>
   );
 }

@@ -14,45 +14,44 @@ function ApproachPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  useEffect(() => {
-    // Redirect if not authenticated
-    if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
-      return;
-    }
-    
-    // Check if all required fields are filled
-    const requiredFields = [
-      'gender', 'dateOfBirth', 'age', 'trainingDays', 'weight', 'weightGoal',
-      'desiredWeight', 'workoutLocation', 'selectedEquipments', 'reachingGoals',
-       'accomplish', 'dietType', 'cheatMealFoodItems',
-      'cookingLevel', 'allergicFoodItems', 'dislikedFoodItems', 'injuries'
-    ];
-    // 'realisticTarget'
+useEffect(() => {
+  // Redirect if not authenticated
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+    return;
+  }
 
-    const missingFields = requiredFields.filter(field => {
-      const value = state[field];
-      if (Array.isArray(value)) {
-        return value.length === 0;
-      }
-      return !value || value === '';
-    });
+  // Check if all required fields are filled
+  const requiredFields = [
+    'gender', 'dateOfBirth', 'age', 'trainingDays', 'weight', 'weightGoal',
+    'desiredWeight', 'workoutLocation', 'selectedEquipments', 'reachingGoals',
+    'accomplish', 'dietType', 'cheatMealFoodItems',
+    'cookingLevel', 'allergicFoodItems', 'dislikedFoodItems', 'injuries'
+  ];
 
-    if (missingFields.length > 0) {
-      console.log('Missing fields:', missingFields);
-      showAlert('warning', 'Please complete all previous steps before proceeding.');
-      // Redirect to first missing step (you could make this more sophisticated)
-      return;
-    }
-    
-    // Update step
+  const missingFields = requiredFields.filter(field => {
+    const value = state[field];
+    if (Array.isArray(value)) return value.length === 0;
+    return !value || value === '';
+  });
+
+  if (missingFields.length > 0) {
+    console.log('Missing fields:', missingFields);
+    showAlert('warning', 'Please complete all previous steps before proceeding.');
+    return;
+  }
+
+  // ✅ Only update step if not already set
+  if (state.currentStep !== 23) {
     updateStep(23);
-    
-    // Auto-submit if not already completed
-    if (!isCompleted && !isSubmitting) {
-      handleSubmitUserInfo();
-    }
-  }, [state, router, updateStep, isCompleted, isSubmitting]);
+  }
+}, [state.isAuthChecked, state.isAuthenticated, state.currentStep]);
+
+useEffect(() => {
+  if (state.currentStep === 23 && !isCompleted && !isSubmitting) {
+    handleSubmitUserInfo();
+  }
+}, [state.currentStep, isCompleted, isSubmitting]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -124,7 +123,7 @@ function ApproachPage() {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Approach</p>
+                
                 <div className="text-center mt-3 mb-3">
                   {isCompleted ? (
                     <img src="/images/check-mark.svg" alt="Success" />
