@@ -14,7 +14,7 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Results Troms</p>
+
                 <h3 className="mb-4">
                   Double Your Weight Loss <br /> Results with Troms
                 </h3>

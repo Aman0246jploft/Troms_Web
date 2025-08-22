@@ -214,7 +214,7 @@ const [desiredWeight, setDesiredWeight] = useState(() => {
               />
 
               <div className="auth-cards weight">
-                <p className="text-uppercase mb-5">Desired Weight</p>
+        
                 <h3 className="mb-2">What is your desired weight?</h3>
                 <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
                 

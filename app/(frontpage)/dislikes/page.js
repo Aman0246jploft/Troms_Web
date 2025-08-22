@@ -155,7 +155,7 @@ function DislikesPage() {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Dislikes</p>
+    
                 <h3 className="mb-4">
                   Are there any ingredients <br /> you'd prefer to avoid?
                 </h3>

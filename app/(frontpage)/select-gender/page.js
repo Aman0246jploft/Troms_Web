@@ -78,7 +78,7 @@ useEffect(() => {
               />
 
               <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Your Gender</p>
+          
                 <h3 className="mb-2">Share a bit about who you are</h3>
                 <p>To enhance your experience, please share your gender.</p>
                 <form onSubmit={handleContinue}>

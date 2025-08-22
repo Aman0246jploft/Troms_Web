@@ -75,7 +75,7 @@ function TrainingDaysPage() {
               />
 
               <div className="auth-cards training">
-                <p className="text-uppercase mb-5">Work Out</p>
+ 
                 <h3 className="mb-2">
                   How often do you work <br /> out each week?
                 </h3>

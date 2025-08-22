@@ -24,7 +24,7 @@ function page() {
               </Link>
             </div>
             <div className="auth-cards gender">
-              <p className="text-uppercase mb-5">Realistic target</p>
+     
               <h3 className="mb-3">
                 Loosing <span>{targetWeightLoss}lbs</span> Is Achievable - <br /> And Easier
                 Than You Think!

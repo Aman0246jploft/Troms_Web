@@ -156,7 +156,7 @@ function InjuriesPage() {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Injuries</p>
+ 
                 <h3 className="mb-4">
                   Do you have any injuries <br /> we should be aware of?
                 </h3>

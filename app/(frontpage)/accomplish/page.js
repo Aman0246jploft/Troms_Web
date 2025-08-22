@@ -88,7 +88,7 @@ function AccomplishPage() {
               />
 
               <div className="auth-cards weight-goal">
-                <p className="text-uppercase mb-3">Accomplish</p>
+               
                 <h3 className="mb-3">
                   What would you like <br /> to accomplish?
                 </h3>

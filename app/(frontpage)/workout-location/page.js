@@ -76,7 +76,7 @@ function WorkoutLocationPage() {
               />
 
               <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Workout Location</p>
+   
                 <h3 className="mb-5">Choose your workout location</h3>
                 <form onSubmit={handleContinue}>
                   <div className="gender-cards">

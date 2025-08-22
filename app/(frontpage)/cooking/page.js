@@ -91,7 +91,7 @@ function CookingPage() {
               />
 
               <div className="auth-cards weight-goal">
-                <p className="text-uppercase mb-5">Cooking</p>
+           
                 <h3 className="mb-5">How good are you at cooking?</h3>
                 <div className="px-135">
                   <form onSubmit={handleContinue}>

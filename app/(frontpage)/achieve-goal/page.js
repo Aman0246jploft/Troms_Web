@@ -80,7 +80,7 @@ function ReachingGoalsPage() {
             />
 
             <div className="auth-cards weight-goal">
-              <p className="text-uppercase mb-5">Reaching your Goals</p>
+       
               <h3 className="mb-4">
                 What's preventing you from <br /> achieving your goals?
               </h3>
