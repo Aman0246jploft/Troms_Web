@@ -127,7 +127,11 @@ function DislikesPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+     if (selectedDislikes.length === 0) {
+    // showAlert('warning', 'Please select at least one dislike before continuing.');
+    return;
+  }
+
     // Dislikes are optional, so we can continue even with no selections
     if (isStepValid(20)) {
       updateStep(21);
@@ -223,7 +227,7 @@ function DislikesPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading}
+                     disabled={loading || selectedDislikes.length === 0}
                   >
                     Continue
                   </button>

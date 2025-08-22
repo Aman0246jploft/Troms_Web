@@ -117,15 +117,19 @@ function AllergiesPage() {
     updateField('allergicFoodItems', newSelection);
   };
 
-  const handleContinue = (e) => {
-    e.preventDefault();
-    
-    // Allergies are optional, so we can continue even with no selections
-    if (isStepValid(19)) {
-      updateStep(20);
-      router.push('/dislikes');
-    }
-  };
+const handleContinue = (e) => {
+  e.preventDefault();
+
+  if (selectedAllergies.length === 0) {
+    // showAlert('warning', 'Please select at least one allergy before continuing.');
+    return;
+  }
+
+  if (isStepValid(19)) {
+    updateStep(20);
+    router.push('/dislikes');
+  }
+};
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -224,7 +228,7 @@ function AllergiesPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading}
+                    disabled={loading || selectedAllergies.length === 0}
                   >
                     Continue
                   </button>

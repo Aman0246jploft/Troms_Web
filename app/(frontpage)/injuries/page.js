@@ -121,7 +121,10 @@ function InjuriesPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+     if (selectedInjuries.length === 0) {
+
+    return;
+  }
     // Injuries are optional, so we can continue even with no selections
     if (isStepValid(21)) {
       updateStep(22);
@@ -224,7 +227,7 @@ function InjuriesPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading}
+                   disabled={loading || selectedInjuries.length === 0}
                   >
                     Continue
                   </button>
