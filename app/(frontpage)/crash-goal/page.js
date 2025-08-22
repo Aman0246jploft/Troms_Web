@@ -14,7 +14,7 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards food">
-
+                <p className="text-uppercase mb-5">Injuries</p>
                 <h3 className="mb-4">
                   Do you have any past injuries <br /> or movement limitations?
                 </h3>

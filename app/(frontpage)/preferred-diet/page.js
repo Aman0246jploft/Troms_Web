@@ -82,7 +82,7 @@ function PreferredDietPage() {
             />
 
             <div className="auth-cards weight-goal">
-             
+              <p className="text-uppercase mb-5">Preferred Diet</p>
               <h3 className="mb-4">Do you have a preferred diet?</h3>
               <div className="px-135">
                 <form onSubmit={handleContinue}>

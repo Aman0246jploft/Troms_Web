@@ -172,6 +172,7 @@ useEffect(() => {
               />
 
               <div className="auth-cards food">
+                <p className="text-uppercase mb-5">Favourite Food</p>
                 <h3 className="mb-4">
                   What's your favourite treat? <br /> We'll find a smart way to
                   fit it in

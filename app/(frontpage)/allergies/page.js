@@ -154,7 +154,7 @@ function AllergiesPage() {
               />
 
               <div className="auth-cards food">
-    
+                <p className="text-uppercase mb-5">Allergies</p>
                 <h3 className="mb-4">
                   Do you have any food allergies <br /> we should be aware of?
                 </h3>

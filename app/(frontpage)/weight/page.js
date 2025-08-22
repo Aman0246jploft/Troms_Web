@@ -158,7 +158,7 @@ useEffect(() => {
               />
 
               <div className="auth-cards weight">
-      
+                <p className="text-uppercase mb-5">Your Weight</p>
                 <h3 className="mb-2">What is your current weight?</h3>
                 <p>You can update it later if needed</p>
 

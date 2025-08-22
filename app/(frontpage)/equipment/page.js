@@ -139,7 +139,7 @@ function EquipmentContent() {
               />
 
               <div className="auth-cards equipment ">
-
+                <p className="text-uppercase mb-2">Equipments</p>
                 <h3 className="mb-2">
                   What equipment do you <br /> have access to?
                 </h3>

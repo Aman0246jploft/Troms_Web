@@ -78,7 +78,7 @@ function FeedbackPage() {
             />
 
             <div className="auth-cards feedback">
-   
+              <p className="text-uppercase mb-5">Feedback</p>
               <h3 className="mb-2">
                 Have you tracked your calories <br /> with other apps?
               </h3>
