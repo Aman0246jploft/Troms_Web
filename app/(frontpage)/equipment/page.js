@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
 import Alert from "../../../Components/Alert";
 
 function EquipmentPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [workoutLocation, setWorkoutLocation] = useState(state.workoutLocation || '');
   const [equipments, setEquipments] = useState([]);
@@ -25,6 +26,21 @@ function EquipmentPage() {
   useEffect(() => {
     updateStep(10);
 
+    // Check for location parameter in URL
+    const locationParam = searchParams.get('location');
+    if (locationParam) {
+      const validLocations = ['home', 'gym', 'outdoors'];
+      const normalizedLocation = locationParam.toLowerCase();
+      
+      if (validLocations.includes(normalizedLocation)) {
+        setWorkoutLocation(normalizedLocation);
+        updateField('workoutLocation', normalizedLocation);
+        fetchEquipments(normalizedLocation);
+        return;
+      }
+    }
+
+    // If no valid URL parameter, use existing location from state
     if (workoutLocation) {
       fetchEquipments(workoutLocation);
     }

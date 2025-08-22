@@ -77,7 +77,7 @@ function ApproachPage() {
         setIsCompleted(true);
         // Mark onboarding as complete
         updateField('needsOnboarding', false);
-        showAlert('success', 'Your profile has been created successfully!');
+        // showAlert('success', 'Your profile has been created successfully!');
         
         // Auto-redirect after success
         setTimeout(() => {

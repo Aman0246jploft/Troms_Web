@@ -11,18 +11,55 @@ function DesiredWeightPage() {
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [isMetric, setIsMetric] = useState(state.weightUnit === 'kg');
 const [desiredWeight, setDesiredWeight] = useState(() => {
-  if (!state.desiredWeight || state.desiredWeight <= 0) {
-    if (state.weightGoal === 'MAINTAIN') return state.weight;
-    if (state.weightGoal === 'LOSE_WEIGHT') return Math.round(state.weight * 0.95 * 10) / 10;
-    if (state.weightGoal === 'GAIN_WEIGHT') return Math.round(state.weight * 1.05 * 10) / 10;
-    return 0;
+  // If we have a saved desiredWeight in context, use it (with unit conversion if needed)
+  if (state.desiredWeight && state.desiredWeight > 0) {
+    // Check if we need unit conversion
+    const currentUnitIsMetric = state.weightUnit === 'kg';
+    const displayUnitIsMetric = state.weightUnit === 'kg';
+    
+    if (currentUnitIsMetric === displayUnitIsMetric) {
+      return state.desiredWeight;
+    } else if (displayUnitIsMetric && !currentUnitIsMetric) {
+      // Convert from lbs to kg
+      return Math.round(state.desiredWeight * 0.453592 * 10) / 10;
+    } else if (!displayUnitIsMetric && currentUnitIsMetric) {
+      // Convert from kg to lbs
+      return Math.round(state.desiredWeight / 0.453592 * 10) / 10;
+    }
+    return state.desiredWeight;
   }
-  return state.desiredWeight;
+  
+  // If no saved value, calculate default based on weight goal
+  if (state.weightGoal === 'MAINTAIN') return state.weight;
+  if (state.weightGoal === 'LOSE_WEIGHT') return Math.round(state.weight * 0.95 * 10) / 10;
+  if (state.weightGoal === 'GAIN_WEIGHT') return Math.round(state.weight * 1.05 * 10) / 10;
+  return 0;
 });
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
+  // Sync local state with context state when context updates
+  useEffect(() => {
+    if (state.desiredWeight && state.desiredWeight > 0 && desiredWeight !== state.desiredWeight) {
+      // Apply unit conversion if needed when syncing from context
+      const currentUnitIsMetric = state.weightUnit === 'kg';
+      const displayUnitIsMetric = isMetric;
+      
+      let convertedWeight = state.desiredWeight;
+      if (currentUnitIsMetric !== displayUnitIsMetric) {
+        if (displayUnitIsMetric && !currentUnitIsMetric) {
+          // Convert from lbs to kg
+          convertedWeight = Math.round(state.desiredWeight * 0.453592 * 10) / 10;
+        } else if (!displayUnitIsMetric && currentUnitIsMetric) {
+          // Convert from kg to lbs
+          convertedWeight = Math.round(state.desiredWeight / 0.453592 * 10) / 10;
+        }
+      }
+      
+      setDesiredWeight(convertedWeight);
+    }
+  }, [state.desiredWeight, state.weightUnit, isMetric]);
 
-useEffect(() => {
+  useEffect(() => {
   if (state.isAuthChecked && state.isAuthenticated === false) {
     router.push('/register');
     return;
@@ -37,6 +74,12 @@ useEffect(() => {
   }
 }, []);
 
+  // Save the calculated default desiredWeight to context when component loads
+  useEffect(() => {
+    if (desiredWeight > 0 && (!state.desiredWeight || state.desiredWeight === 0)) {
+      updateField('desiredWeight', desiredWeight);
+    }
+  }, [desiredWeight, state.desiredWeight, updateField]);
 
 
   const showAlert = (type, message) => {
@@ -107,17 +150,17 @@ useEffect(() => {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    console.log("KKKKKKKKKK")
     
     if (!desiredWeight || desiredWeight <= 0) {
       showAlert('warning', 'Please enter your desired weight to continue.');
       return;
     }
-
+    
     const validationError = validateWeight();
     if (validationError) {
       showAlert('warning', validationError);
       return;
+
     }
 
     if (isStepValid(8)) {
