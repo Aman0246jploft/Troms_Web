@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,13 +9,13 @@ import Alert from "../../../Components/Alert";
 function PreferredDietPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedDiet, setSelectedDiet] = useState(state.dietType || '');
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [selectedDiet, setSelectedDiet] = useState(state.dietType || "");
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Redirect if not authenticated
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     }
   }, [state.isAuthenticated, state.isAuthChecked, router]);
 
@@ -30,12 +30,12 @@ function PreferredDietPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleDietChange = (diet) => {
     setSelectedDiet(diet);
-    updateField('dietType', diet); // update context immediately
+    updateField("dietType", diet); // update context immediately
     hideAlert();
   };
 
@@ -43,25 +43,24 @@ function PreferredDietPage() {
     e.preventDefault();
 
     if (!selectedDiet) {
-      showAlert('warning', 'Please select a diet type to continue.');
+      showAlert("warning", "Please select a diet type to continue.");
       return;
     }
 
     if (isStepValid(15)) {
       updateStep(16);
-      router.push('/favorite-food');
+      router.push("/favorite-food");
     }
   };
 
   const options = [
-  { id: 'ANYTHING', label: 'Anything' },
-  { id: 'KETO', label: 'Keto' },
-  { id: 'MEDITERRANEAN', label: 'Mediterranean' },
-  { id: 'PALEO', label: 'Paleo' },
-  { id: 'VEGAN', label: 'Vegan' },
-  { id: 'VEGETARIAN', label: 'Vegetarian' },
-];
-
+    { id: "ANYTHING", label: "Anything" },
+    { id: "KETO", label: "Keto" },
+    { id: "MEDITERRANEAN", label: "Mediterranean" },
+    { id: "PALEO", label: "Paleo" },
+    { id: "VEGAN", label: "Vegan" },
+    { id: "VEGETARIAN", label: "Vegetarian" },
+  ];
 
   return (
     <section className="auth-section">
@@ -82,11 +81,11 @@ function PreferredDietPage() {
             />
 
             <div className="auth-cards weight-goal">
-              <p className="text-uppercase mb-5">Preferred Diet</p>
+              <p className="text-uppercase mb-2">Preferred Diet</p>
               <h3 className="mb-4">Do you have a preferred diet?</h3>
               <div className="px-135">
                 <form onSubmit={handleContinue}>
-                  {options.map(option => (
+                  {options.map((option) => (
                     <div className="custom-check" key={option.id}>
                       <input
                         type="radio"
@@ -99,7 +98,7 @@ function PreferredDietPage() {
                       />
                       <label
                         htmlFor={option.id}
-                        className={selectedDiet === option.id ? 'selected' : ''}
+                        className={selectedDiet === option.id ? "selected" : ""}
                       >
                         {option.label}
                       </label>

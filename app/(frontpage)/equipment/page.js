@@ -223,7 +223,7 @@ function EquipmentPage() {
                                 htmlFor={`equipment-${equipment.id}`}
                                 className={selectedEquipments.includes(equipment.id) ? 'selected' : ''}
                               >
-                                <span style={{ fontSize: '2rem', marginBottom: '0.5rem', display: 'block' }}>
+                                <span>
                                   {equipment.icon}
                                 </span>
                                 {equipment.name}

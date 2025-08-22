@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -10,19 +10,19 @@ import Alert from "../../../Components/Alert";
 function RegisterPage() {
   const router = useRouter();
   const { state, setUser, setLoading, setError, updateStep } = useOnboarding();
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (state.isAuthenticated) {
-      router.push('/select-gender');
+      router.push("/select-gender");
     }
   }, [state.isAuthenticated, router]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
 
@@ -33,13 +33,12 @@ function RegisterPage() {
     document.head.appendChild(script);
   }, []);
 
-
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleSocialLoginAPI = async (userData) => {
@@ -49,68 +48,72 @@ function RegisterPage() {
     try {
       const payload = {
         email: userData.email,
-        username: userData.username || userData.email.split('@')[0],
+        username: userData.username || userData.email.split("@")[0],
         platform: userData.platform,
-        userInfoId: userData.userInfoId || ''
+        userInfoId: userData.userInfoId || "",
       };
 
-      console.log('Calling social login API with:', payload);
+      console.log("Calling social login API with:", payload);
       const response = await apiService.socialLogin(payload);
 
       if (response.success) {
         // Check if user information is required (new user) or user is already registered
-        const needsOnboarding = response.message === "User information is required";
+        const needsOnboarding =
+          response.message === "User information is required";
 
         // Update user state with userInfoId from response if available
         const finalUserData = {
           ...payload,
-          userInfoId: response.result?.userInfoId || payload.userInfoId
+          userInfoId: response.result?.userInfoId || payload.userInfoId,
         };
 
         setUser({
           userData: finalUserData,
-          needsOnboarding: needsOnboarding
+          needsOnboarding: needsOnboarding,
         });
         updateStep(2);
 
         if (needsOnboarding) {
           // New user - proceed to onboarding
-          showAlert('success', 'Registration successful! Let\'s set up your profile.');
+          showAlert(
+            "success",
+            "Registration successful! Let's set up your profile."
+          );
 
           setTimeout(() => {
-            router.push('/select-gender');
+            router.push("/select-gender");
           }, 1500);
         } else {
           // Existing user - has completed onboarding, redirect to dashboard/home
-          showAlert('success', 'Welcome back! You\'ve already completed setup.');
+          showAlert("success", "Welcome back! You've already completed setup.");
 
           setTimeout(() => {
             // Redirect to BMR page or dashboard since onboarding is complete
-            router.push('/bmr');
+            router.push("/bmr");
           }, 1500);
         }
       } else {
-        showAlert('error', response.message || 'Registration failed');
+        showAlert("error", response.message || "Registration failed");
       }
     } catch (error) {
-      console.error('Social login error:', error);
-      showAlert('error', error.message || 'Registration failed. Please try again.');
+      console.error("Social login error:", error);
+      showAlert(
+        "error",
+        error.message || "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-
-
-    if (typeof window === 'undefined') return;
-
-
+    if (typeof window === "undefined") return;
 
     if (window.google && window.google.accounts) {
       const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
-        scope: 'email profile openid',
+        client_id:
+          "266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com",
+        scope: "email profile openid",
         callback: (response) => {
           if (response && response.access_token) {
             // Get user info with access_token
@@ -119,22 +122,22 @@ function RegisterPage() {
                 Authorization: `Bearer ${response.access_token}`,
               },
             })
-              .then(res => res.json())
-              .then(userInfo => {
+              .then((res) => res.json())
+              .then((userInfo) => {
                 const userData = {
                   email: userInfo.email,
-                  username: userInfo.name || userInfo.email.split('@')[0],
+                  username: userInfo.name || userInfo.email.split("@")[0],
                   platform: "android",
                   // userInfoId: userInfo.sub,
                 };
                 handleSocialLoginAPI(userData);
               })
-              .catch(err => {
+              .catch((err) => {
                 console.error("Google userinfo fetch error:", err);
-                showAlert('error', 'Google login failed. Please try again.');
+                showAlert("error", "Google login failed. Please try again.");
               });
           } else {
-            showAlert('error', 'Google login failed. No token received.');
+            showAlert("error", "Google login failed. No token received.");
           }
         },
       });
@@ -153,15 +156,12 @@ function RegisterPage() {
     }
   };
 
-
-
-
-
   useEffect(() => {
     if (!window.google || !window.google.accounts) return;
 
     window.google.accounts.id.initialize({
-      client_id: '266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com',
+      client_id:
+        "266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com",
       callback: handleGoogleCallback,
       auto_select: false,
       cancel_on_tap_outside: true,
@@ -173,50 +173,52 @@ function RegisterPage() {
     // );
   }, [window.google]);
 
-
   const handleGoogleCallback = (response) => {
     try {
-      const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+      const userInfo = JSON.parse(atob(response.credential.split(".")[1]));
       const userData = {
         email: userInfo.email,
-        username: userInfo.name || userInfo.email.split('@')[0],
+        username: userInfo.name || userInfo.email.split("@")[0],
         platform: "android",
-        userInfoId: userInfo.sub
+        userInfoId: userInfo.sub,
         // userInfoId: userInfo.sub
       };
       handleSocialLoginAPI(userData);
     } catch (error) {
-      console.error('Error processing Google callback:', error);
-      showAlert('error', 'Failed to process Google login. Please try again.');
+      console.error("Error processing Google callback:", error);
+      showAlert("error", "Failed to process Google login. Please try again.");
     }
   };
-
 
   const handleAppleLogin = () => {
     // For Apple Sign-In, you would typically use Apple's JavaScript SDK
     // For now, using a mock implementation
-    if (typeof window !== 'undefined' && window.AppleID) {
-      window.AppleID.auth.signIn().then((response) => {
-        const userData = {
-          email: response.authorization.id_token ?
-            JSON.parse(atob(response.authorization.id_token.split('.')[1])).email :
-            'user@icloud.com',
-          username: response.user?.name?.firstName || 'Apple User',
-          platform: "ios",
-          userInfoId: response.user?.sub || 'apple_' + Date.now()
-        };
-        handleSocialLoginAPI(userData);
-      }).catch((error) => {
-        console.error('Apple Sign-In error:', error);
-        showAlert('error', 'Apple Sign-In failed. Please try again.');
-      });
+    if (typeof window !== "undefined" && window.AppleID) {
+      window.AppleID.auth
+        .signIn()
+        .then((response) => {
+          const userData = {
+            email: response.authorization.id_token
+              ? JSON.parse(atob(response.authorization.id_token.split(".")[1]))
+                  .email
+              : "user@icloud.com",
+            username: response.user?.name?.firstName || "Apple User",
+            platform: "ios",
+            userInfoId: response.user?.sub || "apple_" + Date.now(),
+          };
+          handleSocialLoginAPI(userData);
+        })
+        .catch((error) => {
+          console.error("Apple Sign-In error:", error);
+          showAlert("error", "Apple Sign-In failed. Please try again.");
+        });
     } else {
       // Fallback: simulate Apple login for development
       const mockAppleUser = {
         email: "user@icloud.com",
         username: "appleuser",
         platform: "ios",
-        userInfoId: "apple_" + Date.now()
+        userInfoId: "apple_" + Date.now(),
       };
       handleSocialLoginAPI(mockAppleUser);
     }
@@ -248,29 +250,30 @@ function RegisterPage() {
                   insights with AI.
                 </p>
                 <div className="login-innr">
-
-
-
-
-
-
-
                   <div className="login-btn">
                     <button
                       onClick={handleAppleLogin}
                       disabled={state.loading}
-                      className="btn w-100 mb-3 d-flex align-items-center justify-content-center border rounded-pill bg-white text-dark"
+                      className=""
                     >
-                      <img src="/images/apple-logo.svg" className="me-2" alt="Apple" />
+                      <img
+                        src="/images/apple-logo.svg"
+                        className="me-2"
+                        alt="Apple"
+                      />
                       {state.loading ? "Signing in..." : "Continue with Apple"}
                     </button>
 
                     <button
                       onClick={handleGoogleLogin}
                       disabled={state.loading}
-                      className="btn w-100 d-flex align-items-center justify-content-center border rounded-pill bg-white text-dark"
+                      className=""
                     >
-                      <img src="/images/google-logo.svg" className="me-2" alt="Google" />
+                      <img
+                        src="/images/google-logo.svg"
+                        className="me-2"
+                        alt="Google"
+                      />
                       {state.loading ? "Signing in..." : "Continue with Google"}
                     </button>
                   </div>

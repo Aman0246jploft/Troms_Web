@@ -745,6 +745,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 32px 64px -12px rgba(45, 54, 67, 0.2);
+  margin-bottom: 25px;
 }
 .auth-logo {
   margin-bottom: 30px;
@@ -808,13 +809,14 @@ input[type="number"]::-webkit-outer-spin-button {
   gap: 20px;
   align-items: center;
 }
-.login-btn a {
+.login-btn a,
+.login-btn button {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 77px;
   font-size: 16px;
-  font-weight: #2b3241;
+  color: #2b3241;
   font-weight: 400;
   border: 1px solid #d9d9d9;
   border-radius: 25px;
@@ -1082,14 +1084,14 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 54px;
 }
 .custom-check label {
-  padding: 16px 15px;
+  padding: 12px 15px;
   background-color: #f1f1f1;
   border-radius: 50px;
   width: 100%;
   border: 2px solid transparent;
   margin-bottom: 15px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: #000;
   position: relative;
@@ -1116,7 +1118,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .equipment-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
   justify-content: center;
 }
 .equipment-bx label {
@@ -1143,8 +1145,8 @@ input[type="number"]::-webkit-outer-spin-button {
   filter: brightness(0) invert(1);
 }
 .equipment .gender-cards .gender-img {
-  height: 120px;
-  width: 120px;
+  height: 100px;
+  width: 100px;
 }
 .goal-range {
   width: 100%;
@@ -1233,7 +1235,105 @@ input[type="number"]::-webkit-outer-spin-button {
 .food-card input[type="checkbox"]:checked + label button {
   opacity: 1;
 }
+
 /* responsive-css-start */
+@media (max-width: 1399px) {
+  .login-btn a,
+  .login-btn button {
+    padding: 12px 50px;
+  }
+  .auth-cards p.mb-5 {
+    margin-bottom: 1rem !important;
+  }
+  .auth-bttm p span {
+    font-size: 25px;
+  }
+  .text-center.mt-5 {
+    margin-top: 1.5rem !important;
+  }
+  .px-135 {
+    padding-left: 85px;
+    padding-right: 85px;
+  }
+  .auth-logo img {
+    width: 100px;
+  }
+  .auth-logo {
+    margin-bottom: 15px;
+  }
+  .equipment-bx label {
+    gap: 2px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .food-card {
+    gap: 5px;
+  }
+  .food-card label {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 1199px) {
+  .login-innr {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+  .auth-cards h3 {
+    font-size: 22px;
+  }
+  .or-line {
+    margin-top: 20px;
+    margin-bottom: 20px !important;
+  }
+  .training-day-list label {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    line-height: 40px;
+  }
+  .feedback-bx label {
+    gap: 10px;
+    width: 120px;
+    height: 100px;
+  }
+  .feedback-list {
+    gap: 10px;
+    margin: 15px 0;
+  }
+  .custom-check label {
+    margin-bottom: 10px;
+    padding: 10px 10px;
+    font-size: 15px;
+  }
+  .custom-check label:after {
+    top: 10px;
+    right: 10px;
+  }
+
+  .px-135 {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+
+  .gender-cards .gender-img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 8px;
+  }
+
+  .gender-cards label {
+    font-size: 14px;
+  }
+  .gender-cards {
+    gap: 15px;
+    margin-bottom: 35px;
+  }
+  .goal-range h5 {
+    margin-bottom: 15px;
+    font-size: 20px;
+  }
+}
 
 @media (max-width: 991px) {
   .pb-80 {
@@ -1569,6 +1669,46 @@ input[type="number"]::-webkit-outer-spin-button {
   .theme-footer {
     margin-bottom: 10px;
   }
+
+  .gender-cards {
+    gap: 15px;
+    margin-bottom: 40px;
+  }
+
+  .auth-cards p {
+    margin-bottom: 15px;
+  }
+  .height-input input {
+    font-size: 20px;
+  }
+  .height-bx {
+    height: 45px;
+    padding: 0 10px;
+  }
+  .feedback-bx label span {
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  .auth-cards h3.mb-5 {
+    margin-bottom: 1.5rem !important;
+  }
+  .equipment .gender-cards .gender-img {
+    width: 70px;
+    height: 70px;
+  }
+  .gender-cards .gender-img:before {
+    width: 20px;
+    height: 22px;
+    background-size: contain;
+  }
+  .food-card label {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .food-card label button {
+    height: 10px;
+    width: 10px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1640,6 +1780,30 @@ input[type="number"]::-webkit-outer-spin-button {
   }
   .ftr-touch .custom-btn {
     width: 100%;
+  }
+  .login-innr {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .auth-cards .continue-btn,
+  .auth-cards.weight-goal .continue-btn {
+    width: 100%;
+  }
+
+  .gender-cards {
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  .height-input input {
+    font-size: 16px;
+  }
+  .px-135 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .gender-cards .gender-img {
+    width: 80px;
+    height: 80px;
   }
 }
 
@@ -1725,5 +1889,37 @@ input[type="number"]::-webkit-outer-spin-button {
 
   .faq-cards .accordion .accordion-item button {
     font-size: 14px;
+  }
+  .login-btn a,
+  .login-btn button {
+    padding: 12px 25px;
+    width: 100%;
+    justify-content: center;
+    gap: 5px;
+  }
+  .auth-cards {
+    padding: 10px;
+  }
+  .auth-cards h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .or-line {
+    margin-top: 5px;
+    margin-bottom: 5px !important;
+  }
+  .training-day-list {
+    gap: 5px;
+  }
+  .training-day-list label {
+    width: 35px;
+    height: 35px;
+    font-size: 15px;
+    line-height: 35px;
+  }
+  .equipment-bx label {
+    gap: 2px;
+    padding: 5px 10px;
+    font-size: 12px;
   }
 }
