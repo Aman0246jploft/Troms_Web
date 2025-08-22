@@ -101,7 +101,13 @@ function RegisterPage() {
   };
 
 const handleGoogleLogin = () => {
+console.log("window.location.origin>>>>>>>HELLOW",)
+
+console.log("window.location.origin>>>>>>>",window.location.origin)
+
   if (typeof window === 'undefined') return;
+
+console.log("window.location.origin>>>>>>>",window.location.origin)
 
   if (window.google && window.google.accounts) {
     const client = window.google.accounts.oauth2.initTokenClient({
@@ -257,7 +263,7 @@ const handleGoogleCallback = (response) => {
                     <button
                       onClick={handleGoogleLogin}
                       disabled={state.loading}
-                      className="d-flex align-items-center justify-content-center w-100 mb-3 p-3 border rounded"
+                      className="d-flex bg-red-500 align-items-center justify-content-center w-100 mb-3 p-3 border rounded"
                       style={{ backgroundColor: '#fff', color: '#000' }}
                     >
                       <img src="/images/google-logo.svg" className="me-2" alt="Google" />
@@ -265,7 +271,7 @@ const handleGoogleCallback = (response) => {
                     </button>
 
                     {/* Hidden div for Google OAuth button fallback */}
-                    <div id="google-signin-button"></div>
+                    {/* <div id="google-signin-button"></div> */}
 
                   </div>
                   <p className="or-line">
