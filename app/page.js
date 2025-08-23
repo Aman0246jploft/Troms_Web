@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <Header />
       <section className="banner-sec">
-        <div className="container">
+        <div className="container-fluid">
           <div className="row">
             <div className="col-lg-6 col-md-6 order-2 order-lg-1 order-md-1">
               <div className="banner-content">
