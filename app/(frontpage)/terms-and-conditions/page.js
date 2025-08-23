@@ -1,74 +1,126 @@
-'use client';
+"use client";
 import React from "react";
 import { Activity } from "lucide-react";
 
-// Terms content
-const TermsContent = () => (
-  <div className="container mx-auto max-w-4xl px-6 pb-20">
-    <div className="prose prose-lg max-w-none">
-      <h1 className="text-4xl font-bold mb-4 text-foreground">Terms of Use</h1>
-      <p className="text-muted-foreground mb-8">Effective Date: July 11, 2025</p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">Welcome to Troms!</h2>
-      <p className="text-foreground mb-8 leading-relaxed">
-        These Terms of Use ("Terms") govern your access to and use of our app and services...
-      </p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">1. Subscription and Payment</h2>
-      <p className="text-foreground mb-4 leading-relaxed">
-        Troms offers auto-renewing subscription plans to access premium features...
-      </p>
-      <ul className="mb-4 space-y-2 text-foreground">
-        <li><strong>Monthly Subscription:</strong> $9.99 per month.</li>
-        <li><strong>Yearly Subscription:</strong> $24.99 per year.</li>
-      </ul>
-      <p className="text-foreground mb-8 leading-relaxed">
-        Your subscription automatically renews unless canceled at least 24 hours before the end of the current period...
-      </p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">2. User Responsibilities</h2>
-      <p className="text-foreground mb-4 leading-relaxed">
-        You agree to use the app only for lawful purposes and in accordance with these Terms. You will not:
-      </p>
-      <ul className="mb-4 space-y-2 text-foreground">
-        <li>- Violate any applicable laws or regulations.</li>
-        <li>- Infringe on the rights of others.</li>
-        <li>- Use the app in any way that may damage or impair it.</li>
-        <li>- The AI-generated recommendations are for informational purposes only and not a substitute for professional advice.</li>
-      </ul>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">3. Intellectual Property</h2>
-      <p className="text-foreground mb-8 leading-relaxed">
-        All content and materials within the app are the property of Troms and protected by copyright...
-      </p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">4. Termination</h2>
-      <p className="text-foreground mb-8 leading-relaxed">
-        We may suspend or terminate your access to the app at any time, without notice or liability, if you violate these Terms.
-      </p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">5. Changes to Terms</h2>
-      <p className="text-foreground mb-8 leading-relaxed">
-        We reserve the right to modify these Terms at any time. Continued use of the app after changes means you accept the updated Terms.
-      </p>
-
-      <h2 className="text-2xl font-semibold mb-4 text-foreground">6. Contact</h2>
-      <p className="text-foreground mb-4 leading-relaxed">
-        If you have any questions, please contact us at <a href="mailto:nazim@bratesai.com" className="text-primary hover:underline">nazim@bratesai.com</a>.
-      </p>
-      <p className="text-foreground leading-relaxed">
-        Privacy Policy: <a href="#" className="text-primary hover:underline">Link to Privacy Policy</a>
-      </p>
-    </div>
-  </div>
-);
-
 const TermsAndConditions = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <div className="container">
+        <main className="terms">
+          <header className="terms__header">
+            <h1 className="terms__title">Terms of Use</h1>
+            <p className="terms__welcome">Welcome to Troms!</p>
+          </header>
 
-      <TermsContent />
-    </div>
+          <section className="terms__section" id="introduction">
+            <p className="terms__text">
+              These Terms of Use (“Terms”) govern your access to and use of our
+              app and services. Troms is an AI-powered fitness companion
+              designed to help you achieve your health and fitness goals through
+              personalized meal plans and workout routines. Our service includes
+              personalized content, tracking tools, and community features, all
+              powered by advanced AI.
+            </p>
+          </section>
+
+          <section className="terms__section" id="subscription">
+            <h2 className="terms__section-title">
+              1. Subscription and Payment
+            </h2>
+            <p className="terms__text">
+              Troms offers auto-renewing subscription plans to access premium
+              features. By subscribing, you agree to the pricing, payment, and
+              billing policies applicable to such fees and charges.
+            </p>
+            <ul className="terms__list">
+              <li className="terms__list-item">
+                <strong>Monthly Subscription:</strong> $9.99 per month.
+              </li>
+              <li className="terms__list-item">
+                <strong>Yearly Subscription:</strong> $24.99 per year.
+              </li>
+            </ul>
+            <p className="terms__text">
+              We may offer a 3-day free trial period for new users. After the
+              3-day free trial, your subscription will automatically renew to a
+              monthly subscription at $9.99, unless you cancel before the trial
+              period ends.
+            </p>
+            <p className="terms__text">
+              Subscription charges will be billed to your Apple ID account.
+            </p>
+            <p className="terms__text">
+              Your subscription automatically renews unless canceled at least 24
+              hours before the end of the current period. You can manage or
+              cancel your subscription in your device Settings &gt; Apple ID
+              &gt; Subscriptions. No refunds will be provided for partial
+              subscription periods.
+            </p>
+          </section>
+
+          <section className="terms__section" id="user-responsibilities">
+            <h2 className="terms__section-title">2. User Responsibilities</h2>
+            <p className="terms__text">
+              You agree to use the app only for lawful purposes and in
+              accordance with these Terms. You will not:
+            </p>
+            <ul className="terms__list">
+              <li className="terms__list-item">
+                Violate any applicable laws or regulations.
+              </li>
+              <li className="terms__list-item">
+                Infringe on the rights of others.
+              </li>
+              <li className="terms__list-item">
+                Use the app in any way that may damage, disable, or impair the
+                app or interfere with another user’s access.
+              </li>
+            </ul>
+            <p className="terms__text">
+              The AI-generated recommendations are for informational purposes
+              only and are not a substitute for professional medical or
+              nutritional advice. Always consult with a qualified healthcare
+              professional before making any decisions about your health.
+            </p>
+          </section>
+
+          <section className="terms__section" id="intellectual-property">
+            <h2 className="terms__section-title">3. Intellectual Property</h2>
+            <p className="terms__text">
+              All content and materials within the app are the property of Troms
+              and protected by copyright and other intellectual property laws.
+            </p>
+          </section>
+
+          <section className="terms__section" id="termination">
+            <h2 className="terms__section-title">4. Termination</h2>
+            <p className="terms__text">
+              We may suspend or terminate your access to the app at any time,
+              without notice or liability, if you violate these Terms.
+            </p>
+          </section>
+
+          <section className="terms__section" id="changes">
+            <h2 className="terms__section-title">5. Changes to Terms</h2>
+            <p className="terms__text">
+              We reserve the right to modify these Terms at any time. Continued
+              use of the app after changes means you accept the updated Terms.
+            </p>
+          </section>
+
+          <section className="terms__section" id="contact">
+            <h2 className="terms__section-title">6. Contact</h2>
+            <p className="terms__text">
+              If you have any questions or concerns, please contact us at{" "}
+              <a className="terms__link" href="mailto:nazim@bratesai.com">
+                nazim@bratesai.com
+              </a>
+              .
+            </p>
+          </section>
+        </main>
+      </div>
+    </>
   );
 };
 
