@@ -1,6 +1,6 @@
 "use client";
-import Footer from "@/Components/Footer";
-import Header from "@/Components/Header";
+import Footer from "../Components/Footer";
+import Header from "../Components/Header";
 import Link from "next/link";
 import { useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
