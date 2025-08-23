@@ -173,7 +173,7 @@ function BornDatePage() {
               />
 
               <div className="auth-cards borndate">
-                <p className="text-uppercase mb-5">Your birth date</p>
+                <p className="text-uppercase mb-5">Your born date</p>
                 <h3 className="mb-2">What's your birthday?</h3>
                 <p>This will be used to calibrate your custom plan.</p>
                 <form onSubmit={handleContinue}>

@@ -152,6 +152,8 @@ function ApproachPage() {
               />
 
               <div className="auth-cards food">
+                <p className="text-uppercase mb-5">Approach</p>
+                
                 <div className="text-center mt-3 mb-3">
                   {isCompleted ? (
                     <img src="/images/check-mark.svg" alt="Success" />

@@ -226,7 +226,7 @@ function DesiredWeightPage() {
               <div className="auth-cards weight">
                 <p className="text-uppercase mb-5">Desired Weight</p>
                 <h3 className="mb-2">What is your desired weight?</h3>
-                <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
+                {/* <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p> */}
 
                 {/* <div className="mb-4 p-3 bg-light rounded">
                   <p className="mb-1"><strong>Current Weight:</strong> {getCurrentWeightDisplay()}</p>
@@ -258,7 +258,14 @@ function DesiredWeightPage() {
                             max={isMetric ? "300" : "600"}
                             step="0.1"
                             value={desiredWeight}
-                            onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
+
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              handleWeightChange(val === "" ? "" : parseInt(val));
+                            }}
+
+
+                            // onChange={(e) => handleWeightChange(parseFloat(e.target.value) || 0)}
                             required
                           />
                           <span>{isMetric ? 'kg' : 'lbs'}</span>
@@ -266,7 +273,7 @@ function DesiredWeightPage() {
                       </div>
                     </div>
                   </div>
-
+                  {/*                   
                   {state.weightGoal === 'MAINTAIN' && (
                     <div className="mt-3 p-3 bg-info bg-opacity-10 rounded">
                       <p className="mb-0 text-center small text-info">
@@ -274,7 +281,7 @@ function DesiredWeightPage() {
                       </p>
                     </div>
                   )}
-
+                   */}
                   <div className="text-center mt-5">
                     <button
                       type="submit"
