@@ -65,8 +65,8 @@ function Footer() {
           <div className="theme-footer-copyright">
             <p>© 2025 Troms. All rights reserved.</p>
             <div>
-              <Link href="#">Privacy Policy</Link>
-              <Link href="#">Terms & Conditions</Link>
+              <Link href="/privacy-policy">Privacy Policy</Link>
+              <Link href="/terms-and-conditions">Terms & Conditions</Link>
             </div>
           </div>
         </div>

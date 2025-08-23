@@ -16,12 +16,6 @@ function RegisterPage() {
     resetState();
   }, [])
 
-  // useEffect(() => {
-  //   if (state.isAuthenticated) {
-  //     router.push("/select-gender");
-  //   }
-  // }, [state.isAuthenticated, router]);
-
   useEffect(() => {
     if (typeof window === "undefined") return;
 
