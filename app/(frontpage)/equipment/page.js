@@ -61,15 +61,32 @@ function EquipmentContent() {
     hideAlert();
 
     try {
-      let apiLocation = location.toLowerCase();
-      if (apiLocation === 'outdoors') {
-        apiLocation = 'outdoors';
-      }
+      const response = await apiService.getEquipments();
 
-      const response = await apiService.getEquipments(apiLocation);
+      if (response.success && response.result) {
+        let equipmentList = [];
+        
+        // Extract equipment based on selected location
+        switch (location.toLowerCase()) {
+          case 'gym':
+            // For gym, get equipment from gym_equipments array
+            if (response.result.gym_equipments && response.result.gym_equipments.length > 0) {
+              equipmentList = response.result.gym_equipments[0].list_data || [];
+            }
+            break;
+          case 'home':
+            // For home, use home_equipments array
+            equipmentList = response.result.home_equipments || [];
+            break;
+          case 'outdoors':
+            // For outdoors, use outdoor_equipments array
+            equipmentList = response.result.outdoor_equipments || [];
+            break;
+          default:
+            equipmentList = [];
+        }
 
-      if (response.success) {
-        setEquipments(response.result || []);
+        setEquipments(equipmentList);
       } else {
         showAlert('error', 'Failed to load equipment options. Please try again.');
       }

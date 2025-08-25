@@ -1,8 +1,11 @@
 import React from "react";
+import Headers from '../../../Components/Header'
+import Footer from "../../../Components/Footer";
 
 function page() {
   return (
     <>
+     
       <div className="container">
         <main className="policy">
           <h1 className="policy__title text-center">Privacy Policy</h1>
@@ -141,6 +144,7 @@ function page() {
           </section>
         </main>
       </div>
+
     </>
   );
 }
