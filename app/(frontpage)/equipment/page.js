@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
 import Link from "next/link";
-import { useState, useEffect , Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
@@ -11,15 +11,19 @@ function EquipmentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [workoutLocation, setWorkoutLocation] = useState(state.workoutLocation || '');
+  const [workoutLocation, setWorkoutLocation] = useState(
+    state.workoutLocation || ""
+  );
   const [equipments, setEquipments] = useState([]);
-  const [selectedEquipments, setSelectedEquipments] = useState(state.selectedEquipments || []);
+  const [selectedEquipments, setSelectedEquipments] = useState(
+    state.selectedEquipments || []
+  );
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     }
   }, [state.isAuthenticated, router]);
 
@@ -27,14 +31,14 @@ function EquipmentContent() {
     updateStep(10);
 
     // Check for location parameter in URL
-    const locationParam = searchParams.get('location');
+    const locationParam = searchParams.get("location");
     if (locationParam) {
-      const validLocations = ['home', 'gym', 'outdoors'];
+      const validLocations = ["home", "gym", "outdoors"];
       const normalizedLocation = locationParam.toLowerCase();
-      
+
       if (validLocations.includes(normalizedLocation)) {
         setWorkoutLocation(normalizedLocation);
-        updateField('workoutLocation', normalizedLocation);
+        updateField("workoutLocation", normalizedLocation);
         fetchEquipments(normalizedLocation);
         return;
       }
@@ -47,13 +51,12 @@ function EquipmentContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
 
-
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const fetchEquipments = async (location) => {
@@ -65,20 +68,23 @@ function EquipmentContent() {
 
       if (response.success && response.result) {
         let equipmentList = [];
-        
+
         // Extract equipment based on selected location
         switch (location.toLowerCase()) {
-          case 'gym':
+          case "gym":
             // For gym, get equipment from gym_equipments array
-            if (response.result.gym_equipments && response.result.gym_equipments.length > 0) {
+            if (
+              response.result.gym_equipments &&
+              response.result.gym_equipments.length > 0
+            ) {
               equipmentList = response.result.gym_equipments[0].list_data || [];
             }
             break;
-          case 'home':
+          case "home":
             // For home, use home_equipments array
             equipmentList = response.result.home_equipments || [];
             break;
-          case 'outdoors':
+          case "outdoors":
             // For outdoors, use outdoor_equipments array
             equipmentList = response.result.outdoor_equipments || [];
             break;
@@ -88,11 +94,17 @@ function EquipmentContent() {
 
         setEquipments(equipmentList);
       } else {
-        showAlert('error', 'Failed to load equipment options. Please try again.');
+        showAlert(
+          "error",
+          "Failed to load equipment options. Please try again."
+        );
       }
     } catch (error) {
-      console.error('Equipment fetch error:', error);
-      showAlert('error', 'Failed to load equipment options. Please check your internet connection.');
+      console.error("Equipment fetch error:", error);
+      showAlert(
+        "error",
+        "Failed to load equipment options. Please check your internet connection."
+      );
     } finally {
       setLoading(false);
     }
@@ -100,19 +112,19 @@ function EquipmentContent() {
 
   const handleLocationChange = (location) => {
     setWorkoutLocation(location);
-    updateField('workoutLocation', location);
+    updateField("workoutLocation", location);
     setSelectedEquipments([]); // Reset equipment selection
-    updateField('selectedEquipments', []);
+    updateField("selectedEquipments", []);
     fetchEquipments(location);
   };
 
   const handleEquipmentToggle = (equipmentId) => {
-    setSelectedEquipments(prev => {
+    setSelectedEquipments((prev) => {
       const newSelection = prev.includes(equipmentId)
-        ? prev.filter(id => id !== equipmentId)
+        ? prev.filter((id) => id !== equipmentId)
         : [...prev, equipmentId];
 
-      updateField('selectedEquipments', newSelection);
+      updateField("selectedEquipments", newSelection);
       return newSelection;
     });
   };
@@ -121,18 +133,21 @@ function EquipmentContent() {
     e.preventDefault();
 
     if (!workoutLocation) {
-      showAlert('warning', 'Please select your workout location.');
+      showAlert("warning", "Please select your workout location.");
       return;
     }
 
     if (selectedEquipments.length === 0) {
-      showAlert('warning', 'Please select at least one piece of equipment you have access to.');
+      showAlert(
+        "warning",
+        "Please select at least one piece of equipment you have access to."
+      );
       return;
     }
 
     if (isStepValid(10)) {
       updateStep(11);
-      router.push('/goal-reach');
+      router.push("/goal-reach");
     }
   };
 
@@ -169,10 +184,13 @@ function EquipmentContent() {
                         className="d-none"
                         name="location"
                         value="home"
-                        checked={workoutLocation === 'home'}
-                        onChange={() => handleLocationChange('home')}
+                        checked={workoutLocation === "home"}
+                        onChange={() => handleLocationChange("home")}
                       />
-                      <label htmlFor="home" className={workoutLocation === 'home' ? 'selected' : ''}>
+                      <label
+                        htmlFor="home"
+                        className={workoutLocation === "home" ? "selected" : ""}
+                      >
                         <div className="gender-img">
                           <img src="/images/location-01.png" alt="Home" />
                         </div>
@@ -186,10 +204,13 @@ function EquipmentContent() {
                         className="d-none"
                         name="location"
                         value="gym"
-                        checked={workoutLocation === 'gym'}
-                        onChange={() => handleLocationChange('gym')}
+                        checked={workoutLocation === "gym"}
+                        onChange={() => handleLocationChange("gym")}
                       />
-                      <label htmlFor="gym" className={workoutLocation === 'gym' ? 'selected' : ''}>
+                      <label
+                        htmlFor="gym"
+                        className={workoutLocation === "gym" ? "selected" : ""}
+                      >
                         <div className="gender-img">
                           <img src="/images/location-02.png" alt="Gym" />
                         </div>
@@ -203,10 +224,15 @@ function EquipmentContent() {
                         className="d-none"
                         name="location"
                         value="outdoors"
-                        checked={workoutLocation === 'outdoors'}
-                        onChange={() => handleLocationChange('outdoors')}
+                        checked={workoutLocation === "outdoors"}
+                        onChange={() => handleLocationChange("outdoors")}
                       />
-                      <label htmlFor="outdoors" className={workoutLocation === 'outdoors' ? 'selected' : ''}>
+                      <label
+                        htmlFor="outdoors"
+                        className={
+                          workoutLocation === "outdoors" ? "selected" : ""
+                        }
+                      >
                         <div className="gender-img">
                           <img src="/images/location-03.png" alt="Outdoors" />
                         </div>
@@ -219,8 +245,13 @@ function EquipmentContent() {
                     <>
                       {loading ? (
                         <div className="text-center py-4">
-                          <div className="spinner-border text-primary" role="status">
-                            <span className="visually-hidden">Loading equipment...</span>
+                          <div
+                            className="spinner-border text-primary"
+                            role="status"
+                          >
+                            <span className="visually-hidden">
+                              Loading equipment...
+                            </span>
                           </div>
                           <p className="mt-2">Loading available equipment...</p>
                         </div>
@@ -233,16 +264,27 @@ function EquipmentContent() {
                                 id={`equipment-${equipment.id}`}
                                 name="equipment"
                                 className="d-none"
-                                checked={selectedEquipments.includes(equipment.id)}
-                                onChange={() => handleEquipmentToggle(equipment.id)}
+                                checked={selectedEquipments.includes(
+                                  equipment.id
+                                )}
+                                onChange={() =>
+                                  handleEquipmentToggle(equipment.id)
+                                }
                               />
                               <label
                                 htmlFor={`equipment-${equipment.id}`}
-                                className={selectedEquipments.includes(equipment.id) ? 'selected' : ''}
+                                className={
+                                  selectedEquipments.includes(equipment.id)
+                                    ? "selected"
+                                    : ""
+                                }
                               >
-                                <span>
-                                  {equipment.icon}
-                                </span>
+                                <img
+                                  src={equipment.icon}
+                                  alt={equipment.name || "icon"}
+                                  style={{ width: "20px", height: "20px" }}
+                                />
+
                                 {equipment.name}
                               </label>
                             </div>
@@ -252,7 +294,10 @@ function EquipmentContent() {
 
                       {equipments.length === 0 && !loading && (
                         <div className="text-center py-4">
-                          <p>No equipment options available for your selected location.</p>
+                          <p>
+                            No equipment options available for your selected
+                            location.
+                          </p>
                         </div>
                       )}
                     </>
@@ -262,7 +307,11 @@ function EquipmentContent() {
                     <button
                       type="submit"
                       className="custom-btn continue-btn"
-                      disabled={!workoutLocation || selectedEquipments.length === 0 || loading}
+                      disabled={
+                        !workoutLocation ||
+                        selectedEquipments.length === 0 ||
+                        loading
+                      }
                     >
                       Continue
                     </button>
@@ -282,8 +331,6 @@ function EquipmentContent() {
   );
 }
 
-
-
 export default function EquipmentPage() {
   return (
     <Suspense fallback={<div></div>}>
@@ -291,5 +338,3 @@ export default function EquipmentPage() {
     </Suspense>
   );
 }
-
-
