@@ -114,7 +114,6 @@ function validateDesiredWeight(state) {
   const desiredWeight = state.desiredWeight;
   const goal = state.weightGoal;
 
-  // Convert to same unit
   let currentWeightInUnit, desiredWeightInUnit;
   if (state.weightUnit === "kg") {
     currentWeightInUnit = currentWeight;
