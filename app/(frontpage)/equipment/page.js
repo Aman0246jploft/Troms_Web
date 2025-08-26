@@ -256,39 +256,41 @@ function EquipmentContent() {
                           <p className="mt-2">Loading available equipment...</p>
                         </div>
                       ) : (
-                        <div className="equipment-list mb-4">
-                          {equipments.map((equipment) => (
-                            <div key={equipment.id} className="equipment-bx">
-                              <input
-                                type="checkbox"
-                                id={`equipment-${equipment.id}`}
-                                name="equipment"
-                                className="d-none"
-                                checked={selectedEquipments.includes(
-                                  equipment.id
-                                )}
-                                onChange={() =>
-                                  handleEquipmentToggle(equipment.id)
-                                }
-                              />
-                              <label
-                                htmlFor={`equipment-${equipment.id}`}
-                                className={
-                                  selectedEquipments.includes(equipment.id)
-                                    ? "selected"
-                                    : ""
-                                }
-                              >
-                                <img
-                                  src={equipment.icon}
-                                  alt={equipment.name || "icon"}
-                                  style={{ width: "20px", height: "20px" }}
+                        <div className="food-list">
+                          <div className="equipment-list mb-4">
+                            {equipments.map((equipment) => (
+                              <div key={equipment.id} className="equipment-bx">
+                                <input
+                                  type="checkbox"
+                                  id={`equipment-${equipment.id}`}
+                                  name="equipment"
+                                  className="d-none"
+                                  checked={selectedEquipments.includes(
+                                    equipment.id
+                                  )}
+                                  onChange={() =>
+                                    handleEquipmentToggle(equipment.id)
+                                  }
                                 />
+                                <label
+                                  htmlFor={`equipment-${equipment.id}`}
+                                  className={
+                                    selectedEquipments.includes(equipment.id)
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  <img
+                                    src={equipment.icon}
+                                    alt={equipment.name || "icon"}
+                                    style={{ width: "20px", height: "20px" }}
+                                  />
 
-                                {equipment.name}
-                              </label>
-                            </div>
-                          ))}
+                                  {equipment.name}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
 

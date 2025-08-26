@@ -14,11 +14,11 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Crash your goal</p>
+                <p className="text-uppercase mb-2">Crash your goal</p>
                 <h3 className="mb-4">
                   Do you have any past injuries <br /> or movement limitations?
                 </h3>
-                <div className="d-flex justify-content-center py-5">
+                <div className="d-flex justify-content-center py-2  ">
                   <img src="/images/chart.svg" alt="Crash your goal" />
                 </div>
                 <div className="text-center mt-3">

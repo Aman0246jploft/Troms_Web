@@ -141,10 +141,9 @@ function InjuriesPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-     if (selectedInjuries.length === 0) {
-
-    return;
-  }
+    if (selectedInjuries.length === 0) {
+      return;
+    }
     // Injuries are optional, so we can continue even with no selections
     if (isStepValid(21)) {
       updateStep(22);
@@ -179,7 +178,7 @@ function InjuriesPage() {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Injuries</p>
+                <p className="text-uppercase mb-2">Injuries</p>
                 <h3 className="mb-4">
                   Do you have any past injuries <br /> or movement limitations?
                 </h3>
@@ -195,43 +194,47 @@ function InjuriesPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="food-card px-135">
-                      {injuryList.map((injury) => (
-                        <div key={injury.id} className="food-bx">
-                          <input
-                            type="checkbox"
-                            className="d-none"
-                            id={`injury-${injury.id}`}
-                            checked={selectedInjuries.includes(
-                              injury.injury_name
-                            )}
-                            onChange={() =>
-                              handleInjuryToggle(injury.injury_name)
-                            }
-                          />
-                          <label
-                            htmlFor={`injury-${injury.id}`}
-                            className={
-                              selectedInjuries.includes(injury.injury_name)
-                                ? "selected"
-                                : ""
-                            }
-                          >
-                            {injury.injury_name}
-                            {selectedInjuries.includes(injury.injury_name) && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleRemoveInjury(injury.injury_name);
-                                }}
-                              >
-                                <img src="/images/close.svg" alt="Remove" />
-                              </button>
-                            )}
-                          </label>
-                        </div>
-                      ))}
+                    <div className="food-list">
+                      <div className="food-card">
+                        {injuryList.map((injury) => (
+                          <div key={injury.id} className="food-bx">
+                            <input
+                              type="checkbox"
+                              className="d-none"
+                              id={`injury-${injury.id}`}
+                              checked={selectedInjuries.includes(
+                                injury.injury_name
+                              )}
+                              onChange={() =>
+                                handleInjuryToggle(injury.injury_name)
+                              }
+                            />
+                            <label
+                              htmlFor={`injury-${injury.id}`}
+                              className={
+                                selectedInjuries.includes(injury.injury_name)
+                                  ? "selected"
+                                  : ""
+                              }
+                            >
+                              {injury.injury_name}
+                              {selectedInjuries.includes(
+                                injury.injury_name
+                              ) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleRemoveInjury(injury.injury_name);
+                                  }}
+                                >
+                                  <img src="/images/close.svg" alt="Remove" />
+                                </button>
+                              )}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="custom-frm-bx mt-4 px-135">
@@ -257,7 +260,7 @@ function InjuriesPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                   disabled={loading || selectedInjuries.length === 0}
+                    disabled={loading || selectedInjuries.length === 0}
                   >
                     Continue
                   </button>

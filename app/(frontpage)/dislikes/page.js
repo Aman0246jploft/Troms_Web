@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -11,21 +11,23 @@ function DislikesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [dislikedFoods, setDislikedFoods] = useState([]);
-  const [selectedDislikes, setSelectedDislikes] = useState(state.dislikedFoodItems || []);
-  const [customDislike, setCustomDislike] = useState('');
+  const [selectedDislikes, setSelectedDislikes] = useState(
+    state.dislikedFoodItems || []
+  );
+  const [customDislike, setCustomDislike] = useState("");
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     // Note: allergicFoodItems can be empty array, so we check if it exists
     if (state.allergicFoodItems === undefined) {
-      router.push('/allergies');
+      router.push("/allergies");
       return;
     }
 
@@ -33,7 +35,14 @@ function DislikesPage() {
     if (state.currentStep !== 20) {
       updateStep(20);
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.allergicFoodItems, state.currentStep, router, updateStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.allergicFoodItems,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   useEffect(() => {
     fetchDislikedFoodItems();
@@ -44,7 +53,7 @@ function DislikesPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const fetchDislikedFoodItems = async () => {
@@ -53,37 +62,48 @@ function DislikesPage() {
 
     try {
       const response = await apiService.getDislikedFoodItems();
-      
+
       if (response.success) {
         const apiDislikes = response.result || [];
-        
+
         // Add custom dislikes that were previously selected but not in API
         const customDislikes = selectedDislikes
-          .filter(selectedDislike => !apiDislikes.some(food => food.ingredients_name === selectedDislike))
-          .map(customDislike => ({
-            id: `custom-${customDislike.replace(/\s+/g, '-').toLowerCase()}`,
-            ingredients_name: customDislike
+          .filter(
+            (selectedDislike) =>
+              !apiDislikes.some(
+                (food) => food.ingredients_name === selectedDislike
+              )
+          )
+          .map((customDislike) => ({
+            id: `custom-${customDislike.replace(/\s+/g, "-").toLowerCase()}`,
+            ingredients_name: customDislike,
           }));
-        
+
         setDislikedFoods([...apiDislikes, ...customDislikes]);
       } else {
-        showAlert('error', 'Failed to load disliked food items. Please try again.');
+        showAlert(
+          "error",
+          "Failed to load disliked food items. Please try again."
+        );
       }
     } catch (error) {
-      console.error('Disliked food items fetch error:', error);
-      showAlert('error', 'Failed to load disliked food items. Please check your internet connection.');
+      console.error("Disliked food items fetch error:", error);
+      showAlert(
+        "error",
+        "Failed to load disliked food items. Please check your internet connection."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleDislikeToggle = (dislikeName) => {
-    setSelectedDislikes(prev => {
+    setSelectedDislikes((prev) => {
       const newSelection = prev.includes(dislikeName)
-        ? prev.filter(name => name !== dislikeName)
+        ? prev.filter((name) => name !== dislikeName)
         : [...prev, dislikeName];
-      
-      updateField('dislikedFoodItems', newSelection);
+
+      updateField("dislikedFoodItems", newSelection);
       return newSelection;
     });
     hideAlert();
@@ -92,50 +112,58 @@ function DislikesPage() {
   const handleCustomDislikeAdd = () => {
     if (customDislike.trim()) {
       const newDislike = customDislike.trim();
-      if (!selectedDislikes.includes(newDislike) && !dislikedFoods.some(food => food.ingredients_name === newDislike)) {
+      if (
+        !selectedDislikes.includes(newDislike) &&
+        !dislikedFoods.some((food) => food.ingredients_name === newDislike)
+      ) {
         // Add to the disliked foods list for immediate display
         const customDislikeObj = {
           id: `custom-${Date.now()}`,
-          ingredients_name: newDislike
+          ingredients_name: newDislike,
         };
-        setDislikedFoods(prev => [...prev, customDislikeObj]);
-        
+        setDislikedFoods((prev) => [...prev, customDislikeObj]);
+
         // Also add to selected dislikes
         const newSelection = [...selectedDislikes, newDislike];
         setSelectedDislikes(newSelection);
-        updateField('dislikedFoodItems', newSelection);
-        setCustomDislike('');
+        updateField("dislikedFoodItems", newSelection);
+        setCustomDislike("");
         hideAlert();
       } else {
-        showAlert('warning', 'This dislike is already in the list or selected.');
+        showAlert(
+          "warning",
+          "This dislike is already in the list or selected."
+        );
       }
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleCustomDislikeAdd();
     }
   };
 
   const handleRemoveDislike = (dislikeName) => {
-    const newSelection = selectedDislikes.filter(name => name !== dislikeName);
+    const newSelection = selectedDislikes.filter(
+      (name) => name !== dislikeName
+    );
     setSelectedDislikes(newSelection);
-    updateField('dislikedFoodItems', newSelection);
+    updateField("dislikedFoodItems", newSelection);
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-     if (selectedDislikes.length === 0) {
-    // showAlert('warning', 'Please select at least one dislike before continuing.');
-    return;
-  }
+    if (selectedDislikes.length === 0) {
+      // showAlert('warning', 'Please select at least one dislike before continuing.');
+      return;
+    }
 
     // Dislikes are optional, so we can continue even with no selections
     if (isStepValid(20)) {
       updateStep(21);
-      router.push('/injuries');
+      router.push("/injuries");
     }
   };
 
@@ -150,8 +178,8 @@ function DislikesPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -163,47 +191,63 @@ function DislikesPage() {
                 <h3 className="mb-4">
                   Are there any ingredients <br /> you'd prefer to avoid?
                 </h3>
-                
+
                 {loading ? (
                   <div className="text-center py-4">
                     <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading disliked food items...</span>
+                      <span className="visually-hidden">
+                        Loading disliked food items...
+                      </span>
                     </div>
-                    <p className="mt-2">Loading available disliked food items...</p>
+                    <p className="mt-2">
+                      Loading available disliked food items...
+                    </p>
                   </div>
                 ) : (
                   <>
-                    <div className="food-card px-135">
-                      {dislikedFoods.map((food) => (
-                        <div key={food.id} className="food-bx">
-                          <input 
-                            type="checkbox" 
-                            className="d-none" 
-                            id={`dislike-${food.id}`}
-                            checked={selectedDislikes.includes(food.ingredients_name)}
-                            onChange={() => handleDislikeToggle(food.ingredients_name)}
-                          />
-                          <label 
-                            htmlFor={`dislike-${food.id}`}
-                            className={selectedDislikes.includes(food.ingredients_name) ? 'selected' : ''}
-                          >
-                            {food.ingredients_name}
-                            {selectedDislikes.includes(food.ingredients_name) && (
-                              <button 
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleRemoveDislike(food.ingredients_name);
-                                }}
-                              >
-                                <img src="/images/close.svg" alt="Remove" />
-                              </button>
-                            )}
-                          </label>
-                        </div>
-                      ))}
+                    <div className="food-list">
+                      <div className="food-card">
+                        {dislikedFoods.map((food) => (
+                          <div key={food.id} className="food-bx">
+                            <input
+                              type="checkbox"
+                              className="d-none"
+                              id={`dislike-${food.id}`}
+                              checked={selectedDislikes.includes(
+                                food.ingredients_name
+                              )}
+                              onChange={() =>
+                                handleDislikeToggle(food.ingredients_name)
+                              }
+                            />
+                            <label
+                              htmlFor={`dislike-${food.id}`}
+                              className={
+                                selectedDislikes.includes(food.ingredients_name)
+                                  ? "selected"
+                                  : ""
+                              }
+                            >
+                              {food.ingredients_name}
+                              {selectedDislikes.includes(
+                                food.ingredients_name
+                              ) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleRemoveDislike(food.ingredients_name);
+                                  }}
+                                >
+                                  <img src="/images/close.svg" alt="Remove" />
+                                </button>
+                              )}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    
+
                     <div className="custom-frm-bx mt-4 px-135">
                       <input
                         type="text"
@@ -214,7 +258,7 @@ function DislikesPage() {
                         onKeyPress={handleKeyPress}
                       />
                     </div>
-                    
+
                     {dislikedFoods.length === 0 && !loading && (
                       <div className="text-center py-4">
                         <p>No disliked food items available at the moment.</p>
@@ -222,12 +266,12 @@ function DislikesPage() {
                     )}
                   </>
                 )}
-                
+
                 <div className="text-center mt-3">
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                     disabled={loading || selectedDislikes.length === 0}
+                    disabled={loading || selectedDislikes.length === 0}
                   >
                     Continue
                   </button>

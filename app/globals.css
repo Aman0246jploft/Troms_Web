@@ -747,7 +747,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 32px 64px -12px rgba(45, 54, 67, 0.2);
-  margin-bottom: 25px;
+  margin-bottom: 75px;
 }
 .auth-logo {
   margin-bottom: 30px;
@@ -1073,6 +1073,9 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
   align-items: baseline;
 }
+.height-input.metric input {
+  width: 100px !important;
+}
 .height-bx .height-input:nth-child(1) {
   border-right: 1px solid #d9d9d9;
   width: auto;
@@ -1084,15 +1087,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-right: 10px;
 }
 .lbs-weight .height-input input {
-  width: 54px;
+  width: 90px;
 }
 .custom-check label {
-  padding: 12px 15px;
+  padding: 9px 15px;
   background-color: #f1f1f1;
   border-radius: 50px;
   width: 100%;
-  border: 2px solid transparent;
-  margin-bottom: 15px;
+  /* border: 2px solid transparent; */
+  margin-bottom: 10px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 400;
@@ -1104,7 +1107,7 @@ input[type="number"]::-webkit-outer-spin-button {
   content: "";
   width: 25px;
   height: 30px;
-  top: 13px;
+  top: 9px;
   right: 15px;
   background-image: url(/images/grn-check.svg);
   background-repeat: no-repeat;
@@ -1244,6 +1247,68 @@ input[type="number"]::-webkit-outer-spin-button {
 .auth-cards.preferre-diet {
   margin-bottom: 75px;
 }
+.choose-plan h6 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #505050;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.choose-plan-bx {
+  margin-bottom: 10px;
+  /* padding-left: 0; */
+}
+
+/* container default style */
+.choose-plan-bx {
+  display: flex;
+  gap: 12px;
+  padding: 15 15px 15px 35px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.choose-plan-bx label p {
+  margin-bottom: 0;
+}
+.choose-plan-bx .form-check-input {
+  height: 24px;
+  width: 24px;
+  box-shadow: none;
+  border-color: #c2c2c2;
+}
+.choose-plan-bx:has(input[type="radio"]:checked) {
+  border-color: #22c55e;
+}
+.choose-plan-bx .form-check-input:checked {
+  background-color: #37c779;
+  border-color: #37c779;
+}
+.choose-check.form-check .form-check-input {
+  height: 18px;
+  width: 18px;
+  border-color: #d9d9d9;
+  box-shadow: none;
+}
+.choose-check.form-check .form-check-input:checked {
+  background-color: #37c779;
+  border-color: #37c779;
+}
+.choose-check label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+}
+.choose-check label a {
+  display: inline-block;
+  color: #06402b;
+  text-decoration: underline !important;
+}
+.food-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
 /* responsive-css-start */
 @media (max-width: 1399px) {
   .login-btn a,
@@ -1693,10 +1758,17 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 45px;
     padding: 0 10px;
   }
+  .lbs-weight .height-input input {
+    width: 70px;
+  }
+  .height-input.metric input {
+    width: 70px !important;
+  }
   .feedback-bx label span {
     margin-top: 5px;
     font-size: 14px;
   }
+
   .auth-cards h3.mb-5 {
     margin-bottom: 1.5rem !important;
   }

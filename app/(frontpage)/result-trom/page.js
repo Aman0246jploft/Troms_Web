@@ -7,18 +7,18 @@ function page() {
       <section className="auth-section">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-lg-7">
+            <div className="col-lg-8">
               <div className="auth-logo text-center">
                 <Link href="/">
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
               <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Results Troms</p>
-                <h3 className="mb-4">
+                <p className="text-uppercase mb-2">Results Troms</p>
+                <h3 className="mb-2">
                   Double Your Weight Loss <br /> Results with Troms
                 </h3>
-                <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex justify-content-center mt-3">
                   <img
                     src="/images/trom-img.svg"
                     alt="Results Troms"
