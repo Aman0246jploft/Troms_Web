@@ -139,7 +139,6 @@ function validateDesiredWeight(state) {
 export function OnboardingProvider({ children }) {
   const [state, dispatch] = useReducer(onboardingReducer, initialState);
 
-  // Load state from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedState = localStorage.getItem("onboardingState");
