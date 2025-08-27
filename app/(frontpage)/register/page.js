@@ -9,12 +9,13 @@ import Alert from "../../../Components/Alert";
 
 function RegisterPage() {
   const router = useRouter();
-  const { state, setUser, setLoading, setError, updateStep, resetState } = useOnboarding();
+  const { state, setUser, setLoading, setError, updateStep, resetState } =
+    useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
   useEffect(() => {
     localStorage.removeItem("onboardingState");
     resetState();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -200,7 +201,7 @@ function RegisterPage() {
           const userData = {
             email: response.authorization.id_token
               ? JSON.parse(atob(response.authorization.id_token.split(".")[1]))
-                .email
+                  .email
               : "user@icloud.com",
             username: response.user?.name?.firstName || "Apple User",
             platform: "ios",
@@ -235,8 +236,6 @@ function RegisterPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-
-
 
               <div className="auth-cards login">
                 <h3>Register Yourself!</h3>

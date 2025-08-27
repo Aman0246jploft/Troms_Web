@@ -1,125 +1,143 @@
 "use client";
-import React from "react";
-import { Activity } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { apiService } from "../../../lib/api";
 
 const TermsAndConditions = () => {
+  const [termsContent, setTermsContent] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTermsAndConditions();
+  }, []);
+
+  const fetchTermsAndConditions = async () => {
+    try {
+      const response = await apiService.termsandconditions();
+
+      if (response.success) {
+        const data = await response;
+        if (data.success && data.result) {
+          setTermsContent(data.result.content);
+        } else {
+          // Fallback content if no terms found
+          setTermsContent(getDefaultTermsContent());
+        }
+      } else {
+        setTermsContent(getDefaultTermsContent());
+      }
+    } catch (error) {
+      console.error("Failed to fetch terms and conditions:", error);
+      setTermsContent(getDefaultTermsContent());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDefaultTermsContent = () => {
+    return `
+      <h1>Terms of Use</h1>
+      <p>Welcome to Troms!</p>
+      
+      <p>These Terms of Use ("Terms") govern your access to and use of our app and services. Troms is an AI-powered fitness companion designed to help you achieve your health and fitness goals through personalized meal plans and workout routines. Our service includes personalized content, tracking tools, and community features, all powered by advanced AI.</p>
+      
+      <h2>1. Subscription and Payment</h2>
+      <p>Troms offers auto-renewing subscription plans to access premium features. By subscribing, you agree to the pricing, payment, and billing policies applicable to such fees and charges.</p>
+      
+      <ul>
+        <li><strong>Monthly Subscription:</strong> $9.99 per month.</li>
+        <li><strong>Yearly Subscription:</strong> $24.99 per year.</li>
+      </ul>
+      
+      <p>We may offer a 3-day free trial period for new users. After the 3-day free trial, your subscription will automatically renew to a monthly subscription at $9.99, unless you cancel before the trial period ends.</p>
+      
+      <p>Subscription charges will be billed to your Apple ID account. Your subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period.</p>
+      
+      <h2>2. Use of AI Technology</h2>
+      <p>Troms utilizes artificial intelligence to provide personalized fitness and nutrition recommendations. While we strive for accuracy, AI-generated content should not replace professional medical or fitness advice.</p>
+      
+      <h2>3. User Responsibilities</h2>
+      <p>You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account. You agree to use the service only for lawful purposes.</p>
+      
+      <h2>4. Privacy and Data</h2>
+      <p>Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and protect your information.</p>
+      
+      <h2>5. Limitation of Liability</h2>
+      <p>Troms is provided "as is" without warranties of any kind. We shall not be liable for any indirect, incidental, special, or consequential damages.</p>
+      
+      <h2>6. Changes to Terms</h2>
+      <p>We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.</p>
+      
+      <p>For questions about these Terms of Use, please contact us at support@troms.app</p>
+    `;
+  };
+
+  if (loading) {
+    return (
+      <div className="container">
+        <main className="terms">
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-gray-600">Loading terms and conditions...</div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="container">
         <main className="terms">
-          <header className="terms__header">
-            <h1 className="terms__title">Terms of Use</h1>
-            <p className="terms__welcome">Welcome to Troms!</p>
-          </header>
-
-          <section className="terms__section" id="introduction">
-            <p className="terms__text">
-              These Terms of Use (“Terms”) govern your access to and use of our
-              app and services. Troms is an AI-powered fitness companion
-              designed to help you achieve your health and fitness goals through
-              personalized meal plans and workout routines. Our service includes
-              personalized content, tracking tools, and community features, all
-              powered by advanced AI.
-            </p>
-          </section>
-
-          <section className="terms__section" id="subscription">
-            <h2 className="terms__section-title">
-              1. Subscription and Payment
-            </h2>
-            <p className="terms__text">
-              Troms offers auto-renewing subscription plans to access premium
-              features. By subscribing, you agree to the pricing, payment, and
-              billing policies applicable to such fees and charges.
-            </p>
-            <ul className="terms__list">
-              <li className="terms__list-item">
-                <strong>Monthly Subscription:</strong> $9.99 per month.
-              </li>
-              <li className="terms__list-item">
-                <strong>Yearly Subscription:</strong> $24.99 per year.
-              </li>
-            </ul>
-            <p className="terms__text">
-              We may offer a 3-day free trial period for new users. After the
-              3-day free trial, your subscription will automatically renew to a
-              monthly subscription at $9.99, unless you cancel before the trial
-              period ends.
-            </p>
-            <p className="terms__text">
-              Subscription charges will be billed to your Apple ID account.
-            </p>
-            <p className="terms__text">
-              Your subscription automatically renews unless canceled at least 24
-              hours before the end of the current period. You can manage or
-              cancel your subscription in your device Settings &gt; Apple ID
-              &gt; Subscriptions. No refunds will be provided for partial
-              subscription periods.
-            </p>
-          </section>
-
-          <section className="terms__section" id="user-responsibilities">
-            <h2 className="terms__section-title">2. User Responsibilities</h2>
-            <p className="terms__text">
-              You agree to use the app only for lawful purposes and in
-              accordance with these Terms. You will not:
-            </p>
-            <ul className="terms__list">
-              <li className="terms__list-item">
-                Violate any applicable laws or regulations.
-              </li>
-              <li className="terms__list-item">
-                Infringe on the rights of others.
-              </li>
-              <li className="terms__list-item">
-                Use the app in any way that may damage, disable, or impair the
-                app or interfere with another user’s access.
-              </li>
-            </ul>
-            <p className="terms__text">
-              The AI-generated recommendations are for informational purposes
-              only and are not a substitute for professional medical or
-              nutritional advice. Always consult with a qualified healthcare
-              professional before making any decisions about your health.
-            </p>
-          </section>
-
-          <section className="terms__section" id="intellectual-property">
-            <h2 className="terms__section-title">3. Intellectual Property</h2>
-            <p className="terms__text">
-              All content and materials within the app are the property of Troms
-              and protected by copyright and other intellectual property laws.
-            </p>
-          </section>
-
-          <section className="terms__section" id="termination">
-            <h2 className="terms__section-title">4. Termination</h2>
-            <p className="terms__text">
-              We may suspend or terminate your access to the app at any time,
-              without notice or liability, if you violate these Terms.
-            </p>
-          </section>
-
-          <section className="terms__section" id="changes">
-            <h2 className="terms__section-title">5. Changes to Terms</h2>
-            <p className="terms__text">
-              We reserve the right to modify these Terms at any time. Continued
-              use of the app after changes means you accept the updated Terms.
-            </p>
-          </section>
-
-          <section className="terms__section" id="contact">
-            <h2 className="terms__section-title">6. Contact</h2>
-            <p className="terms__text">
-              If you have any questions or concerns, please contact us at{" "}
-              <a className="terms__link" href="mailto:nazim@bratesai.com">
-                nazim@bratesai.com
-              </a>
-              .
-            </p>
-          </section>
+          <div
+            className="terms-content"
+            dangerouslySetInnerHTML={{ __html: termsContent }}
+          />
         </main>
       </div>
+
+      <style jsx>{`
+        .terms {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          line-height: 1.6;
+        }
+
+        .terms-content h1 {
+          font-size: 2.5rem;
+          font-weight: bold;
+          margin-bottom: 1rem;
+          text-align: center;
+          color: #1f2937;
+        }
+
+        .terms-content h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          color: #374151;
+        }
+
+        .terms-content p {
+          margin-bottom: 1rem;
+          color: #6b7280;
+        }
+
+        .terms-content ul {
+          margin-bottom: 1rem;
+          padding-left: 2rem;
+        }
+
+        .terms-content li {
+          margin-bottom: 0.5rem;
+          color: #6b7280;
+        }
+
+        .terms-content strong {
+          font-weight: 600;
+          color: #374151;
+        }
+      `}</style>
     </>
   );
 };
