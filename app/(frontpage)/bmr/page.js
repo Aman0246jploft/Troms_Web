@@ -1,7 +1,39 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
 
 function page() {
+  const router = useRouter();
+  const { state, updateStep } = useOnboarding();
+  const [isProcessing, setIsProcessing] = useState(true);
+
+  useEffect(() => {
+    // Redirect if not authenticated
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
+
+    // Update current step
+    if (state.currentStep !== 24) {
+      updateStep(24);
+    }
+
+    // Simulate BMR calculation process
+    const timer = setTimeout(() => {
+      setIsProcessing(false);
+      // Redirect to subscriptions after BMR calculation
+      setTimeout(() => {
+        router.push("/subscriptions");
+      }, 1500);
+    }, 3000); // 3 seconds for BMR calculation simulation
+
+    return () => clearTimeout(timer);
+  }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, router, updateStep]);
+
   return (
     <>
       <section className="auth-section">
@@ -15,18 +47,37 @@ function page() {
               </div>
               <div className="auth-cards">
                 <h3 className="mb-4">
-                  We're setting <br /> everything up for you
+                  {isProcessing ? (
+                    <>
+                      We're setting <br /> everything up for you
+                    </>
+                  ) : (
+                    <>
+                      Your BMR has been <br /> calculated successfully!
+                    </>
+                  )}
                 </h3>
-                <p>Applying BMR Formula</p>
+                <p>
+                  {isProcessing ? "Applying BMR Formula" : "Redirecting to subscription plans..."}
+                </p>
                 <div className="text-center mt-5 mb-5">
-                  <img src="/images/loader.svg" alt="BMR Graph" />
+                  {isProcessing ? (
+                    <img src="/images/loader.svg" alt="BMR Graph" />
+                  ) : (
+                    <img src="/images/check-mark.svg" alt="Success" />
+                  )}
                 </div>
 
-                {/* <div className="text-center mt-3">
-                  <Link href="/bmr" className="custom-btn continue-btn">
-                    Continue
-                  </Link>
-                </div> */}
+                {!isProcessing && (
+                  <div className="text-center mt-3">
+                    <button
+                      onClick={() => router.push("/subscriptions")}
+                      className="custom-btn continue-btn"
+                    >
+                      Continue to Subscription
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

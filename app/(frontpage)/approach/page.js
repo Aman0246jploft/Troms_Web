@@ -101,6 +101,11 @@ function ApproachPage() {
         updateField("needsOnboarding", false);
         // showAlert('success', 'Your profile has been created successfully!');
 
+        updateField("user", {
+          ...state.user,
+          userInfoId: response.result.id,
+        });
+
         // Auto-redirect after success
         setTimeout(() => {
           router.push("/bmr");
@@ -153,7 +158,7 @@ function ApproachPage() {
 
               <div className="auth-cards food">
                 <p className="text-uppercase mb-5">Approach</p>
-                
+
                 <div className="text-center mt-3 mb-3">
                   {isCompleted ? (
                     <img src="/images/check-mark.svg" alt="Success" />
