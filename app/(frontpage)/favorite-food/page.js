@@ -206,7 +206,8 @@ function FavoriteFoodPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="food-card">
+                   <div className="food-list">
+                     <div className="food-card">
                       {cheatMeals.map((meal) => (
                         <div key={meal.id} className="food-bx">
                           <input
@@ -246,6 +247,7 @@ function FavoriteFoodPage() {
                         </div>
                       ))}
                     </div>
+                   </div>
 
                     <div className="custom-frm-bx mt-4 px-135">
                       <input

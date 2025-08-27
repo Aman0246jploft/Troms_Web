@@ -181,7 +181,7 @@ function WeightPage() {
                       <p className="text-center mb-2">Height</p>
                       {isMetric ? (
                         <div className="height-bx">
-                          <div className="height-input border-0">
+                          <div className="height-input border-0 metric">
                             <input
                               type="number"
                               min="100"

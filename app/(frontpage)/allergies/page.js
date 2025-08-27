@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -11,20 +11,22 @@ function AllergiesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [allergicFoods, setAllergicFoods] = useState([]);
-  const [selectedAllergies, setSelectedAllergies] = useState(state.allergicFoodItems || []);
-  const [customAllergy, setCustomAllergy] = useState('');
+  const [selectedAllergies, setSelectedAllergies] = useState(
+    state.allergicFoodItems || []
+  );
+  const [customAllergy, setCustomAllergy] = useState("");
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     if (!state.accomplish || state.accomplish.length === 0) {
-      router.push('/accomplish');
+      router.push("/accomplish");
       return;
     }
 
@@ -32,7 +34,14 @@ function AllergiesPage() {
     if (state.currentStep !== 19) {
       updateStep(19);
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.accomplish, state.currentStep, router, updateStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.accomplish,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   useEffect(() => {
     fetchAllergicFoodItems();
@@ -43,7 +52,7 @@ function AllergiesPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const fetchAllergicFoodItems = async () => {
@@ -52,37 +61,48 @@ function AllergiesPage() {
 
     try {
       const response = await apiService.getAllergicFoodItems();
-      
+
       if (response.success) {
         const apiAllergies = response.result || [];
-        
+
         // Add custom allergies that were previously selected but not in API
         const customAllergies = selectedAllergies
-          .filter(selectedAllergy => !apiAllergies.some(food => food.ingredients_name === selectedAllergy))
-          .map(customAllergy => ({
-            id: `custom-${customAllergy.replace(/\s+/g, '-').toLowerCase()}`,
-            ingredients_name: customAllergy
+          .filter(
+            (selectedAllergy) =>
+              !apiAllergies.some(
+                (food) => food.ingredients_name === selectedAllergy
+              )
+          )
+          .map((customAllergy) => ({
+            id: `custom-${customAllergy.replace(/\s+/g, "-").toLowerCase()}`,
+            ingredients_name: customAllergy,
           }));
-        
+
         setAllergicFoods([...apiAllergies, ...customAllergies]);
       } else {
-        showAlert('error', 'Failed to load allergic food items. Please try again.');
+        showAlert(
+          "error",
+          "Failed to load allergic food items. Please try again."
+        );
       }
     } catch (error) {
-      console.error('Allergic food items fetch error:', error);
-      showAlert('error', 'Failed to load allergic food items. Please check your internet connection.');
+      console.error("Allergic food items fetch error:", error);
+      showAlert(
+        "error",
+        "Failed to load allergic food items. Please check your internet connection."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleAllergyToggle = (allergyName) => {
-    setSelectedAllergies(prev => {
+    setSelectedAllergies((prev) => {
       const newSelection = prev.includes(allergyName)
-        ? prev.filter(name => name !== allergyName)
+        ? prev.filter((name) => name !== allergyName)
         : [...prev, allergyName];
-      
-      updateField('allergicFoodItems', newSelection);
+
+      updateField("allergicFoodItems", newSelection);
       return newSelection;
     });
     hideAlert();
@@ -91,48 +111,56 @@ function AllergiesPage() {
   const handleCustomAllergyAdd = () => {
     if (customAllergy.trim()) {
       const newAllergy = customAllergy.trim();
-      if (!selectedAllergies.includes(newAllergy) && !allergicFoods.some(food => food.ingredients_name === newAllergy)) {
+      if (
+        !selectedAllergies.includes(newAllergy) &&
+        !allergicFoods.some((food) => food.ingredients_name === newAllergy)
+      ) {
         // Add to the allergic foods list for immediate display
         const customAllergyObj = {
           id: `custom-${Date.now()}`,
-          ingredients_name: newAllergy
+          ingredients_name: newAllergy,
         };
-        setAllergicFoods(prev => [...prev, customAllergyObj]);
-        
+        setAllergicFoods((prev) => [...prev, customAllergyObj]);
+
         // Also add to selected allergies
         const newSelection = [...selectedAllergies, newAllergy];
         setSelectedAllergies(newSelection);
-        updateField('allergicFoodItems', newSelection);
-        setCustomAllergy('');
+        updateField("allergicFoodItems", newSelection);
+        setCustomAllergy("");
         hideAlert();
       } else {
-        showAlert('warning', 'This allergy is already in the list or selected.');
+        showAlert(
+          "warning",
+          "This allergy is already in the list or selected."
+        );
       }
     }
   };
 
   const handleRemoveAllergy = (allergyName) => {
-    const newSelection = selectedAllergies.filter(name => name !== allergyName);
+    const newSelection = selectedAllergies.filter(
+      (name) => name !== allergyName
+    );
     setSelectedAllergies(newSelection);
-    updateField('allergicFoodItems', newSelection);
+    updateField("allergicFoodItems", newSelection);
   };
 
-const handleContinue = (e) => {
-  e.preventDefault();
+  const handleContinue = (e) => {
+    e.preventDefault();
 
-  if (selectedAllergies.length === 0) {
-    // showAlert('warning', 'Please select at least one allergy before continuing.');
-    return;
-  }
+    if (selectedAllergies.length === 0) {
+      // showAlert('warning', 'Please select at least one allergy before continuing.');
+      return;
+    }
 
-  if (isStepValid(19)) {
-    updateStep(20);
-    router.push('/dislikes');
-  }
-};
+    if (isStepValid(19)) {
+      updateStep(20);
+      router.push("/dislikes");
+    }
+  };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleCustomAllergyAdd();
     }
@@ -149,8 +177,8 @@ const handleContinue = (e) => {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -162,47 +190,65 @@ const handleContinue = (e) => {
                 <h3 className="mb-4">
                   Do you have any food allergies <br /> we should be aware of?
                 </h3>
-                
+
                 {loading ? (
                   <div className="text-center py-4">
                     <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading allergic food items...</span>
+                      <span className="visually-hidden">
+                        Loading allergic food items...
+                      </span>
                     </div>
-                    <p className="mt-2">Loading available allergic food items...</p>
+                    <p className="mt-2">
+                      Loading available allergic food items...
+                    </p>
                   </div>
                 ) : (
                   <>
-                    <div className="food-card px-135">
-                      {allergicFoods.map((food) => (
-                        <div key={food.id} className="food-bx">
-                          <input 
-                            type="checkbox" 
-                            className="d-none" 
-                            id={`allergy-${food.id}`}
-                            checked={selectedAllergies.includes(food.ingredients_name)}
-                            onChange={() => handleAllergyToggle(food.ingredients_name)}
-                          />
-                          <label 
-                            htmlFor={`allergy-${food.id}`}
-                            className={selectedAllergies.includes(food.ingredients_name) ? 'selected' : ''}
-                          >
-                            {food.ingredients_name}
-                            {selectedAllergies.includes(food.ingredients_name) && (
-                              <button 
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleRemoveAllergy(food.ingredients_name);
-                                }}
-                              >
-                                <img src="/images/close.svg" alt="Remove" />
-                              </button>
-                            )}
-                          </label>
-                        </div>
-                      ))}
+                    <div className="food-list">
+                      <div className="food-card ">
+                        {allergicFoods.map((food) => (
+                          <div key={food.id} className="food-bx">
+                            <input
+                              type="checkbox"
+                              className="d-none"
+                              id={`allergy-${food.id}`}
+                              checked={selectedAllergies.includes(
+                                food.ingredients_name
+                              )}
+                              onChange={() =>
+                                handleAllergyToggle(food.ingredients_name)
+                              }
+                            />
+                            <label
+                              htmlFor={`allergy-${food.id}`}
+                              className={
+                                selectedAllergies.includes(
+                                  food.ingredients_name
+                                )
+                                  ? "selected"
+                                  : ""
+                              }
+                            >
+                              {food.ingredients_name}
+                              {selectedAllergies.includes(
+                                food.ingredients_name
+                              ) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleRemoveAllergy(food.ingredients_name);
+                                  }}
+                                >
+                                  <img src="/images/close.svg" alt="Remove" />
+                                </button>
+                              )}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    
+
                     <div className="custom-frm-bx mt-4 px-135">
                       <input
                         type="text"
@@ -213,9 +259,7 @@ const handleContinue = (e) => {
                         onKeyPress={handleKeyPress}
                       />
                     </div>
-                    
-              
-                    
+
                     {allergicFoods.length === 0 && !loading && (
                       <div className="text-center py-4">
                         <p>No allergic food items available at the moment.</p>
@@ -223,7 +267,7 @@ const handleContinue = (e) => {
                     )}
                   </>
                 )}
-                
+
                 <div className="text-center mt-3">
                   <button
                     onClick={handleContinue}
