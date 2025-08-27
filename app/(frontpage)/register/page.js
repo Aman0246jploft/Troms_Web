@@ -128,7 +128,7 @@ function RegisterPage() {
                 const userData = {
                   email: userInfo.email,
                   username: userInfo.name || userInfo.email.split("@")[0],
-                  platform: "android",
+                  platform: "web",
                   // userInfoId: userInfo.sub,
                 };
                 handleSocialLoginAPI(userData);

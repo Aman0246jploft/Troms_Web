@@ -337,10 +337,7 @@ function StripePaymentForm({
 }
 
 function SubscriptionPage() {
-  const storedUser = JSON.parse(
-    localStorage.getItem("onboardingState") || "{}"
-  );
-  const userInfoId = storedUser?.user?.userInfoId;
+  const [storedUser, setStoredUser] = useState({});
   const { state, updateStep } = useOnboarding();
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -349,6 +346,15 @@ function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const userInfoId = storedUser?.user?.userInfoId;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = JSON.parse(
+        window.localStorage.getItem("onboardingState") || "{}"
+      );
+      setStoredUser(user);
+    }
+  }, []);
 
   useEffect(() => {
     console.log("🏁 SubscriptionPage component mounted");
@@ -423,11 +429,60 @@ function SubscriptionPage() {
     setShowPayment(true);
   };
 
-  const handlePaymentSuccess = (result) => {
+  const handlePaymentSuccess = async (result) => {
     console.log("🎉 Payment successful:", result);
     setSuccess("Subscription created successfully! Welcome to TROMS Fitness!");
     setShowPayment(false);
     setError("");
+
+    // Call social-login API again with userInfoId after successful payment
+    try {
+      const userData = state.user || {};
+      if (userData.email && userInfoId) {
+        console.log(
+          "🔄 Calling social-login API after payment completion with userInfoId:",
+          userInfoId
+        );
+
+        const socialLoginPayload = {
+          email: userData.email,
+          username: userData.username || userData.email.split("@")[0],
+          platform: userData.platform || "web",
+          userInfoId: userInfoId,
+        };
+
+        console.log("socialLoginPayload", socialLoginPayload);
+
+        console.log(
+          "📤 Social login payload after payment:",
+          socialLoginPayload
+        );
+        const socialLoginResponse = await apiService.socialLogin(
+          socialLoginPayload
+        );
+
+        if (socialLoginResponse.success) {
+          console.log(
+            "✅ Social login API called successfully after payment:",
+            socialLoginResponse
+          );
+        } else {
+          console.error(
+            "❌ Social login API failed after payment:",
+            socialLoginResponse.message
+          );
+        }
+      } else {
+        console.warn(
+          "⚠️ Missing user data or userInfoId for social login call after payment"
+        );
+        console.log("User data:", userData);
+        console.log("UserInfoId:", userInfoId);
+      }
+    } catch (error) {
+      console.error("💥 Error calling social-login API after payment:", error);
+      // Don't show error to user as payment was successful, just log it
+    }
 
     // Redirect to dashboard or success page after delay
     console.log("⏰ Setting redirect timer (3 seconds)");
