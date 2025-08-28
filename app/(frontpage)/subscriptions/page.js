@@ -191,34 +191,6 @@ function StripePaymentForm({
 
   return (
     <div className="stripe-payment-form mt-3">
-      <div
-        className="payment-summary mb-4 p-3"
-        style={{
-          backgroundColor: "#f8f9fa",
-          borderRadius: "8px",
-          border: "1px solid #e9ecef",
-        }}
-      >
-        <h5 className="mb-3">Payment Summary</h5>
-        <div className="d-flex justify-content-between mb-2">
-          <span>Plan:</span>
-          <span>
-            {selectedPlan?.productName ||
-              `${
-                selectedPlan?.interval === "month" ? "Monthly" : "Yearly"
-              } Plan`}
-          </span>
-        </div>
-        <div className="d-flex justify-content-between mb-2">
-          <span>Amount:</span>
-          <span className="fw-bold">{formatAmount(selectedPlan?.amount)}</span>
-        </div>
-        <div className="d-flex justify-content-between">
-          <span>Billing:</span>
-          <span>{selectedPlan?.interval}ly</span>
-        </div>
-      </div>
-
       <form onSubmit={handlePayment}>
         <div className="mb-3">
           <label className="form-label fw-semibold">Card Information</label>
@@ -262,11 +234,11 @@ function StripePaymentForm({
         <button
           type="submit"
           disabled={loading || !stripe || !elements}
-          className="btn btn-primary w-100 py-3"
+          className="custom-btn continue-btn"
           style={{
             fontSize: "16px",
             fontWeight: "600",
-            background: "linear-gradient(135deg, #007bff 0%, #0056b3 100%)",
+
             border: "none",
             borderRadius: "8px",
           }}
@@ -281,9 +253,9 @@ function StripePaymentForm({
               Processing Payment...
             </>
           ) : (
-            `Subscribe for ${formatAmount(selectedPlan?.amount)}/${
-              selectedPlan?.interval
-            }`
+            `Subscribe for ${formatAmount(
+              selectedPlan?.amount || selectedPlan?.price
+            )}/${selectedPlan?.interval}`
           )}
         </button>
       </form>
@@ -317,6 +289,8 @@ function SubscriptionPage() {
       setStoredUser(user);
     }
   }, []);
+
+  console.log("HIIIIII", plans);
 
   useEffect(() => {
     console.log("🏁 SubscriptionPage component mounted");
@@ -568,7 +542,8 @@ function SubscriptionPage() {
                                   } Plan`}
                               </strong>
                               <p>
-                                3 days free, then ${plan.amount}/{plan.interval}
+                                3 days free, then ${plan.amount || plan.price}/
+                                {plan.interval}
                               </p>
                             </div>
                           </label>
@@ -626,7 +601,7 @@ function SubscriptionPage() {
                         }}
                       >
                         <div>
-                          <button
+                          {/* <button
                             className="btn btn-outline-secondary mb-4"
                             onClick={handleBackToPlans}
                             style={{
@@ -635,7 +610,7 @@ function SubscriptionPage() {
                             }}
                           >
                             ← Back to Plans
-                          </button>
+                          </button> */}
                           <StripePaymentForm
                             selectedPlan={selectedPlan}
                             onSuccess={handlePaymentSuccess}
