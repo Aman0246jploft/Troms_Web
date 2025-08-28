@@ -289,45 +289,6 @@ function StripePaymentForm({
       </form>
 
       <div className="payment-info mt-4 text-center">
-        <div className="d-flex justify-content-center align-items-center mb-2">
-          <svg
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="text-success me-2"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-          </svg>
-          <small className="text-muted">Secure payment powered by Stripe</small>
-        </div>
-        <div className="d-flex justify-content-center align-items-center flex-wrap gap-3">
-          <img
-            src="/images/visa.svg"
-            alt="Visa"
-            style={{ height: "20px" }}
-            className="payment-method-icon"
-          />
-          <img
-            src="/images/mastercard.svg"
-            alt="Mastercard"
-            style={{ height: "20px" }}
-            className="payment-method-icon"
-          />
-          <img
-            src="/images/amex.svg"
-            alt="American Express"
-            style={{ height: "20px" }}
-            className="payment-method-icon"
-          />
-          <img
-            src="/images/discover.svg"
-            alt="Discover"
-            style={{ height: "20px" }}
-            className="payment-method-icon"
-          />
-        </div>
         <p className="small text-muted mt-2 mb-0">
           Your payment information is encrypted and secure
         </p>
@@ -347,6 +308,7 @@ function SubscriptionPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const userInfoId = storedUser?.user?.userInfoId;
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const user = JSON.parse(
@@ -570,81 +532,56 @@ function SubscriptionPage() {
                 )}
 
                 <div className="choose-plan px-135">
-                  {plans.length > 0 ? (
-                    plans.map((plan) => (
-                      <div
-                        key={plan.priceId}
-                        className={`form-check choose-plan-bx ${
-                          selectedPlan?.priceId === plan.priceId
-                            ? "selected"
-                            : ""
-                        }`}
-                        style={{
-                          border:
-                            selectedPlan?.priceId === plan.priceId
-                              ? "2px solid #007bff"
-                              : "1px solid #dee2e6",
-                          borderRadius: "8px",
-                          transition: "all 0.3s ease",
-                          marginBottom: "16px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handlePlanSelect(plan)}
-                      >
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="plan"
-                          id={plan.priceId}
-                          checked={selectedPlan?.priceId === plan.priceId}
-                          onChange={() => handlePlanSelect(plan)}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={plan.priceId}
-                          style={{ cursor: "pointer" }}
+                  <h6 className="text-center">Choose a plan to begin:</h6>
+                  <div
+                    style={{
+                      maxHeight: "15rem",
+                      overflowY: "auto",
+                      padding: "10px",
+                    }}
+                  >
+                    {plans.length > 0 ? (
+                      plans.map((plan) => (
+                        <div
+                          key={plan.priceId}
+                          className="form-check choose-plan-bx"
                         >
-                          <div>
-                            <strong style={{ fontSize: "18px", color: "#333" }}>
-                              {plan.productName ||
-                                `${
-                                  plan.interval === "month"
-                                    ? "Monthly"
-                                    : "Yearly"
-                                } Plan`}
-                            </strong>
-                            <p
-                              style={{
-                                fontSize: "16px",
-                                color: "#007bff",
-                                fontWeight: "600",
-                                margin: "8px 0",
-                              }}
-                            >
-                              ${plan.amount}/{plan.interval}
-                            </p>
-                            {plan.interval === "year" && (
-                              <p
-                                style={{
-                                  fontSize: "14px",
-                                  color: "#28a745",
-                                  margin: "4px 0",
-                                }}
-                              >
-                                Save 20% with yearly billing
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="plan"
+                            id={plan.priceId}
+                            checked={selectedPlan?.priceId === plan.priceId}
+                            onChange={() => handlePlanSelect(plan)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={plan.priceId}
+                          >
+                            <div>
+                              <strong>
+                                {plan.productName ||
+                                  `${
+                                    plan.interval === "month"
+                                      ? "Monthly"
+                                      : "Yearly"
+                                  } Plan`}
+                              </strong>
+                              <p>
+                                3 days free, then ${plan.amount}/{plan.interval}
                               </p>
-                            )}
-                          </div>
-                        </label>
+                            </div>
+                          </label>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-4">
+                        <p className="text-muted">
+                          No subscription plans available
+                        </p>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-4">
-                      <p className="text-muted">
-                        No subscription plans available
-                      </p>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                   <div className="form-check choose-check">
                     <input
@@ -670,30 +607,14 @@ function SubscriptionPage() {
                     </label>
                   </div>
 
-                  <div className="text-center mt-4">
+                  <div className="text-center mt-3">
                     {!showPayment ? (
                       <button
                         className="custom-btn continue-btn"
                         onClick={handlePurchase}
                         disabled={!selectedPlan || !termsAccepted}
-                        style={{
-                          background:
-                            selectedPlan && termsAccepted
-                              ? "linear-gradient(135deg, #007bff 0%, #0056b3 100%)"
-                              : "#6c757d",
-                          border: "none",
-                          borderRadius: "8px",
-                          padding: "12px 24px",
-                          fontSize: "16px",
-                          fontWeight: "600",
-                          transition: "all 0.3s ease",
-                          cursor:
-                            selectedPlan && termsAccepted
-                              ? "pointer"
-                              : "not-allowed",
-                        }}
                       >
-                        Continue to Payment
+                        Pay
                       </button>
                     ) : (
                       <Elements
@@ -729,6 +650,11 @@ function SubscriptionPage() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="auth-bttm">
+            <p>
+              <span>25/</span> 25
+            </p>
           </div>
         </div>
       </section>
