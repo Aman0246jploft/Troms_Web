@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -10,26 +10,26 @@ function AccomplishPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedGoal, setSelectedGoal] = useState(
-    state.accomplish && state.accomplish.length > 0 ? state.accomplish[0] : ''
+    state.accomplish && state.accomplish.length > 0 ? state.accomplish[0] : ""
   );
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   const accomplishmentOptions = [
-    { id: 'STAY_ACTIVE_DAILY', label: 'Stay active daily' },
-    { id: 'BOOST_YOUR_ENERGY', label: 'Boost your energy' },
-    { id: 'IMPROVE_YOUR_FOCUS', label: 'Improve your focus' },
-    { id: 'GAIN_MORE_CONFIDENCE', label: 'Gain more confidence' }
+    { id: "STAY_ACTIVE_DAILY", label: "Stay active daily" },
+    { id: "BOOST_YOUR_ENERGY", label: "Boost your energy" },
+    { id: "IMPROVE_YOUR_FOCUS", label: "Improve your focus" },
+    { id: "GAIN_MORE_CONFIDENCE", label: "Gain more confidence" },
   ];
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     if (!state.cookingLevel) {
-      router.push('/cooking');
+      router.push("/cooking");
       return;
     }
 
@@ -37,34 +37,41 @@ function AccomplishPage() {
     if (state.currentStep !== 18) {
       updateStep(18);
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.cookingLevel, state.currentStep, router, updateStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.cookingLevel,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleGoalChange = (goalId) => {
     setSelectedGoal(goalId);
     // Store as single item in array
-    updateField('accomplish', [goalId]);
+    updateField("accomplish", [goalId]);
     hideAlert();
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!selectedGoal) {
-      showAlert('warning', 'Please select what you would like to accomplish.');
+      showAlert("warning", "Please select what you would like to accomplish.");
       return;
     }
 
     if (isStepValid(18)) {
       updateStep(19);
-      router.push('/allergies');
+      router.push("/allergies");
     }
   };
 
@@ -79,8 +86,8 @@ function AccomplishPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -105,9 +112,11 @@ function AccomplishPage() {
                           checked={selectedGoal === option.id}
                           onChange={() => handleGoalChange(option.id)}
                         />
-                        <label 
+                        <label
                           htmlFor={option.id}
-                          className={selectedGoal === option.id ? 'selected' : ''}
+                          className={
+                            selectedGoal === option.id ? "selected" : ""
+                          }
                         >
                           {option.label}
                         </label>
