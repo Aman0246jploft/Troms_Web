@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -10,51 +10,50 @@ function SelectGenderPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedGender, setSelectedGender] = useState(state.gender);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
-useEffect(() => {
-  // Redirect if not authenticated
-  if (state.isAuthChecked && state.isAuthenticated === false) {
-    router.push('/register');
-    return;
-  }
+  useEffect(() => {
+    // Redirect if not authenticated
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
 
-  // Redirect if onboarding is not needed
-  if (!state.needsOnboarding) {
-    router.push('/bmr');
-    return;
-  }
+    // Redirect if onboarding is not needed
+    if (!state.needsOnboarding) {
+      router.push("/bmr");
+      return;
+    }
 
-  // Update step once on mount
-  updateStep(2);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // empty dependency array ensures this runs only once
-
+    // Update step once on mount
+    updateStep(2);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // empty dependency array ensures this runs only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleGenderChange = (gender) => {
     setSelectedGender(gender);
-    updateField('gender', gender);
+    updateField("gender", gender);
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!selectedGender) {
-      showAlert('warning', 'Please select your gender to continue.');
+      showAlert("warning", "Please select your gender to continue.");
       return;
     }
 
     if (isStepValid(2)) {
       updateStep(3);
-      router.push('/borndate');
+      router.push("/borndate");
     }
   };
 
@@ -69,8 +68,8 @@ useEffect(() => {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -90,12 +89,12 @@ useEffect(() => {
                         className="d-none"
                         name="gender"
                         value="male"
-                        checked={selectedGender === 'male'}
-                        onChange={() => handleGenderChange('male')}
+                        checked={selectedGender === "male"}
+                        onChange={() => handleGenderChange("male")}
                       />
-                      <label 
+                      <label
                         htmlFor="male"
-                        className={selectedGender === 'male' ? 'selected' : ''}
+                        className={selectedGender === "male" ? "selected" : ""}
                       >
                         <div className="gender-img">
                           <img src="/images/male.png" alt="Male" />
@@ -110,12 +109,14 @@ useEffect(() => {
                         className="d-none"
                         name="gender"
                         value="female"
-                        checked={selectedGender === 'female'}
-                        onChange={() => handleGenderChange('female')}
+                        checked={selectedGender === "female"}
+                        onChange={() => handleGenderChange("female")}
                       />
-                      <label 
+                      <label
                         htmlFor="female"
-                        className={selectedGender === 'female' ? 'selected' : ''}
+                        className={
+                          selectedGender === "female" ? "selected" : ""
+                        }
                       >
                         <div className="gender-img">
                           <img src="/images/female.png" alt="Female" />
@@ -125,7 +126,7 @@ useEffect(() => {
                     </div>
                   </div>
                   <div className="text-center">
-                    <button 
+                    <button
                       type="submit"
                       className="custom-btn continue-btn"
                       disabled={!selectedGender}

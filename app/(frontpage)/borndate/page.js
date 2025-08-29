@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import Alert from "../../../Components/Alert";
+import WheelPicker from "../../../Components/WheelPicker";
 
 function BornDatePage() {
   const router = useRouter();
@@ -173,7 +174,7 @@ function BornDatePage() {
               />
 
               <div className="auth-cards borndate">
-                <p className="text-uppercase mb-5">Your born date</p>
+                <p className="text-uppercase mb-3">Your born date</p>
                 <h3 className="mb-2">What's your birthday?</h3>
                 <p>This will be used to calibrate your custom plan.</p>
                 <form onSubmit={handleContinue}>
@@ -250,6 +251,12 @@ function BornDatePage() {
                     </button>
                   </div>
                 </form>
+                {/* <WheelPicker />
+                <div className="text-center mt-4">
+                  <button type="submit" className="custom-btn continue-btn">
+                    Continue
+                  </button>
+                </div> */}
               </div>
             </div>
           </div>

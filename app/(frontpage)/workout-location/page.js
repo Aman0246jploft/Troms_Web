@@ -75,11 +75,11 @@ function WorkoutLocationPage() {
                 onClose={hideAlert}
               />
 
-              <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Workout Location</p>
-                <h3 className="mb-5">Choose your workout location</h3>
+              <div className="auth-cards gender location">
+                <p className="text-uppercase mb-3">Workout Location</p>
+                <h3 className="mb-3">Choose your workout location</h3>
                 <form onSubmit={handleContinue}>
-                  <div className="gender-cards">
+                  <div className="gender-cards ">
                     <div>
                       <input
                         type="radio"

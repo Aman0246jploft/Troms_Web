@@ -170,7 +170,7 @@ function EquipmentContent() {
                 onClose={hideAlert}
               />
 
-              <div className="auth-cards equipment ">
+              <div className="auth-cards equipment location">
                 <p className="text-uppercase mb-2">Equipments</p>
                 <h3 className="mb-2">
                   What equipment do you <br /> have access to?
@@ -305,7 +305,7 @@ function EquipmentContent() {
                     </>
                   )}
 
-                  <div className="text-center">
+                  <div className="text-center mt-2">
                     <button
                       type="submit"
                       className="custom-btn continue-btn"
