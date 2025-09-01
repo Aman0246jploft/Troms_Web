@@ -11,12 +11,23 @@ function DislikesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [dislikedFoods, setDislikedFoods] = useState([]);
-  const [selectedDislikes, setSelectedDislikes] = useState(
-    state.dislikedFoodItems || []
-  );
+  // const [selectedDislikes, setSelectedDislikes] = useState(
+  //   state.dislikedFoodItems || []
+  // );
+
+  const [selectedDislikes, setSelectedDislikes] = useState([]);
+
   const [customDislike, setCustomDislike] = useState("");
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+
+  useEffect(() => {
+  if (state.dislikedFoodItems) {
+    setSelectedDislikes(state.dislikedFoodItems);
+  }
+}, [state.dislikedFoodItems]);
+
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -97,17 +108,17 @@ function DislikesPage() {
     }
   };
 
-  const handleDislikeToggle = (dislikeName) => {
-    setSelectedDislikes((prev) => {
-      const newSelection = prev.includes(dislikeName)
-        ? prev.filter((name) => name !== dislikeName)
-        : [...prev, dislikeName];
+const handleDislikeToggle = (dislikeName) => {
+  setSelectedDislikes((prev) => {
+    const newSelection = prev.includes(dislikeName)
+      ? prev.filter((name) => name !== dislikeName)
+      : [...prev, dislikeName];
 
-      updateField("dislikedFoodItems", newSelection);
-      return newSelection;
-    });
-    hideAlert();
-  };
+    // update context after state change
+    updateField("dislikedFoodItems", newSelection);
+    return newSelection;
+  });
+};
 
   const handleCustomDislikeAdd = () => {
     if (customDislike.trim()) {
@@ -232,16 +243,16 @@ function DislikesPage() {
                               {selectedDislikes.includes(
                                 food.ingredients_name
                               ) && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleRemoveDislike(food.ingredients_name);
-                                  }}
-                                >
-                                  <img src="/images/close.svg" alt="Remove" />
-                                </button>
-                              )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleRemoveDislike(food.ingredients_name);
+                                    }}
+                                  >
+                                    <img src="/images/close.svg" alt="Remove" />
+                                  </button>
+                                )}
                             </label>
                           </div>
                         ))}

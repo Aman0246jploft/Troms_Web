@@ -11,12 +11,21 @@ function AllergiesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [allergicFoods, setAllergicFoods] = useState([]);
-  const [selectedAllergies, setSelectedAllergies] = useState(
-    state.allergicFoodItems || []
-  );
+  // const [selectedAllergies, setSelectedAllergies] = useState(
+  //   state.allergicFoodItems || []
+  // );
+  const [selectedAllergies, setSelectedAllergies] = useState([]);
+
   const [customAllergy, setCustomAllergy] = useState("");
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+  useEffect(() => {
+    if (state.allergicFoodItems) {
+      setSelectedAllergies(state.allergicFoodItems);
+    }
+  }, [state.allergicFoodItems]);
+
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -96,17 +105,31 @@ function AllergiesPage() {
     }
   };
 
-  const handleAllergyToggle = (allergyName) => {
-    setSelectedAllergies((prev) => {
-      const newSelection = prev.includes(allergyName)
-        ? prev.filter((name) => name !== allergyName)
-        : [...prev, allergyName];
+  // const handleAllergyToggle = (allergyName) => {
+  //   setSelectedAllergies((prev) => {
+  //     const newSelection = prev.includes(allergyName)
+  //       ? prev.filter((name) => name !== allergyName)
+  //       : [...prev, allergyName];
 
-      updateField("allergicFoodItems", newSelection);
-      return newSelection;
-    });
-    hideAlert();
-  };
+  //     updateField("allergicFoodItems", newSelection);
+  //     return newSelection;
+  //   });
+  //   hideAlert();
+  // };
+
+
+const handleAllergyToggle = (allergyName) => {
+  setSelectedAllergies((prev) => {
+    const newSelection = prev.includes(allergyName)
+      ? prev.filter((name) => name !== allergyName)
+      : [...prev, allergyName];
+
+    // Only update context after state is set
+    updateField("allergicFoodItems", newSelection);
+    return newSelection;
+  });
+};
+
 
   const handleCustomAllergyAdd = () => {
     if (customAllergy.trim()) {
@@ -233,16 +256,16 @@ function AllergiesPage() {
                               {selectedAllergies.includes(
                                 food.ingredients_name
                               ) && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleRemoveAllergy(food.ingredients_name);
-                                  }}
-                                >
-                                  <img src="/images/close.svg" alt="Remove" />
-                                </button>
-                              )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleRemoveAllergy(food.ingredients_name);
+                                    }}
+                                  >
+                                    <img src="/images/close.svg" alt="Remove" />
+                                  </button>
+                                )}
                             </label>
                           </div>
                         ))}
