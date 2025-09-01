@@ -1,8 +1,124 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import WeightPicker from "../../../Components/WeightPicker";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
 
-function page() {
+function NewWeightPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const [weight, setWeight] = useState(() => {
+    // Initialize weight based on saved unit or default
+    if (state.weight) {
+      return state.weight;
+    }
+    return state.weightUnit === 'kg' ? 75 : 165;
+  });
+  const [isMetric, setIsMetric] = useState(() => {
+    // Initialize unit preference
+    return state.weightUnit === 'kg' || !state.weightUnit;
+  });
+  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+  // Redirects based on previous steps
+  useEffect(() => {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push('/register');
+    } else if (!state.gender) {
+      router.push('/select-gender');
+    } else if (!state.dateOfBirth || state.age < 13) {
+      router.push('/borndate');
+    } else if (!state.trainingDays) {
+      router.push('/training-days');
+    } else if (state.feedback === null) {
+      router.push('/feedback');
+    } else if (!state.height) {
+      router.push('/new-height');
+    }
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.feedback, state.height, router]);
+
+  useEffect(() => {
+    updateStep(7);
+    
+    // Sync weight unit if not set
+    if (!state.weightUnit) {
+      updateField('weightUnit', isMetric ? 'kg' : 'lbs');
+    }
+    
+    // Initialize weight if not set
+    if (!state.weight) {
+      updateField('weight', weight);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run only once
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: '', message: '' });
+  };
+
+  const handleWeightChange = (newWeight) => {
+    setWeight(newWeight);
+    updateField('weight', newWeight);
+    hideAlert();
+  };
+
+  const handleUnitToggle = () => {
+    const newIsMetric = !isMetric;
+    setIsMetric(newIsMetric);
+
+    let newWeight;
+    if (newIsMetric) {
+      // Convert from lbs to kg
+      newWeight = Math.round(weight * 0.453592 * 10) / 10;
+      // Ensure it's within metric bounds
+      newWeight = Math.max(30, Math.min(300, newWeight));
+      updateField('weightUnit', 'kg');
+    } else {
+      // Convert from kg to lbs
+      newWeight = Math.round(weight / 0.453592 * 10) / 10;
+      // Ensure it's within imperial bounds
+      newWeight = Math.max(60, Math.min(600, newWeight));
+      updateField('weightUnit', 'lbs');
+    }
+    
+    setWeight(newWeight);
+    updateField('weight', newWeight);
+    hideAlert(); // Hide any existing alerts
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+
+    if (!weight || weight <= 0) {
+      showAlert('warning', 'Please select a valid weight.');
+      return;
+    }
+
+    // Validate reasonable weight range (matching component ranges)
+    if (isMetric) {
+      if (weight < 30 || weight > 300) {
+        showAlert('warning', 'Please select a weight between 30-300 kg.');
+        return;
+      }
+    } else {
+      if (weight < 60 || weight > 600) {
+        showAlert('warning', 'Please select a weight between 60-600 lbs.');
+        return;
+      }
+    }
+
+    if (isStepValid(7)) {
+      updateStep(8);
+      router.push('/weight-goal');
+    }
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -14,21 +130,45 @@ function page() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
+
+              <Alert
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
               <div className="auth-cards weight-goal">
                 <p className="text-uppercase mb-2">Your Weight</p>
                 <h3 className="mb-2">What is your current weight?</h3>
                 <p className="mb-2">You can update it later if needed</p>
+                
                 <div className="weight-switch">
                   <span>Imperial</span>
                   <label className="switch">
-                    <input type="checkbox" className="d-none" />
+                    <input 
+                      type="checkbox" 
+                      className="d-none" 
+                      checked={isMetric}
+                      onChange={handleUnitToggle}
+                    />
                     <span className="slider"></span>
                   </label>
                   <span>Metric</span>
                 </div>
-                <WeightPicker />
+
+                <WeightPicker 
+                  weight={weight}
+                  isMetric={isMetric}
+                  onChange={handleWeightChange}
+                />
                 <div className="text-center mt-5">
-                  <button type="submit" className="custom-btn continue-btn">
+                  <button 
+                    type="submit" 
+                    className="custom-btn continue-btn"
+                    onClick={handleContinue}
+                    disabled={!weight || weight <= 0}
+                  >
                     Continue
                   </button>
                 </div>
@@ -36,9 +176,14 @@ function page() {
             </div>
           </div>
         </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
+        </div>
       </section>
     </>
   );
 }
 
-export default page;
+export default NewWeightPage;

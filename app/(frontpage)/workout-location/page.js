@@ -12,20 +12,23 @@ function WorkoutLocationPage() {
   const [selectedLocation, setSelectedLocation] = useState(state.workoutLocation || '');
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
-  useEffect(() => {
-    if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
-      return;
-    }
-    if (!state.desiredWeight || state.desiredWeight <= 0) {
-      router.push('/desired-weight');
-      return;
-    }
+useEffect(() => {
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push('/register');
+    return;
+  }
+  if (!state.desiredWeight || state.desiredWeight <= 0) {
+    router.push('/desired-weight');
+    return;
+  }
 
-    if (state.currentStep !== 9) {
-      updateStep(9);
-    }
-  }, [state.isAuthChecked, state.isAuthenticated, state.desiredWeight, state.currentStep, router, updateStep]);
+  // Only update step if currentStep is different from target
+  if (state.currentStep !== 10) {
+    updateStep(10);
+  }
+}, [state.isAuthChecked, state.isAuthenticated, state.desiredWeight, state.currentStep, router, updateStep]);
+
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -49,8 +52,8 @@ function WorkoutLocationPage() {
       return;
     }
 
-    if (isStepValid(9)) {
-      updateStep(10);
+    if (isStepValid(10)) {
+      updateStep(11);
       // Navigate to equipment with the selected location as a URL parameter
       router.push(`/equipment?location=${selectedLocation.toLowerCase()}`);
     }

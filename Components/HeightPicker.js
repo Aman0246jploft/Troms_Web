@@ -18,6 +18,7 @@ export default function HeightPicker({
   maxCm = 220,
   step = 1,
   defaultValueCm = 165,
+  onChange,
 }) {
   const [unit, setUnit] = useState("metric"); // "metric" | "imperial"
   const [valueCm, setValueCm] = useState(clamp(defaultValueCm, minCm, maxCm));
@@ -88,7 +89,9 @@ export default function HeightPicker({
     const deltaCm = -dy / PX_PER_CM;
     const raw = dragState.current.startValue + deltaCm;
     const rounded = Math.round(raw / step) * step;
-    setValueCm(clamp(rounded, minCm, maxCm));
+    const newValue = clamp(rounded, minCm, maxCm);
+    setValueCm(newValue);
+    if (onChange) onChange(newValue);
   };
 
   const onPointerUp = () => {
@@ -101,12 +104,18 @@ export default function HeightPicker({
     e.preventDefault();
     const deltaCm = e.deltaY / 100; // tune scroll sensitivity
     const next = Math.round((valueCm + deltaCm) / step) * step;
-    setValueCm(clamp(next, minCm, maxCm));
+    const newValue = clamp(next, minCm, maxCm);
+    setValueCm(newValue);
+    if (onChange) onChange(newValue);
   };
 
   // Click nudge handlers
   const nudge = (dir) => {
-    setValueCm((v) => clamp(v + dir * step, minCm, maxCm));
+    setValueCm((v) => {
+      const newValue = clamp(v + dir * step, minCm, maxCm);
+      if (onChange) onChange(newValue);
+      return newValue;
+    });
   };
 
   const displayValue = useMemo(() => {

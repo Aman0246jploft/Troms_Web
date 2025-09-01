@@ -190,19 +190,21 @@ export function OnboardingProvider({ children }) {
           return state.trainingDays > 0;
         case 5: // Feedback
           return true; // boolean field, always valid
-        case 6: // Weight
+        case 6: // Height
+          return state.height > 0;
+        case 7: // Weight
           return state.weight > 0;
-        case 7: // Weight goal
+        case 8: // Weight goal
           return state.weightGoal !== "";
-        case 8: // Desired weight
+        case 9: // Desired weight
           return state.desiredWeight > 0 && validateDesiredWeight(state);
-        case 9: // Workout location
+        case 10: // Workout location
           return state.workoutLocation !== "";
-        case 10: // Equipment
+        case 11: // Equipment
           return state.selectedEquipments.length > 0;
-        case 11: // Goal reach
+        case 12: // Goal reach
           return state.reachingGoals !== "";
-        case 12: // Realistic target
+        case 13: // Realistic target
           return state.realisticTarget > 0;
         default:
           return true;

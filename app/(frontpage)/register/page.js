@@ -272,15 +272,15 @@ function RegisterPage() {
                     </button>
                   </div>
 
-                  <p className="or-line">
+                  {/* <p className="or-line">
                     <span>or</span>
-                  </p>
-                  <p className="fz-16 fw-400">
+                  </p> */}
+                  {/* <p className="fz-16 fw-400">
                     Already have an account?{" "}
-                    <Link href="/login" className="fw-600 clr">
+                    <Link href="/register" className="fw-600 clr">
                       Sign In
                     </Link>
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

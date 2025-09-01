@@ -26,7 +26,7 @@ function page() {
                     </h3>
                     <p>Become the strongest, healthiest version of yourself.</p>
                     <div className="track-button">
-                      <Link href="/login">Skip</Link>
+                      <Link href="/register">Skip</Link>
                       <button
                         onClick={() => setStep(2)}
                         className="custom-btn d-flex gap-2 align-items-center"
@@ -52,7 +52,7 @@ function page() {
                     <div className="track-button">
                       <button onClick={() => setStep(1)}>Back</button>
                       <Link
-                        href="/login"
+                        href="/register"
                         className="custom-btn d-flex gap-2 align-items-center"
                       >
                         Next{" "}

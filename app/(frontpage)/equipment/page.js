@@ -28,7 +28,7 @@ function EquipmentContent() {
   }, [state.isAuthenticated, router]);
 
   useEffect(() => {
-    updateStep(10);
+    updateStep(11);
 
     // Check for location parameter in URL
     const locationParam = searchParams.get("location");
@@ -145,8 +145,8 @@ function EquipmentContent() {
       return;
     }
 
-    if (isStepValid(10)) {
-      updateStep(11);
+    if (isStepValid(11)) {
+      updateStep(12);
       router.push("/goal-reach");
     }
   };

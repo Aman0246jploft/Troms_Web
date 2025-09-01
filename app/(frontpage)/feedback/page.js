@@ -55,7 +55,7 @@ function FeedbackPage() {
 
     if (isStepValid(5)) {
       updateStep(6);
-      router.push('/weight'); // next page
+      router.push('/new-height'); // next page
     }
   };
 

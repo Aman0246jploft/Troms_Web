@@ -10,9 +10,9 @@ import WheelPicker from "../../../Components/WheelPicker";
 function BornDatePage() {
   const router = useRouter();
   const { state, calculateAge, updateStep, isStepValid } = useOnboarding();
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedDay, setSelectedDay] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedYear, setSelectedYear] = useState(0);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   const months = [
@@ -30,6 +30,16 @@ function BornDatePage() {
     "December",
   ];
 
+  // Generate years (from current year - 100 to current year - 13)
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear - 13; year >= currentYear - 100; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push("/register");
@@ -43,9 +53,11 @@ function BornDatePage() {
 
     if (state.dateOfBirth) {
       const date = new Date(state.dateOfBirth);
-      setSelectedMonth(months[date.getMonth()]);
-      setSelectedDay(date.getDate().toString());
-      setSelectedYear(date.getFullYear().toString());
+      setSelectedMonth(date.getMonth());
+      setSelectedDay(date.getDate() - 1); // WheelPicker uses 0-based index
+      const years = generateYears();
+      const yearIndex = years.indexOf(date.getFullYear());
+      setSelectedYear(yearIndex >= 0 ? yearIndex : 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // empty array = run once on mount
@@ -59,12 +71,13 @@ function BornDatePage() {
   };
 
   const handleDateChange = () => {
-    if (selectedMonth && selectedDay && selectedYear) {
-      const monthIndex = months.indexOf(selectedMonth);
-      const dateString = `${selectedYear}-${String(monthIndex + 1).padStart(
-        2,
-        "0"
-      )}-${String(selectedDay).padStart(2, "0")}`;
+    if (selectedMonth !== undefined && selectedDay !== undefined && selectedYear !== undefined) {
+      const years = generateYears();
+      const year = years[selectedYear];
+      const monthIndex = selectedMonth;
+      const day = selectedDay + 1; // Convert back from 0-based index
+
+      const dateString = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
       // Validate date
       const selectedDate = new Date(dateString);
@@ -86,18 +99,18 @@ function BornDatePage() {
         age--;
       }
 
-      if (age < 13) {
-        showAlert(
-          "warning",
-          "You must be at least 13 years old to use this app."
-        );
-        return;
-      }
+      // if (age < 13) {
+      //   showAlert(
+      //     "warning",
+      //     "You must be at least 13 years old to use this app."
+      //   );
+      //   return;
+      // }
 
-      if (age > 100) {
-        showAlert("warning", "Please enter a valid birth date.");
-        return;
-      }
+      // if (age > 100) {
+      //   showAlert("warning", "Please enter a valid birth date.");
+      //   return;
+      // }
 
       calculateAge(dateString);
       hideAlert();
@@ -111,7 +124,7 @@ function BornDatePage() {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (!selectedMonth || !selectedDay || !selectedYear) {
+    if (selectedMonth === undefined || selectedDay === undefined || selectedYear === undefined) {
       showAlert(
         "warning",
         "Please select your complete birth date to continue."
@@ -128,30 +141,6 @@ function BornDatePage() {
       updateStep(4);
       router.push("/training-days");
     }
-  };
-
-  // Generate years (from current year - 100 to current year - 13)
-  const generateYears = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear - 13; year >= currentYear - 100; year--) {
-      years.push(year);
-    }
-    return years;
-  };
-
-  // Generate days based on selected month and year
-  const generateDays = () => {
-    if (!selectedMonth || !selectedYear)
-      return Array.from({ length: 31 }, (_, i) => i + 1);
-
-    const monthIndex = months.indexOf(selectedMonth);
-    const daysInMonth = new Date(
-      parseInt(selectedYear),
-      monthIndex + 1,
-      0
-    ).getDate();
-    return Array.from({ length: daysInMonth }, (_, i) => i + 1);
   };
 
   return (
@@ -177,86 +166,37 @@ function BornDatePage() {
                 <p className="text-uppercase mb-3">Your born date</p>
                 <h3 className="mb-2">What's your birthday?</h3>
                 <p>This will be used to calibrate your custom plan.</p>
-                <form onSubmit={handleContinue}>
-                  <div className="row justify-content-center gx-2">
-                    <div className="col-lg-3 col-md-4 col-sm-4">
-                      <div className="custom-frm-bx">
-                        <select
-                          className="form-select"
-                          value={selectedMonth}
-                          onChange={(e) => setSelectedMonth(e.target.value)}
-                          required
-                        >
-                          <option value="">Month</option>
-                          {months.map((month, index) => (
-                            <option key={index} value={month}>
-                              {month}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-lg-3 col-md-4 col-sm-4">
-                      <div className="custom-frm-bx">
-                        <select
-                          className="form-select"
-                          value={selectedDay}
-                          onChange={(e) => setSelectedDay(e.target.value)}
-                          required
-                        >
-                          <option value="">Day</option>
-                          {generateDays().map((day) => (
-                            <option key={day} value={day}>
-                              {day}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-lg-3 col-md-4 col-sm-4">
-                      <div className="custom-frm-bx">
-                        <select
-                          className="form-select"
-                          value={selectedYear}
-                          onChange={(e) => setSelectedYear(e.target.value)}
-                          required
-                        >
-                          <option value="">Year</option>
-                          {generateYears().map((year) => (
-                            <option key={year} value={year}>
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+                
+                <WheelPicker 
+                  initialMonth={selectedMonth}
+                  initialDay={selectedDay}
+                  initialYear={selectedYear}
+                  onMonthChange={setSelectedMonth}
+                  onDayChange={setSelectedDay}
+                  onYearChange={setSelectedYear}
+                />
+
+                {state.age > 0 && (
+                  <div className="text-center mt-2">
+                    <h6 className="clr fw-600">Age: {state.age} years old</h6>
                   </div>
-                  {state.age > 0 && (
-                    <div className="text-center mt-2">
-                      <h6 className="clr fw-600">Age: {state.age} years old</h6>
-                    </div>
-                  )}
-                  <div className="text-center mt-4">
-                    <button
-                      type="submit"
-                      className="custom-btn continue-btn"
-                      disabled={
-                        !selectedMonth ||
-                        !selectedDay ||
-                        !selectedYear ||
-                        state.age < 13
-                      }
-                    >
-                      Continue
-                    </button>
-                  </div>
-                </form>
-                {/* <WheelPicker />
+                )}
+                
                 <div className="text-center mt-4">
-                  <button type="submit" className="custom-btn continue-btn">
+                  <button
+                    type="submit"
+                    className="custom-btn continue-btn"
+                    onClick={handleContinue}
+                    disabled={
+                      selectedMonth === undefined ||
+                      selectedDay === undefined ||
+                      selectedYear === undefined ||
+                      state.age < 13
+                    }
+                  >
                     Continue
                   </button>
-                </div> */}
+                </div>
               </div>
             </div>
           </div>

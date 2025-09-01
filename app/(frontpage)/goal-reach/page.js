@@ -27,12 +27,14 @@ useEffect(() => {
 }, [state.isAuthChecked, state.isAuthenticated, router]);
 
 
-  // Set current step
-  useEffect(() => {
-  if (state.currentStep !== 11) {
-    updateStep(11);
+
+
+useEffect(() => {
+  if (state.currentStep !== 12) {  // compare with the step you actually want
+    updateStep(12);
   }
 }, [state.currentStep, updateStep]);
+
 
 
   const showAlert = (type, message) => {

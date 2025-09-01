@@ -16,13 +16,13 @@ function WeightGoalPage() {
     if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push("/register");
     } else if (!state.weight || state.weight <= 0) {
-      router.push("/weight");
+      router.push("/new-weight");
     }
   }, [state.isAuthenticated, state.weight, router]);
 
   // Set current step
   useEffect(() => {
-    updateStep(7);
+    updateStep(8);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const showAlert = (type, message) => {
@@ -47,8 +47,8 @@ function WeightGoalPage() {
       return;
     }
 
-    if (isStepValid(7)) {
-      updateStep(8);
+    if (isStepValid(8)) {
+      updateStep(9);
       router.push("/desired-weight");
     }
   };

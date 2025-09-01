@@ -2,16 +2,27 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 
-function page() {
-  const { state } = useOnboarding();
+function RealisticTargetPage() {
+  const router = useRouter();
+  const { state, updateStep } = useOnboarding();
   const [targetWeightLoss, setTargetWeightLoss] = useState(0);
 
   useEffect(() => {
-    // Get the value from previous state, fallback to 5 if undefined
-    setTargetWeightLoss(state.weeklyWeightLossGoal || 5);
+    // Get the value from previous state, fallback to 1.5 if undefined
+    setTargetWeightLoss(state.weeklyWeightLossGoal || 1.5);
   }, [state.weeklyWeightLossGoal]);
+
+  useEffect(() => {
+    updateStep(13);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run only once
+
+  const handleContinue = () => {
+    router.push('/result-trom');
+  };
 
   return (
     <section className="auth-section">
@@ -35,9 +46,13 @@ function page() {
               </p>
 
               <div className="text-center mt-5">
-                <Link href="/result-trom" className="custom-btn continue-btn">
+                <button 
+                  type="button" 
+                  className="custom-btn continue-btn"
+                  onClick={handleContinue}
+                >
                   Continue
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -45,11 +60,11 @@ function page() {
       </div>
       <div className="auth-bttm">
         <p>
-          <span>12/</span> 25
+          <span>{state.currentStep}/</span> {state.totalSteps}
         </p>
       </div>
     </section>
   );
 }
 
-export default page;
+export default RealisticTargetPage;
