@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,14 +9,14 @@ import Alert from "../../../Components/Alert";
 function WeightGoalPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedGoal, setSelectedGoal] = useState(state.weightGoal || '');
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [selectedGoal, setSelectedGoal] = useState(state.weightGoal || "");
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     } else if (!state.weight || state.weight <= 0) {
-      router.push('/weight');
+      router.push("/weight");
     }
   }, [state.isAuthenticated, state.weight, router]);
 
@@ -30,39 +30,39 @@ function WeightGoalPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleGoalChange = (goal) => {
     setSelectedGoal(goal);
-    updateField('weightGoal', goal);
+    updateField("weightGoal", goal);
     hideAlert();
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!selectedGoal) {
-      showAlert('warning', 'Please select your weight goal to continue.');
+      showAlert("warning", "Please select your weight goal to continue.");
       return;
     }
 
     if (isStepValid(7)) {
       updateStep(8);
-      router.push('/desired-weight');
+      router.push("/desired-weight");
     }
   };
 
   const getGoalDescription = () => {
     switch (selectedGoal) {
-      case 'LOSE_WEIGHT':
-        return 'You\'ll need to consume fewer calories than you burn to lose weight.';
-      case 'MAINTAIN':
-        return 'You\'ll maintain your current weight by balancing calories in and out.';
-      case 'GAIN_WEIGHT':
-        return 'You\'ll need to consume more calories than you burn to gain weight.';
+      case "LOSE_WEIGHT":
+        return "You'll need to consume fewer calories than you burn to lose weight.";
+      case "MAINTAIN":
+        return "You'll maintain your current weight by balancing calories in and out.";
+      case "GAIN_WEIGHT":
+        return "You'll need to consume more calories than you burn to gain weight.";
       default:
-        return 'Select your goal to see personalized recommendations.';
+        return "Select your goal to see personalized recommendations.";
     }
   };
 
@@ -77,8 +77,8 @@ function WeightGoalPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -98,12 +98,14 @@ function WeightGoalPage() {
                         name="weight-goal"
                         className="d-none"
                         value="LOSE_WEIGHT"
-                        checked={selectedGoal === 'LOSE_WEIGHT'}
-                        onChange={() => handleGoalChange('LOSE_WEIGHT')}
+                        checked={selectedGoal === "LOSE_WEIGHT"}
+                        onChange={() => handleGoalChange("LOSE_WEIGHT")}
                       />
-                      <label 
+                      <label
                         htmlFor="lose"
-                        className={selectedGoal === 'LOSE_WEIGHT' ? 'selected' : ''}
+                        className={
+                          selectedGoal === "LOSE_WEIGHT" ? "selected" : ""
+                        }
                       >
                         Lose Weight
                       </label>
@@ -115,12 +117,14 @@ function WeightGoalPage() {
                         name="weight-goal"
                         className="d-none"
                         value="MAINTAIN"
-                        checked={selectedGoal === 'MAINTAIN'}
-                        onChange={() => handleGoalChange('MAINTAIN')}
+                        checked={selectedGoal === "MAINTAIN"}
+                        onChange={() => handleGoalChange("MAINTAIN")}
                       />
-                      <label 
+                      <label
                         htmlFor="maintain"
-                        className={selectedGoal === 'MAINTAIN' ? 'selected' : ''}
+                        className={
+                          selectedGoal === "MAINTAIN" ? "selected" : ""
+                        }
                       >
                         Maintain
                       </label>
@@ -132,17 +136,19 @@ function WeightGoalPage() {
                         name="weight-goal"
                         className="d-none"
                         value="GAIN_WEIGHT"
-                        checked={selectedGoal === 'GAIN_WEIGHT'}
-                        onChange={() => handleGoalChange('GAIN_WEIGHT')}
+                        checked={selectedGoal === "GAIN_WEIGHT"}
+                        onChange={() => handleGoalChange("GAIN_WEIGHT")}
                       />
-                      <label 
+                      <label
                         htmlFor="gain"
-                        className={selectedGoal === 'GAIN_WEIGHT' ? 'selected' : ''}
+                        className={
+                          selectedGoal === "GAIN_WEIGHT" ? "selected" : ""
+                        }
                       >
                         Gain Weight
                       </label>
                     </div>
-                    
+
                     {/* {selectedGoal && (
                       <div className="mt-4 p-3 bg-light rounded">
                         <p className="mb-0 text-center">
@@ -153,7 +159,7 @@ function WeightGoalPage() {
                         </p>
                       </div>
                     )} */}
-                    
+
                     <div className="text-center mt-5">
                       <button
                         type="submit"
