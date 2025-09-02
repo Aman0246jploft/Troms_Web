@@ -108,7 +108,7 @@ function DesiredWeightPage() {
   };
 
   const handleUnitToggle = () => {
-    const newIsMetric = !isMetric;
+    const newIsMetric = !isMetric;  
     setIsMetric(newIsMetric);
 
     let convertedWeight = desiredWeight;
