@@ -2611,3 +2611,46 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: #06402b;
   border-color: #06402b;
 }
+.desired-lose-bx {
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 15px;
+  margin-top: 35px;
+  text-align: center;
+  position: relative;
+}
+.desired-lose-bx::after {
+  position: absolute;
+  content: "";
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #d9d9d9;
+}
+.desired-lose-bx h5 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 8px;
+}
+.desired-lose-bx h5 span {
+  color: #008957;
+}
+.desired-lose-bx h6 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #7d7d7d;
+  margin-bottom: 0;
+}
+
+.new-desired-weight .selected-weight {
+  margin-top: 10px;
+}
+.new-desired-weight .selected-weight .weight-number {
+  font-size: 35px;
+  color: #008957;
+}
