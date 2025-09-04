@@ -7,6 +7,9 @@ const DesiredWeightPicker = ({
   onChange,
   minWeight = null,
   maxWeight = null,
+  currentWeight = null,
+  weightGoal = null,
+  currentWeightUnit = null,
 }) => {
   // Use provided min/max or default based on unit
   const defaultMinWeight = isMetric ? 30 : 60;
@@ -116,6 +119,74 @@ const DesiredWeightPicker = ({
     }
   };
 
+  // Calculate weight difference and percentage
+  const calculateWeightStats = () => {
+    if (!currentWeight || !weightGoal) {
+      return { difference: 0, percentage: 0, show: false };
+    }
+
+    // Convert current weight to display unit for consistent calculation
+    let currentWeightInDisplayUnit = currentWeight;
+    if (currentWeightUnit === 'kg' && !isMetric) {
+      // Convert kg to lbs
+      currentWeightInDisplayUnit = currentWeight / 0.453592;
+    } else if (currentWeightUnit === 'lbs' && isMetric) {
+      // Convert lbs to kg
+      currentWeightInDisplayUnit = currentWeight * 0.453592;
+    }
+
+    const difference = Math.abs(weight - currentWeightInDisplayUnit);
+    const percentage = currentWeightInDisplayUnit > 0 ? (difference / currentWeightInDisplayUnit) * 100 : 0;
+
+    return {
+      difference: Math.round(difference * 10) / 10,
+      percentage: Math.round(percentage * 10) / 10,
+      show: difference > 0 && weightGoal !== 'MAINTAIN',
+      isLoss: weight < currentWeightInDisplayUnit,
+      isGain: weight > currentWeightInDisplayUnit
+    };
+  };
+
+  const getWeightChangeText = () => {
+    const stats = calculateWeightStats();
+    
+    if (!stats.show) return null;
+
+    const unit = isMetric ? 'Kg' : 'lbs';
+    let difficultyText = '';
+    let actionText = '';
+
+    if (stats.isLoss) {
+      actionText = 'lose';
+      // Determine difficulty based on percentage
+      if (stats.percentage >= 15) {
+        difficultyText = 'Very hard to';
+      } else if (stats.percentage >= 10) {
+        difficultyText = 'Hard to';
+      } else if (stats.percentage >= 5) {
+        difficultyText = 'Moderate to';
+      } else {
+        difficultyText = 'Easy to';
+      }
+    } else if (stats.isGain) {
+      actionText = 'gain';
+      // Determine difficulty for weight gain
+      if (stats.percentage >= 10) {
+        difficultyText = 'Challenging to';
+      } else if (stats.percentage >= 5) {
+        difficultyText = 'Moderate to';
+      } else {
+        difficultyText = 'Easy to';
+      }
+    }
+
+    return {
+      primaryText: `${difficultyText} ${actionText}`,
+      weightText: `${stats.difference} ${unit}`,
+      secondaryText: `You will ${actionText} ${stats.percentage}% of body weight!`
+    };
+  };
+
   // Generate tick marks
   const renderTicks = () => {
     const ticks = [];
@@ -201,12 +272,17 @@ const DesiredWeightPicker = ({
             }}
           />
         </div>
-        <div className="desired-lose-bx">
-          <h5>
-            Hard to lose - <span>5 Kg</span>
-          </h5>
-          <h6>You will lose 8% of body weight!</h6>
-        </div>
+        {(() => {
+          const weightChangeText = getWeightChangeText();
+          return weightChangeText ? (
+            <div className="desired-lose-bx">
+              <h5>
+                {weightChangeText.primaryText} - <span>{weightChangeText.weightText}</span>
+              </h5>
+              <h6>{weightChangeText.secondaryText}</h6>
+            </div>
+          ) : null;
+        })()}
 
         <div className="selected-weight">
           <span className="weight-number">

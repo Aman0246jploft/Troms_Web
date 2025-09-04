@@ -49,7 +49,7 @@ function WeightGoalPage() {
 
     if (isStepValid(8)) {
       updateStep(9);
-      router.push("/desired-weight");
+      router.push("/new-desired-weight");
     }
   };
 
