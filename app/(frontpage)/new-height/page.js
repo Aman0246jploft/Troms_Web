@@ -30,6 +30,11 @@ function NewHeightPage() {
 
   useEffect(() => {
     updateStep(6);
+    
+    // Initialize height in global state if not already set
+    if (!state.height && height > 0) {
+      updateField('height', height);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
 
