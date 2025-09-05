@@ -30,7 +30,7 @@ export default function HeightPicker({
 
   // Visual constants
   const PX_PER_CM = 8; // distance between ticks (1 cm) in px
-  const [wrapperHeight, setWrapperHeight] = useState(260);
+  const [wrapperHeight, setWrapperHeight] = useState(280); // Match CSS height
 
   // Build ticks and label stops (labels every 5cm, major every 10cm)
   const ticks = useMemo(() => {
@@ -62,6 +62,12 @@ export default function HeightPicker({
   useEffect(() => {
     setUnit(externalUnit);
   }, [externalUnit]);
+
+  // Sync with external defaultValueCm prop changes (only when prop actually changes)
+  useEffect(() => {
+    const clampedValue = clamp(defaultValueCm, minCm, maxCm);
+    setValueCm(clampedValue);
+  }, [defaultValueCm, minCm, maxCm]);
 
   // Resize observer to keep wrapperHeight accurate
   useEffect(() => {
@@ -147,10 +153,11 @@ export default function HeightPicker({
         <div className="labelsWrapper" ref={labelsRef}>
           <div
             className="labelsScroller"
-            style={{ transform: `translateY(${translateY}px)` }}
+            style={{ transform: `translateY(${translateY - wrapperHeight / 2}px)` }}
           >
             {labelValues.map((v) => {
-              const isCurrent = v === Math.round(valueCm / 5) * 5;
+              // Highlight the label closest to the current value
+              const isCurrent = Math.abs(v - valueCm) < 2.5;
               return (
                 <div
                   key={`lbl-${v}`}
