@@ -1919,6 +1919,17 @@ input[type="number"]::-webkit-outer-spin-button {
   max-height: 200px;
   overflow-y: auto;
 }
+.bmr-img {
+  animation: rotate 3s linear infinite;
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* responsive-css-start */
 @media (max-width: 1399px) {

@@ -62,7 +62,7 @@ function page() {
                 </p>
                 <div className="text-center mt-5 mb-5">
                   {isProcessing ? (
-                    <img src="/images/loader.svg" alt="BMR Graph" />
+                    <img src="/images/loader.svg" className="bmr-img" alt="BMR Graph" />
                   ) : (
                     <img src="/images/check-mark.svg" alt="Success" />
                   )}
