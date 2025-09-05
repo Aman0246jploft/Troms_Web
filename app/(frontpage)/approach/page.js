@@ -4,13 +4,21 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
+import { apiService } from "../../../lib/api";
 import Alert from "../../../Components/Alert";
 
 function ApproachPage() {
   const router = useRouter();
-  const { state, updateStep } = useOnboarding();
+  const {
+    state,
+    setLoading,
+    setError,
+    updateStep,
+    updateField,
+    getFinalPayload,
+  } = useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
@@ -63,10 +71,10 @@ function ApproachPage() {
   }, [state.isAuthChecked, state.isAuthenticated, state.currentStep]);
 
   useEffect(() => {
-    if (state.currentStep === 23 && !isCompleted && !isProcessing) {
-      startProcessing();
+    if (state.currentStep === 23 && !isCompleted && !isSubmitting) {
+      handleSubmitUserInfo();
     }
-  }, [state.currentStep, isCompleted, isProcessing]);
+  }, [state.currentStep, isCompleted, isSubmitting]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -76,28 +84,56 @@ function ApproachPage() {
     setAlert({ show: false, type: "", message: "" });
   };
 
-  const startProcessing = () => {
-    setIsProcessing(true);
+  const handleSubmitUserInfo = async () => {
+    setIsSubmitting(true);
+    setLoading(true);
     hideAlert();
 
-    // Simulate processing time (3 seconds)
-    setTimeout(() => {
-      setIsCompleted(true);
-      setIsProcessing(false);
-      
-      // Auto-redirect to BMR page after completion
-      setTimeout(() => {
-        router.push("/bmr");
-      }, 2000);
-    }, 3000);
+    try {
+      const payload = getFinalPayload();
+      console.log("Submitting user data:", payload);
+
+      const response = await apiService.createUserInfo(payload);
+
+      if (response.success) {
+        setIsCompleted(true);
+        // Mark onboarding as complete
+        updateField("needsOnboarding", false);
+        // showAlert('success', 'Your profile has been created successfully!');
+
+        updateField("user", {
+          ...state.user,
+          userInfoId: response.result.id,
+        });
+
+        // Auto-redirect after success
+        setTimeout(() => {
+          router.push("/bmr");
+        }, 2000);
+      } else {
+        showAlert(
+          "error",
+          response.message || "Failed to create profile. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("User info submission error:", error);
+      showAlert(
+        "error",
+        "Failed to create profile. Please check your internet connection and try again."
+      );
+    } finally {
+      setLoading(false);
+      setIsSubmitting(false);
+    }
   };
 
   const handleContinue = () => {
     if (isCompleted) {
       updateStep(24);
       router.push("/bmr");
-    } else if (!isProcessing) {
-      startProcessing();
+    } else {
+      handleSubmitUserInfo();
     }
   };
 
@@ -133,12 +169,12 @@ function ApproachPage() {
                   )}
                 </div>
 
-                {isProcessing && !isCompleted ? (
+                {isSubmitting && !isCompleted ? (
                   <div className="text-center">
-                    <h3 className="mb-4">Processing Your Information...</h3>
+                    <h3 className="mb-4">Creating Your Profile...</h3>
                     <p>
-                      Please wait while we prepare your personalized fitness
-                      profile.
+                      Please wait while we process your information and create
+                      your personalized fitness plan.
                     </p>
                   </div>
                 ) : isCompleted ? (
@@ -151,9 +187,9 @@ function ApproachPage() {
                   </div>
                 ) : (
                   <div className="text-center">
-                    <h3 className="mb-4">Ready to Process...</h3>
+                    <h3 className="mb-4">Submitting Your Information...</h3>
                     <p>
-                      Click continue to start processing your personalized fitness
+                      Please wait while we create your personalized fitness
                       profile.
                     </p>
                   </div>
@@ -163,9 +199,9 @@ function ApproachPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={isProcessing}
+                    disabled={isSubmitting || state.loading}
                   >
-                    {isProcessing
+                    {isSubmitting || state.loading
                       ? "Processing..."
                       : "Continue"}
                   </button>
