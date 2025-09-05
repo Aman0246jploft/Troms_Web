@@ -8,10 +8,10 @@ import Alert from "../../../Components/Alert";
 
 function DesiredWeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [isMetric, setIsMetric] = useState(() => {
-    return state.weightUnit === 'kg' || !state.weightUnit;
-  });
+  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } = useOnboarding();
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
   
   // Calculate smart default value based on weight goal
   const calculateDefaultWeight = () => {
@@ -108,19 +108,19 @@ function DesiredWeightPage() {
   };
 
   const handleUnitToggle = () => {
-    const newIsMetric = !isMetric;  
-    setIsMetric(newIsMetric);
+    const currentIsMetric = isMetric;
+    
+    // Toggle the global unit system
+    toggleUnitSystem();
 
     let convertedWeight = desiredWeight;
 
-    if (newIsMetric) {
-      // Convert from lbs to kg
-      convertedWeight = Math.round(desiredWeight * 0.453592 * 10) / 10;
-      updateField('weightUnit', 'kg');
-    } else {
-      // Convert from kg to lbs
+    if (currentIsMetric) {
+      // Currently metric, converting to imperial (kg to lbs)
       convertedWeight = Math.round(desiredWeight / 0.453592 * 10) / 10;
-      updateField('weightUnit', 'lbs');
+    } else {
+      // Currently imperial, converting to metric (lbs to kg)
+      convertedWeight = Math.round(desiredWeight * 0.453592 * 10) / 10;
     }
 
     // Update both local state and context

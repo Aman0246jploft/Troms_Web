@@ -9,6 +9,19 @@ function RealisticTargetPage() {
   const router = useRouter();
   const { state, updateStep } = useOnboarding();
   const [targetWeightLoss, setTargetWeightLoss] = useState(0);
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
+  const weightUnit = isMetric ? "kg" : "lbs";
+  
+  // Convert weight loss value for display
+  const getDisplayValue = (lbsValue) => {
+    if (isMetric) {
+      // Convert lbs to kg (1 lb = 0.453592 kg)
+      return (lbsValue * 0.453592).toFixed(1);
+    }
+    return lbsValue.toFixed(1);
+  };
 
   useEffect(() => {
     // Get the value from previous state, fallback to 1.5 if undefined
@@ -37,7 +50,7 @@ function RealisticTargetPage() {
             <div className="auth-cards gender">
               <p className="text-uppercase mb-5">Realistic target</p>
               <h3 className="mb-3">
-                Loosing <span>{targetWeightLoss}lbs</span> Is Achievable - <br /> And Easier
+                Loosing <span>{getDisplayValue(targetWeightLoss)}{weightUnit}</span> Is Achievable - <br /> And Easier
                 Than You Think!
               </h3>
               <p className="mb-5">

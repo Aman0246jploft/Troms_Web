@@ -8,10 +8,12 @@ import Alert from "../../../Components/Alert";
 
 function NewHeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } = useOnboarding();
   const [height, setHeight] = useState(state.height || 165);
-  const [isMetric, setIsMetric] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
 
   // Redirects based on previous steps
   useEffect(() => {
@@ -52,8 +54,8 @@ function NewHeightPage() {
     hideAlert();
   };
 
-  const handleUnitChange = (newIsMetric) => {
-    setIsMetric(newIsMetric);
+  const handleUnitToggle = () => {
+    toggleUnitSystem();
   };
 
   const handleContinue = (e) => {
@@ -100,9 +102,24 @@ function NewHeightPage() {
                 <h3 className="mb-2">What is your current height?</h3>
                 <p className="mb-2">You can update it later if needed</p>
                 
+                <div className="weight-switch mb-3">
+                  <span>Imperial</span>
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      className="d-none" 
+                      checked={isMetric}
+                      onChange={handleUnitToggle}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <span>Metric</span>
+                </div>
+                
                 <HeightPicker 
                   defaultValueCm={height}
                   onChange={handleHeightChange}
+                  unit={isMetric ? "metric" : "imperial"}
                 />
                 <div className="text-center mt-3">
                   <button 

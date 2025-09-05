@@ -14,12 +14,11 @@ function NewWeightPage() {
     if (state.weight) {
       return state.weight;
     }
-    return state.weightUnit === 'kg' ? 75 : 165;
+    return state.unitSystem === 'metric' ? 75 : 165;
   });
-  const [isMetric, setIsMetric] = useState(() => {
-    // Initialize unit preference
-    return state.weightUnit === 'kg' || !state.weightUnit;
-  });
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   // Redirects based on previous steps
@@ -42,11 +41,6 @@ function NewWeightPage() {
   useEffect(() => {
     updateStep(7);
     
-    // Sync weight unit if not set
-    if (!state.weightUnit) {
-      updateField('weightUnit', isMetric ? 'kg' : 'lbs');
-    }
-    
     // Initialize weight if not set
     if (!state.weight) {
       updateField('weight', weight);
@@ -68,29 +62,6 @@ function NewWeightPage() {
     hideAlert();
   };
 
-  const handleUnitToggle = () => {
-    const newIsMetric = !isMetric;
-    setIsMetric(newIsMetric);
-
-    let newWeight;
-    if (newIsMetric) {
-      // Convert from lbs to kg
-      newWeight = Math.round(weight * 0.453592 * 10) / 10;
-      // Ensure it's within metric bounds
-      newWeight = Math.max(30, Math.min(300, newWeight));
-      updateField('weightUnit', 'kg');
-    } else {
-      // Convert from kg to lbs
-      newWeight = Math.round(weight / 0.453592 * 10) / 10;
-      // Ensure it's within imperial bounds
-      newWeight = Math.max(60, Math.min(600, newWeight));
-      updateField('weightUnit', 'lbs');
-    }
-    
-    setWeight(newWeight);
-    updateField('weight', newWeight);
-    hideAlert(); // Hide any existing alerts
-  };
 
   const handleContinue = (e) => {
     e.preventDefault();
@@ -143,19 +114,6 @@ function NewWeightPage() {
                 <h3 className="mb-2">What is your current weight?</h3>
                 <p className="mb-2">You can update it later if needed</p>
                 
-                <div className="weight-switch">
-                  <span>Imperial</span>
-                  <label className="switch">
-                    <input 
-                      type="checkbox" 
-                      className="d-none" 
-                      checked={isMetric}
-                      onChange={handleUnitToggle}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                  <span>Metric</span>
-                </div>
 
                 <WeightPicker 
                   weight={weight}

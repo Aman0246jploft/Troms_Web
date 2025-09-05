@@ -19,8 +19,10 @@ export default function HeightPicker({
   step = 1,
   defaultValueCm = 165,
   onChange,
+  unit: externalUnit = "metric", // Accept external unit control
+  onUnitChange, // Optional callback for unit changes
 }) {
-  const [unit, setUnit] = useState("metric"); // "metric" | "imperial"
+  const [unit, setUnit] = useState(externalUnit); // "metric" | "imperial"
   const [valueCm, setValueCm] = useState(clamp(defaultValueCm, minCm, maxCm));
   const wrapperRef = useRef(null);
   const listRef = useRef(null);
@@ -55,6 +57,11 @@ export default function HeightPicker({
     // centerY - positionOfValue
     return wrapperHeight / 2 - (valueCm - minCm) * PX_PER_CM;
   }, [valueCm, wrapperHeight, minCm]);
+
+  // Sync external unit prop with internal state
+  useEffect(() => {
+    setUnit(externalUnit);
+  }, [externalUnit]);
 
   // Resize observer to keep wrapperHeight accurate
   useEffect(() => {
@@ -128,22 +135,6 @@ export default function HeightPicker({
 
   return (
     <div>
-      {/* Unit Toggle */}
-      <div className="height-switch">
-        <span className="mutedLabel">Imperial</span>
-        <div className="form-check form-switch m-0">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="unitSwitch"
-            checked={unit === "metric"}
-            onChange={(e) => setUnit(e.target.checked ? "metric" : "imperial")}
-          />
-        </div>
-        <span className="mutedLabel">Metric</span>
-      </div>
-
       {/* Current Value */}
       <div className="text-center mb-3">
         <span className="currentValue number">{displayValue.value}</span>

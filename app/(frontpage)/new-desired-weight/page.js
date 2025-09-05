@@ -10,9 +10,9 @@ import Alert from "../../../Components/Alert";
 function DesiredWeightPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [isMetric, setIsMetric] = useState(() => {
-    return state.weightUnit === 'kg' || !state.weightUnit;
-  });
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
   
   // Calculate smart default value based on weight goal
   const calculateDefaultWeight = () => {
@@ -107,27 +107,6 @@ function DesiredWeightPage() {
     setAlert({ show: false, type: '', message: '' });
   };
 
-  const handleUnitToggle = () => {
-    const newIsMetric = !isMetric;  
-    setIsMetric(newIsMetric);
-
-    let convertedWeight = desiredWeight;
-
-    if (newIsMetric) {
-      // Convert from lbs to kg
-      convertedWeight = Math.round(desiredWeight * 0.453592 * 10) / 10;
-      updateField('weightUnit', 'kg');
-    } else {
-      // Convert from kg to lbs
-      convertedWeight = Math.round(desiredWeight / 0.453592 * 10) / 10;
-      updateField('weightUnit', 'lbs');
-    }
-
-    // Update both local state and context
-    setDesiredWeight(convertedWeight);
-    updateField('desiredWeight', convertedWeight);
-    hideAlert();
-  };
 
   const handleWeightChange = (value) => {
     setDesiredWeight(value);
@@ -215,19 +194,6 @@ function DesiredWeightPage() {
                 <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
                 
                 <form onSubmit={handleContinue}>
-                  <div className="weight-switch">
-                    <span>Imperial</span>
-                    <label className="switch">
-                      <input 
-                        type="checkbox" 
-                        className="d-none" 
-                        checked={isMetric}
-                        onChange={handleUnitToggle}
-                      />
-                      <span className="slider"></span>
-                    </label>
-                    <span>Metric</span>
-                  </div>
                   
                   <DesiredWeightPicker 
                     weight={desiredWeight}

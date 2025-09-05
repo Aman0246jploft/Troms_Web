@@ -11,12 +11,34 @@ function GoalRangePage() {
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [value, setValue] = useState(state.weeklyWeightLossGoal || 1.2);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  
+  // Use global unit system
+  const isMetric = state.unitSystem === "metric";
+  const weightUnit = isMetric ? "kg" : "lbs";
+  
+  // Convert weight loss values based on unit system
+  const getDisplayValue = (lbsValue) => {
+    if (isMetric) {
+      // Convert lbs to kg (1 lb = 0.453592 kg)
+      return (lbsValue * 0.453592).toFixed(1);
+    }
+    return lbsValue.toFixed(1);
+  };
+  
+  const getMinValue = () => isMetric ? "0.2" : "0.5";
+  const getMaxValue = () => isMetric ? "0.9" : "2.0";
 
   // Update CSS variable for fill
-useEffect(() => {
-  const percent = ((value - 0.5) / (2 - 0.5)) * 100;
-  document.documentElement.style.setProperty("--range-percent", `${percent}%`);
-}, [value]);
+  useEffect(() => {
+    let percent;
+    if (isMetric) {
+      const metricValue = value * 0.453592;
+      percent = ((metricValue - 0.2) / (0.9 - 0.2)) * 100;
+    } else {
+      percent = ((value - 0.5) / (2 - 0.5)) * 100;
+    }
+    document.documentElement.style.setProperty("--range-percent", `${percent}%`);
+  }, [value, isMetric]);
 
 
   // Redirect if not authenticated
@@ -88,19 +110,24 @@ const handleContinue = () => {
               <h3 className="mb-2">How fast do you wanna reach your goal?</h3>
               <p>Weight loss speed per week</p>
               <div className="goal-range">
-                <h5 className="text-center">{value} lbs</h5>
+                <h5 className="text-center">{getDisplayValue(value)} {weightUnit}</h5>
                 <input
                   type="range"
-                  min="0.5"
-                  max="2"
-                  step="0.1"
-                  value={value}
-                  onChange={(e) => handleValueChange(parseFloat(e.target.value))}
+                  min={isMetric ? "0.2" : "0.5"}
+                  max={isMetric ? "0.9" : "2.0"}
+                  step={isMetric ? "0.05" : "0.1"}
+                  value={isMetric ? (value * 0.453592).toFixed(2) : value}
+                  onChange={(e) => {
+                    const inputValue = parseFloat(e.target.value);
+                    // Convert back to lbs for storage if metric
+                    const storageValue = isMetric ? (inputValue / 0.453592) : inputValue;
+                    handleValueChange(storageValue);
+                  }}
                   className="slider"
                 />
                 <div className="labels">
-                  <span>0.5 lbs</span>
-                  <span>2.0 lbs</span>
+                  <span>{getMinValue()} {weightUnit}</span>
+                  <span>{getMaxValue()} {weightUnit}</span>
                 </div>
               </div>
 
