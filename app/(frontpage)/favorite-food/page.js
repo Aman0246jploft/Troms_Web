@@ -205,7 +205,7 @@ function FavoriteFoodPage() {
                    <div className="food-list">
                      {categories.map((category, categoryIndex) => (
                        <div key={categoryIndex} className="category-section">
-                         <h4 className="category-heading mb-3">{category.name}</h4>
+                         <h6 className="text-sm mb-3">{category.name}</h6>
                          <div className="food-card">
                                                        {(category.list_data || []).map((meal) => (
                               <div key={meal.id} className="food-bx">

@@ -2,7 +2,7 @@
 
 import DesiredWeightPicker from "../../../Components/DesiredWeightPicker";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import Alert from "../../../Components/Alert";
@@ -14,15 +14,13 @@ function DesiredWeightPage() {
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
   
-  // Calculate smart default value based on weight goal
-  const calculateDefaultWeight = () => {
-    if (!state.weight || !state.weightGoal) return 0;
+  // Convert current weight to display unit if needed
+  const getCurrentWeightInDisplayUnit = () => {
+    if (!state.weight) return 0;
     
-    // Get current weight in the display unit
     const currentWeight = state.weight;
     const currentWeightUnit = state.weightUnit;
     
-    // Convert current weight to display unit if needed
     let displayWeight = currentWeight;
     if (currentWeightUnit === 'kg' && !isMetric) {
       // Convert kg to lbs for display
@@ -31,6 +29,72 @@ function DesiredWeightPage() {
       // Convert lbs to kg for display
       displayWeight = Math.round(currentWeight * 0.453592 * 10) / 10;
     }
+    
+    return displayWeight;
+  };
+
+  // Calculate dynamic min/max values based on weight goal
+  const calculateMinMaxWeight = () => {
+    const currentDisplayWeight = getCurrentWeightInDisplayUnit();
+    
+    if (!currentDisplayWeight || !state.weightGoal) {
+      // Default fallback values
+      return {
+        min: isMetric ? 30 : 60,
+        max: isMetric ? 300 : 600
+      };
+    }
+    
+    let minWeight, maxWeight;
+    
+    switch (state.weightGoal) {
+      case 'LOSE_WEIGHT':
+        // For weight loss: min = 50% of current weight, max = current weight - 1
+        minWeight = Math.max(
+          isMetric ? 30 : 60, // Absolute minimum
+          Math.round(currentDisplayWeight * 0.5 * 4) / 4 // 50% of current weight, rounded to 0.25
+        );
+        maxWeight = Math.round((currentDisplayWeight - 1) * 4) / 4; // Current weight minus 1, rounded to 0.25
+        break;
+        
+      case 'GAIN_WEIGHT':
+        // For weight gain: min = current weight + 1, max = current weight + 50%
+        minWeight = Math.round((currentDisplayWeight + 1) * 4) / 4; // Current weight plus 1, rounded to 0.25
+        maxWeight = Math.min(
+          isMetric ? 300 : 600, // Absolute maximum
+          Math.round(currentDisplayWeight * 1.5 * 4) / 4 // 150% of current weight (current + 50%), rounded to 0.25
+        );
+        break;
+        
+      case 'MAINTAIN':
+        // For maintenance: ±10% of current weight
+        const maintainRange = currentDisplayWeight * 0.1;
+        minWeight = Math.max(
+          isMetric ? 30 : 60, // Absolute minimum
+          Math.round((currentDisplayWeight - maintainRange) * 4) / 4
+        );
+        maxWeight = Math.min(
+          isMetric ? 300 : 600, // Absolute maximum
+          Math.round((currentDisplayWeight + maintainRange) * 4) / 4
+        );
+        break;
+        
+      default:
+        // Default fallback values
+        return {
+          min: isMetric ? 30 : 60,
+          max: isMetric ? 300 : 600
+        };
+    }
+    
+    return { min: minWeight, max: maxWeight };
+  };
+
+  // Calculate smart default value based on weight goal
+  const calculateDefaultWeight = () => {
+    if (!state.weight || !state.weightGoal) return 0;
+    
+    const displayWeight = getCurrentWeightInDisplayUnit();
     
     // Calculate default based on goal
     switch (state.weightGoal) {
@@ -48,6 +112,11 @@ function DesiredWeightPage() {
         return displayWeight;
     }
   };
+
+  // Memoize min/max values to avoid recalculation on every render
+  const { min: minWeight, max: maxWeight } = useMemo(() => {
+    return calculateMinMaxWeight();
+  }, [state.weight, state.weightGoal, state.weightUnit, isMetric]);
 
   const [desiredWeight, setDesiredWeight] = useState(() => {
     // If we have a saved desiredWeight in context, use it
@@ -87,17 +156,27 @@ function DesiredWeightPage() {
     }
   }, [state.isAuthChecked, state.isAuthenticated, state.weightGoal, state.currentStep]);
 
-  // Handle unit changes by recalculating weight if needed
+  // Handle unit changes and weight goal changes by recalculating weight if needed
   useEffect(() => {
     if (state.weight && state.weightGoal && desiredWeight > 0) {
-      // Recalculate default when unit preference changes
+      // Recalculate default when unit preference or weight goal changes
       const newDefault = calculateDefaultWeight();
       if (Math.abs(newDefault - desiredWeight) > (isMetric ? 1 : 2)) {
         setDesiredWeight(newDefault);
         updateField('desiredWeight', newDefault);
       }
     }
-  }, [isMetric]);
+  }, [isMetric, state.weightGoal]);
+
+  // Ensure desired weight is within new min/max bounds when they change
+  useEffect(() => {
+    if (desiredWeight > 0 && (desiredWeight < minWeight || desiredWeight > maxWeight)) {
+      // Clamp the desired weight to the new bounds
+      const clampedWeight = Math.max(minWeight, Math.min(maxWeight, desiredWeight));
+      setDesiredWeight(clampedWeight);
+      updateField('desiredWeight', clampedWeight);
+    }
+  }, [minWeight, maxWeight, desiredWeight]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -166,6 +245,8 @@ function DesiredWeightPage() {
     if (isStepValid(9)) {
       updateStep(10);
       router.push('/workout-location');
+    } else {
+      showAlert('warning', 'Please ensure your desired weight is appropriate for your selected goal.');
     }
   };
 
@@ -199,8 +280,8 @@ function DesiredWeightPage() {
                     weight={desiredWeight}
                     isMetric={isMetric}
                     onChange={handleWeightChange}
-                    minWeight={isMetric ? 30 : 60}
-                    maxWeight={isMetric ? 300 : 600}
+                    minWeight={minWeight}
+                    maxWeight={maxWeight}
                     currentWeight={state.weight}
                     weightGoal={state.weightGoal}
                     currentWeightUnit={state.weightUnit}

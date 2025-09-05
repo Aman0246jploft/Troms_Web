@@ -15,18 +15,31 @@ const DesiredWeightPicker = ({
   const defaultMinWeight = isMetric ? 30 : 60;
   const defaultMaxWeight = isMetric ? 300 : 600;
 
-  const min = minWeight || defaultMinWeight;
-  const max = maxWeight || defaultMaxWeight;
+  const min = minWeight !== null && minWeight !== undefined ? minWeight : defaultMinWeight;
+  const max = maxWeight !== null && maxWeight !== undefined ? maxWeight : defaultMaxWeight;
 
-  const [weight, setWeight] = useState(externalWeight);
+  const [weight, setWeight] = useState(() => {
+    // Ensure initial weight is within min/max range
+    return Math.max(min, Math.min(max, externalWeight));
+  });
   const [dragging, setDragging] = useState(false);
 
   const pickerRef = useRef(null);
 
   // Update internal state when external weight changes
   useEffect(() => {
-    setWeight(externalWeight);
-  }, [externalWeight]);
+    const clampedWeight = Math.max(min, Math.min(max, externalWeight));
+    setWeight(clampedWeight);
+  }, [externalWeight, min, max]);
+
+  // Clamp weight to min/max range when range changes
+  useEffect(() => {
+    if (weight < min || weight > max) {
+      const clampedWeight = Math.max(min, Math.min(max, weight));
+      setWeight(clampedWeight);
+      if (onChange) onChange(clampedWeight);
+    }
+  }, [min, max, weight, onChange]);
 
   // Cleanup function to remove event listeners
   useEffect(() => {

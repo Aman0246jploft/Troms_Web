@@ -114,23 +114,26 @@ function validateDesiredWeight(state) {
   const currentWeight = state.weight;
   const desiredWeight = state.desiredWeight;
   const goal = state.weightGoal;
+  const isMetric = state.unitSystem === "metric";
 
-  let currentWeightInUnit, desiredWeightInUnit;
-  if (state.weightUnit === "kg") {
-    currentWeightInUnit = currentWeight;
-    desiredWeightInUnit = desiredWeight;
-  } else {
-    currentWeightInUnit = currentWeight * 2.20462;
-    desiredWeightInUnit = desiredWeight * 2.20462;
+  // Convert current weight to display unit if needed
+  let currentWeightInDisplayUnit = currentWeight;
+  if (state.weightUnit === 'kg' && !isMetric) {
+    // Convert kg to lbs for display
+    currentWeightInDisplayUnit = currentWeight / 0.453592;
+  } else if (state.weightUnit === 'lbs' && isMetric) {
+    // Convert lbs to kg for display
+    currentWeightInDisplayUnit = currentWeight * 0.453592;
   }
 
+  // Both weights should now be in the same unit (display unit)
   if (goal === "LOSE_WEIGHT") {
-    return desiredWeightInUnit < currentWeightInUnit;
+    return desiredWeight < currentWeightInDisplayUnit;
   } else if (goal === "GAIN_WEIGHT") {
-    return desiredWeightInUnit > currentWeightInUnit;
+    return desiredWeight > currentWeightInDisplayUnit;
   } else if (goal === "MAINTAIN") {
-    const tolerance = state.weightUnit === "kg" ? 2 : 5;
-    return Math.abs(desiredWeightInUnit - currentWeightInUnit) <= tolerance;
+    const tolerance = isMetric ? 2 : 5;
+    return Math.abs(desiredWeight - currentWeightInDisplayUnit) <= tolerance;
   }
 
   return false;
