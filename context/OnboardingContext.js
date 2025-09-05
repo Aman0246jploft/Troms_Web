@@ -128,12 +128,14 @@ function validateDesiredWeight(state) {
 
   // Both weights should now be in the same unit (display unit)
   if (goal === "LOSE_WEIGHT") {
-    return desiredWeight < currentWeightInDisplayUnit;
+    return desiredWeight < currentWeightInDisplayUnit && 
+           desiredWeight >= (currentWeightInDisplayUnit - 10);
   } else if (goal === "GAIN_WEIGHT") {
-    return desiredWeight > currentWeightInDisplayUnit;
+    return desiredWeight > currentWeightInDisplayUnit && 
+           desiredWeight <= (currentWeightInDisplayUnit + 10);
   } else if (goal === "MAINTAIN") {
-    const tolerance = isMetric ? 2 : 5;
-    return Math.abs(desiredWeight - currentWeightInDisplayUnit) <= tolerance;
+    // For maintenance, desired weight must be exactly the current weight
+    return Math.abs(desiredWeight - currentWeightInDisplayUnit) <= 0.1;
   }
 
   return false;

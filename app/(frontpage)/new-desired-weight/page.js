@@ -49,34 +49,27 @@ function DesiredWeightPage() {
     
     switch (state.weightGoal) {
       case 'LOSE_WEIGHT':
-        // For weight loss: min = 50% of current weight, max = current weight - 1
+        // For weight loss: min = current weight - 10, max = current weight - 1
         minWeight = Math.max(
           isMetric ? 30 : 60, // Absolute minimum
-          Math.round(currentDisplayWeight * 0.5 * 4) / 4 // 50% of current weight, rounded to 0.25
+          Math.round((currentDisplayWeight - 10) * 4) / 4 // Current weight minus 10, rounded to 0.25
         );
         maxWeight = Math.round((currentDisplayWeight - 1) * 4) / 4; // Current weight minus 1, rounded to 0.25
         break;
         
       case 'GAIN_WEIGHT':
-        // For weight gain: min = current weight + 1, max = current weight + 50%
+        // For weight gain: min = current weight + 1, max = current weight + 10
         minWeight = Math.round((currentDisplayWeight + 1) * 4) / 4; // Current weight plus 1, rounded to 0.25
         maxWeight = Math.min(
           isMetric ? 300 : 600, // Absolute maximum
-          Math.round(currentDisplayWeight * 1.5 * 4) / 4 // 150% of current weight (current + 50%), rounded to 0.25
+          Math.round((currentDisplayWeight + 10) * 4) / 4 // Current weight plus 10, rounded to 0.25
         );
         break;
         
       case 'MAINTAIN':
-        // For maintenance: ±10% of current weight
-        const maintainRange = currentDisplayWeight * 0.1;
-        minWeight = Math.max(
-          isMetric ? 30 : 60, // Absolute minimum
-          Math.round((currentDisplayWeight - maintainRange) * 4) / 4
-        );
-        maxWeight = Math.min(
-          isMetric ? 300 : 600, // Absolute maximum
-          Math.round((currentDisplayWeight + maintainRange) * 4) / 4
-        );
+        // For maintenance: no weight change allowed - set min and max to current weight
+        minWeight = Math.round(currentDisplayWeight * 4) / 4;
+        maxWeight = Math.round(currentDisplayWeight * 4) / 4;
         break;
         
       default:
@@ -101,13 +94,11 @@ function DesiredWeightPage() {
       case 'MAINTAIN':
         return displayWeight; // Same as current weight
       case 'LOSE_WEIGHT':
-        // Default to 5-10% weight loss
-        const lossAmount = isMetric ? Math.max(2, displayWeight * 0.08) : Math.max(5, displayWeight * 0.08);
-        return Math.round((displayWeight - lossAmount) * 10) / 10;
+        // Default to middle of the range (current weight - 5)
+        return Math.round((displayWeight - 5) * 4) / 4;
       case 'GAIN_WEIGHT':
-        // Default to 3-5% weight gain
-        const gainAmount = isMetric ? Math.max(2, displayWeight * 0.05) : Math.max(5, displayWeight * 0.05);
-        return Math.round((displayWeight + gainAmount) * 10) / 10;
+        // Default to middle of the range (current weight + 5)
+        return Math.round((displayWeight + 5) * 4) / 4;
       default:
         return displayWeight;
     }
@@ -194,34 +185,31 @@ function DesiredWeightPage() {
   };
 
   const validateWeight = () => {
-    const currentWeight = state.weight;
+    const currentDisplayWeight = getCurrentWeightInDisplayUnit();
     const goal = state.weightGoal;
 
-    if (isMetric) {
-      // Convert current weight to kg for comparison
-      const currentWeightKg = state.weightUnit === 'lbs' ? currentWeight * 0.453592 : currentWeight;
-
-      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightKg) {
+    if (goal === 'LOSE_WEIGHT') {
+      if (desiredWeight >= currentDisplayWeight) {
         return 'Desired weight must be less than current weight to lose weight.';
       }
-      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightKg) {
+      if (desiredWeight < currentDisplayWeight - 10) {
+        return `Maximum weight loss allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
+      }
+    }
+    
+    if (goal === 'GAIN_WEIGHT') {
+      if (desiredWeight <= currentDisplayWeight) {
         return 'Desired weight must be greater than current weight to gain weight.';
       }
-      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightKg) > 2) {
-        return 'For maintenance, desired weight should be close to current weight (±2 kg).';
+      if (desiredWeight > currentDisplayWeight + 10) {
+        return `Maximum weight gain allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
       }
-    } else {
-      // Convert current weight to lbs for comparison
-      const currentWeightLbs = state.weightUnit === 'kg' ? currentWeight / 0.453592 : currentWeight;
-
-      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightLbs) {
-        return 'Desired weight must be less than current weight to lose weight.';
-      }
-      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightLbs) {
-        return 'Desired weight must be greater than current weight to gain weight.';
-      }
-      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightLbs) > 5) {
-        return 'For maintenance, desired weight should be close to current weight (±5 lbs).';
+    }
+    
+    if (goal === 'MAINTAIN') {
+      // For maintenance, desired weight must be exactly the current weight
+      if (Math.abs(desiredWeight - currentDisplayWeight) > 0.1) {
+        return 'For maintenance, your desired weight should remain the same as your current weight.';
       }
     }
 
@@ -274,6 +262,12 @@ function DesiredWeightPage() {
                 <h3 className="mb-2">What is your desired weight?</h3>
                 <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
                 
+                {state.weightGoal === 'MAINTAIN' && (
+                  <div className="alert alert-info mt-3 mb-4">
+                    <strong>Maintain Goal:</strong> Your desired weight will remain the same as your current weight ({getCurrentWeightInDisplayUnit()} {isMetric ? 'kg' : 'lbs'}).
+                  </div>
+                )}
+                
                 <form onSubmit={handleContinue}>
                   
                   <DesiredWeightPicker 
@@ -285,6 +279,7 @@ function DesiredWeightPage() {
                     currentWeight={state.weight}
                     weightGoal={state.weightGoal}
                     currentWeightUnit={state.weightUnit}
+                    disabled={state.weightGoal === 'MAINTAIN'}
                   />
                   
                   <div className="text-center mt-2">
@@ -312,3 +307,4 @@ function DesiredWeightPage() {
 }
 
 export default DesiredWeightPage;
+

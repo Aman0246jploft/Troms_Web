@@ -10,6 +10,7 @@ const DesiredWeightPicker = ({
   currentWeight = null,
   weightGoal = null,
   currentWeightUnit = null,
+  disabled = false,
 }) => {
   // Use provided min/max or default based on unit
   const defaultMinWeight = isMetric ? 30 : 60;
@@ -71,6 +72,7 @@ const DesiredWeightPicker = ({
   };
 
   const handlePointerDown = (e) => {
+    if (disabled) return; // Don't handle events when disabled
     e.preventDefault();
     setDragging(true);
     moveHandle(e);
@@ -121,6 +123,7 @@ const DesiredWeightPicker = ({
 
   // Keyboard navigation support
   const handleKeyDown = (e) => {
+    if (disabled) return; // Don't handle events when disabled
     if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
       const newWeight = Math.max(min, Math.round((weight - 0.25) * 4) / 4);
       setWeight(newWeight);
@@ -251,18 +254,23 @@ const DesiredWeightPicker = ({
         <div className="numbers-wrapper">{renderNumbers()}</div>
 
         <div
-          className="slider"
+          className={`slider ${disabled ? 'disabled' : ''}`}
           ref={pickerRef}
-          onPointerDown={handlePointerDown}
-          onTouchStart={handlePointerDown}
-          onKeyDown={handleKeyDown}
-          tabIndex={0}
+          onPointerDown={disabled ? undefined : handlePointerDown}
+          onTouchStart={disabled ? undefined : handlePointerDown}
+          onKeyDown={disabled ? undefined : handleKeyDown}
+          tabIndex={disabled ? -1 : 0}
           role="slider"
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={weight}
           aria-label="Weight picker"
-          style={{ touchAction: "none" }}
+          aria-disabled={disabled}
+          style={{ 
+            touchAction: "none",
+            opacity: disabled ? 0.5 : 1,
+            cursor: disabled ? 'not-allowed' : 'grab'
+          }}
         >
           {/* Tick marks */}
           <div className="ticks-wrapper">{renderTicks()}</div>
