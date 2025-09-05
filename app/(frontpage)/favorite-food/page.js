@@ -11,8 +11,11 @@ function FavoriteFoodPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [cheatMeals, setCheatMeals] = useState([]);
-  const [selectedMeals, setSelectedMeals] = useState(
-    state.cheatMealFoodItems || []
+  const [categories, setCategories] = useState([]);
+  const [selectedMeal, setSelectedMeal] = useState(
+    state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0 
+      ? state.cheatMealFoodItems[0] 
+      : ""
   );
   const [customFood, setCustomFood] = useState("");
   const [loading, setLoading] = useState(true);
@@ -64,20 +67,29 @@ function FavoriteFoodPage() {
       const response = await apiService.getCheatMeals();
 
       if (response.success) {
-        const apiMeals = response.result || [];
+        // Store the categories for displaying headings
+        setCategories(response.result || []);
+        
+        // Extract all meals from the nested structure
+        const apiMeals = [];
+        
+        // Flatten the list_data from each category
+        (response.result || []).forEach((category) => {
+          if (category.list_data && Array.isArray(category.list_data)) {
+            apiMeals.push(...category.list_data);
+          }
+        });
 
-        // Add custom foods that were previously selected but not in API
-        const customFoods = selectedMeals
-          .filter(
-            (selectedMeal) =>
-              !apiMeals.some((meal) => meal.name === selectedMeal)
-          )
-          .map((customFood) => ({
-            id: `custom-${customFood.replace(/\s+/g, "-").toLowerCase()}`,
-            name: customFood,
+        // Add custom food if it was previously selected but not in API
+        const customFoods = [];
+        if (selectedMeal && !apiMeals.some((meal) => meal.name === selectedMeal)) {
+          customFoods.push({
+            id: `custom-${selectedMeal.replace(/\s+/g, "-").toLowerCase()}`,
+            name: selectedMeal,
             user_count: 0,
             is_approved_by_admin: true,
-          }));
+          });
+        }
 
         // Sort by user_count (popularity) descending, custom foods will be at the end
         const allMeals = [...apiMeals, ...customFoods];
@@ -99,25 +111,16 @@ function FavoriteFoodPage() {
     }
   };
 
-  const handleMealToggle = (mealName) => {
-    setSelectedMeals((prev) => {
-      const newSelection = prev.includes(mealName)
-        ? prev.filter((name) => name !== mealName)
-        : [...prev, mealName];
-
-      updateField("cheatMealFoodItems", newSelection);
-      return newSelection;
-    });
+  const handleMealSelect = (mealName) => {
+    setSelectedMeal(mealName);
+    updateField("cheatMealFoodItems", [mealName]); // Store as array for compatibility
     hideAlert();
   };
 
   const handleCustomFoodAdd = () => {
     if (customFood.trim()) {
       const newFood = customFood.trim();
-      if (
-        !selectedMeals.includes(newFood) &&
-        !cheatMeals.some((meal) => meal.name === newFood)
-      ) {
+      if (!cheatMeals.some((meal) => meal.name === newFood)) {
         // Add to the cheat meals list for immediate display
         const customFoodObj = {
           id: `custom-${Date.now()}`,
@@ -127,14 +130,13 @@ function FavoriteFoodPage() {
         };
         setCheatMeals((prev) => [...prev, customFoodObj]);
 
-        // Also add to selected meals
-        const newSelection = [...selectedMeals, newFood];
-        setSelectedMeals(newSelection);
-        updateField("cheatMealFoodItems", newSelection);
+        // Select this new custom food
+        setSelectedMeal(newFood);
+        updateField("cheatMealFoodItems", [newFood]);
         setCustomFood("");
         hideAlert();
       } else {
-        showAlert("warning", "This food is already in the list or selected.");
+        showAlert("warning", "This food is already in the list.");
       }
     }
   };
@@ -146,19 +148,13 @@ function FavoriteFoodPage() {
     }
   };
 
-  const handleRemoveMeal = (mealName) => {
-    const newSelection = selectedMeals.filter((name) => name !== mealName);
-    setSelectedMeals(newSelection);
-    updateField("cheatMealFoodItems", newSelection);
-  };
-
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (selectedMeals.length === 0) {
+    if (!selectedMeal) {
       showAlert(
         "warning",
-        "Please select at least one favorite food or cheat meal."
+        "Please select your favorite food or cheat meal."
       );
       return;
     }
@@ -207,46 +203,78 @@ function FavoriteFoodPage() {
                 ) : (
                   <>
                    <div className="food-list">
-                     <div className="food-card">
-                      {cheatMeals.map((meal) => (
-                        <div key={meal.id} className="food-bx">
-                          <input
-                            type="checkbox"
-                            className="d-none"
-                            id={`meal-${meal.id}-${meal.name.replace(
-                              /\s+/g,
-                              "-"
-                            )}`}
-                            checked={selectedMeals.includes(meal.name)}
-                            onChange={() => handleMealToggle(meal.name)}
-                          />
-                          <label
-                            htmlFor={`meal-${meal.id}-${meal.name.replace(
-                              /\s+/g,
-                              "-"
-                            )}`}
-                            className={
-                              selectedMeals.includes(meal.name)
-                                ? "selected"
-                                : ""
-                            }
-                          >
-                            {meal.name}
-                            {selectedMeals.includes(meal.name) && (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleRemoveMeal(meal.name);
-                                }}
-                              >
-                                <img src="/images/close.svg" alt="Remove" />
-                              </button>
-                            )}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                     {categories.map((category, categoryIndex) => (
+                       <div key={categoryIndex} className="category-section">
+                         <h4 className="category-heading mb-3">{category.name}</h4>
+                         <div className="food-card">
+                                                       {(category.list_data || []).map((meal) => (
+                              <div key={meal.id} className="food-bx">
+                                <input
+                                  type="checkbox"
+                                  className="d-none"
+                                  id={`meal-${meal.id}-${meal.name.replace(
+                                    /\s+/g,
+                                    "-"
+                                  )}`}
+                                  checked={selectedMeal === meal.name}
+                                  onChange={() => handleMealSelect(meal.name)}
+                                />
+                                <label
+                                  htmlFor={`meal-${meal.id}-${meal.name.replace(
+                                    /\s+/g,
+                                    "-"
+                                  )}`}
+                                  className={
+                                    selectedMeal === meal.name
+                                      ? "selected"
+                                      : ""
+                                  }
+                                >
+                                  {meal.name}
+                                </label>
+                              </div>
+                            ))}
+                         </div>
+                       </div>
+                     ))}
+                     
+                     {/* Custom foods section */}
+                     {cheatMeals.some(meal => meal.id.startsWith('custom-')) && (
+                       <div className="category-section">
+                         <h4 className="category-heading mb-3">Custom Foods</h4>
+                         <div className="food-card">
+                           {cheatMeals
+                             .filter(meal => meal.id.startsWith('custom-'))
+                             .map((meal) => (
+                               <div key={meal.id} className="food-bx">
+                                 <input
+                                   type="checkbox"
+                                   className="d-none"
+                                   id={`meal-${meal.id}-${meal.name.replace(
+                                     /\s+/g,
+                                     "-"
+                                   )}`}
+                                   checked={selectedMeal === meal.name}
+                                   onChange={() => handleMealSelect(meal.name)}
+                                 />
+                                 <label
+                                   htmlFor={`meal-${meal.id}-${meal.name.replace(
+                                     /\s+/g,
+                                     "-"
+                                   )}`}
+                                   className={
+                                     selectedMeal === meal.name
+                                       ? "selected"
+                                       : ""
+                                   }
+                                 >
+                                   {meal.name}
+                                 </label>
+                               </div>
+                             ))}
+                         </div>
+                       </div>
+                     )}
                    </div>
 
                     <div className="custom-frm-bx mt-4 px-135">
@@ -260,7 +288,7 @@ function FavoriteFoodPage() {
                       />
                     </div>
 
-                    {cheatMeals.length === 0 && !loading && (
+                    {categories.length === 0 && !loading && (
                       <div className="text-center py-4">
                         <p>No cheat meals available at the moment.</p>
                       </div>
@@ -268,15 +296,15 @@ function FavoriteFoodPage() {
                   </>
                 )}
 
-                <div className="text-center mt-3">
-                  <button
-                    onClick={handleContinue}
-                    className="custom-btn continue-btn"
-                    disabled={selectedMeals.length === 0 || loading}
-                  >
-                    Continue
-                  </button>
-                </div>
+                                 <div className="text-center mt-3">
+                   <button
+                     onClick={handleContinue}
+                     className="custom-btn continue-btn"
+                     disabled={!selectedMeal || loading}
+                   >
+                     Continue
+                   </button>
+                 </div>
               </div>
             </div>
           </div>
