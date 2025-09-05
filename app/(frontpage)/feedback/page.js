@@ -12,6 +12,8 @@ function FeedbackPage() {
   const [feedback, setFeedback] = useState(state.feedback ?? null); // true/false
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
+console.log("feedback",feedback)
+
   // Redirects based on previous steps
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {

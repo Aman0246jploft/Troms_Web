@@ -24,12 +24,13 @@ const initialState = {
   dateOfBirth: "",
   age: 0,
   trainingDays: 3,
-  feedback: false,
+  feedback: true,
   weight: 0,
   weightUnit: "lbs",
   weightGoal: "",
   desiredWeight: 0,
   height: 0,
+  unitSystem: "metric", // Global unit system: "metric" or "imperial"
   workoutLocation: "",
   selectedEquipments: [],
   reachingGoals: "",
@@ -176,6 +177,18 @@ export function OnboardingProvider({ children }) {
     calculateAge: (dateOfBirth) =>
       dispatch({ type: "CALCULATE_AGE", payload: dateOfBirth }),
     resetState: () => dispatch({ type: "RESET_STATE" }),
+    
+    // Unit system helper
+    toggleUnitSystem: () => {
+      const newUnitSystem = state.unitSystem === "metric" ? "imperial" : "metric";
+      dispatch({ type: "UPDATE_FIELD", field: "unitSystem", value: newUnitSystem });
+      
+      // Also update weightUnit to match
+      const newWeightUnit = newUnitSystem === "metric" ? "kg" : "lbs";
+      dispatch({ type: "UPDATE_FIELD", field: "weightUnit", value: newWeightUnit });
+      
+      return newUnitSystem;
+    },
 
     // Validation helpers
     isStepValid: (step) => {

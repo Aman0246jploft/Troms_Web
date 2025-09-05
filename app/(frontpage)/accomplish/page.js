@@ -10,7 +10,7 @@ function AccomplishPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedGoal, setSelectedGoal] = useState(
-    state.accomplish && state.accomplish.length > 0 ? state.accomplish[0] : ""
+    state.accomplish && state.accomplish.length > 0 ? state.accomplish : []
   );
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
@@ -55,16 +55,22 @@ function AccomplishPage() {
   };
 
   const handleGoalChange = (goalId) => {
-    setSelectedGoal(goalId);
-    // Store as single item in array
-    updateField("accomplish", [goalId]);
+    let updatedGoals;
+    if (selectedGoal.includes(goalId)) {
+      updatedGoals = selectedGoal.filter((id) => id !== goalId);
+    } else {
+      updatedGoals = [...selectedGoal, goalId];
+    }
+    setSelectedGoal(updatedGoals);
+    updateField("accomplish", updatedGoals);
     hideAlert();
   };
+
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (!selectedGoal) {
+    if (selectedGoal.length === 0) {
       showAlert("warning", "Please select what you would like to accomplish.");
       return;
     }
@@ -72,7 +78,7 @@ function AccomplishPage() {
     if (isStepValid(18)) {
       updateStep(19);
       router.push("/allergies");
-    }
+    } 
   };
 
   return (
@@ -101,7 +107,7 @@ function AccomplishPage() {
                 </h3>
                 <div className="px-135">
                   <form onSubmit={handleContinue}>
-                    {accomplishmentOptions.map((option) => (
+                    {/* {accomplishmentOptions.map((option) => (
                       <div key={option.id} className="custom-check">
                         <input
                           type="radio"
@@ -121,13 +127,35 @@ function AccomplishPage() {
                           {option.label}
                         </label>
                       </div>
+                    ))} */}
+
+
+                    {accomplishmentOptions.map((option) => (
+                      <div key={option.id} className="custom-check">
+                        <input
+                          type="checkbox"
+                          id={option.id}
+                          name="Accomplish"
+                          className="d-none"
+                          value={option.id}
+                          checked={selectedGoal.includes(option.id)}
+                          onChange={() => handleGoalChange(option.id)}
+                        />
+                        <label
+                          htmlFor={option.id}
+                          className={selectedGoal.includes(option.id) ? "selected" : ""}
+                        >
+                          {option.label}
+                        </label>
+                      </div>
                     ))}
+
 
                     <div className="text-center mt-3">
                       <button
                         type="submit"
                         className="custom-btn continue-btn"
-                        disabled={!selectedGoal}
+                        disabled={selectedGoal.length === 0}
                       >
                         Continue
                       </button>

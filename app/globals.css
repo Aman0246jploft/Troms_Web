@@ -1138,6 +1138,15 @@ input[type="number"]::-webkit-outer-spin-button {
   border-color: #06402b;
   background-color: #efffdb;
 }
+
+.custom-check input[type="checkbox"]:checked + label::after {
+  display: block;
+}
+
+.custom-check input[type="checkbox"]:checked + label {
+  border-color: #06402b;
+  background-color: #efffdb;
+}
 .equipment-list {
   display: flex;
   flex-wrap: wrap;
