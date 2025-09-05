@@ -507,13 +507,7 @@ function SubscriptionPage() {
 
                 <div className="choose-plan px-135">
                   <h6 className="text-center">Choose a plan to begin:</h6>
-                  <div
-                    style={{
-                      maxHeight: "15rem",
-                      overflowY: "auto",
-                      padding: "10px",
-                    }}
-                  >
+                  <div className="choose-plan-list">
                     {plans.length > 0 ? (
                       plans.map((plan) => (
                         <div
