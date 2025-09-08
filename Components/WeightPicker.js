@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 
 const WeightPicker = ({ 
   weight: externalWeight = 75, 
@@ -60,9 +60,9 @@ const WeightPicker = ({
     moveHandle(e);
     
     // Add global listeners for smooth dragging
-    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointermove', handlePointerMove, { passive: false });
     document.addEventListener('pointerup', handlePointerUp);
-    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handlePointerUp);
   };
 
@@ -95,8 +95,9 @@ const WeightPicker = ({
     let posX = clientX - bounds.left;
     let newWeight = getWeightFromPos(posX);
     
-    // Ensure weight is within bounds
+    // Ensure weight is within bounds and round to reasonable precision
     newWeight = Math.max(min, Math.min(max, newWeight));
+    newWeight = Math.round(newWeight * 4) / 4; // Round to nearest 0.25
     
     setWeight(newWeight);
     if (onChange) onChange(newWeight);
@@ -115,43 +116,92 @@ const WeightPicker = ({
     }
   };
 
-  // Generate tick marks
-  const renderTicks = () => {
+  // Generate tick marks aligned with numbers using relative positioning - memoized for performance  
+  const tickMarks = useMemo(() => {
     const ticks = [];
-    // 4 ticks per number: 0.25 divisions; long ticks every 1 unit
-    for (let i = 0; i <= totalTicks; i++) {
-      const tickWeight = min + i * 0.25;
-      const isLongTick = i % 4 === 0;
-      const isMediumTick = i % 2 === 0 && !isLongTick;
+    
+    // Generate major ticks aligned with the numbers (every whole number)
+    for (let offset = -2; offset <= 2; offset++) {
+      const tickWeight = Math.round(weight) + offset;
+      
+      // Skip if outside bounds
+      if (tickWeight < min || tickWeight > max) continue;
+      
+      // Use same relative positioning as numbers for perfect alignment
+      const position = 50 + (offset * 20);
+      
+      // Calculate opacity based on distance from current weight
+      const distanceFromCurrent = Math.abs(offset);
+      let opacity = 1;
+      if (distanceFromCurrent > 0) {
+        opacity = Math.max(0.4, 1 - distanceFromCurrent * 0.3);
+      }
+      
+      // Add major tick for whole numbers
       ticks.push(
         <div
-          key={i}
-          className={`tick ${
-            isLongTick ? "long" : isMediumTick ? "medium" : "short"
-          }`}
-          style={{ left: `${(i / totalTicks) * 100}%` }}
+          key={`major-${tickWeight}`}
+          className="tick long"
+          style={{ 
+            left: `${position}%`,
+            opacity: opacity
+          }}
         />
       );
+      
+      // Add minor ticks between whole numbers (0.25, 0.5, 0.75)
+      if (offset < 2) { // Don't add after the last major tick
+        for (let subOffset = 0.25; subOffset < 1; subOffset += 0.25) {
+          const minorTickWeight = tickWeight + subOffset;
+          if (minorTickWeight > max) continue;
+          
+          // Calculate minor tick position relative to major tick
+          const minorPosition = position + (subOffset * 20); // 20% span between major ticks
+          const isHalfTick = subOffset === 0.5; // 0.5 increment
+          
+          // Calculate minor tick opacity
+          const minorDistance = Math.abs(offset + subOffset);
+          let minorOpacity = 0.6;
+          if (minorDistance > 0.5) {
+            minorOpacity = Math.max(0.2, 0.6 - (minorDistance - 0.5) * 0.4);
+          }
+          
+          ticks.push(
+            <div
+              key={`minor-${tickWeight}-${subOffset}`}
+              className={`tick ${isHalfTick ? 'medium' : 'short'}`}
+              style={{ 
+                left: `${minorPosition}%`,
+                opacity: minorOpacity
+              }}
+            />
+          );
+        }
+      }
     }
+    
     return ticks;
-  };
+  }, [weight, min, max]); // Re-calculate when weight or bounds change
 
-  // Render the numbers visible above the slider (two left, current, two right)
+  // Render the numbers visible above the slider with proper spacing
   const renderNumbers = () => {
     const numbers = [];
     for (let offset = -2; offset <= 2; offset++) {
-      let number = Math.round((weight + offset) * 1) / 1; // Keep integer for display
+      let number = Math.round(weight + offset); // Get integer weight values
       // Only display numbers inside range
       if (number >= min && number <= max) {
+        // Use relative positioning for better spacing (center at 50% with 20% intervals)
+        const position = 50 + (offset * 20);
+        
         let className = "number";
         if (offset === 0) className += " current";
         else if (Math.abs(offset) === 1) className += " near";
         else className += " far";
         numbers.push(
           <span
-            key={number}
+            key={`${number}-${offset}`}
             className={className}
-            style={{ left: `${50 + offset * 25}%` }}
+            style={{ left: `${position}%` }}
           >
             {number}
           </span>
@@ -180,7 +230,7 @@ const WeightPicker = ({
         style={{ touchAction: 'none' }}
       >
         {/* Tick marks */}
-        <div className="ticks-wrapper">{renderTicks()}</div>
+        <div className="ticks-wrapper">{tickMarks}</div>
 
         {/* Middle highlight line */}
         <div className="middle-line" />
@@ -189,23 +239,23 @@ const WeightPicker = ({
         <div
           className="pointer"
           style={{
-            left: `${((weight - min) / (max - min)) * 100}%`,
+            left: `calc(${((weight - min) / (max - min)) * 100}% - 1.5px)`,
           }}
         />
         {/* Bottom triangle */}
         <span
           className="bottom-triangle"
           style={{
-            left: `${((weight - min) / (max - min)) * 100}%`,
+            left: `calc(${((weight - min) / (max - min)) * 100}% - 1.5px)`,
           }}
         />
       </div>
 
       <div className="selected-weight">
         <span className="weight-number">
-          {weight.toFixed(weight % 1 === 0 ? 0 : 2)}
+          {weight % 1 === 0 ? weight.toString() : weight.toFixed(1)}
         </span>
-        <span className="weight-unit">{isMetric ? 'Kg' : 'lbs'}</span>
+        <span className="weight-unit">{isMetric ? 'kg' : 'lbs'}</span>
       </div>
     </div>
   );

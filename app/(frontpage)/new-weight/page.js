@@ -115,11 +115,13 @@ function NewWeightPage() {
                 <p className="mb-2">You can update it later if needed</p>
                 
 
-                <WeightPicker 
-                  weight={weight}
-                  isMetric={isMetric}
-                  onChange={handleWeightChange}
-                />
+                <div className="trm-wgt-picker">
+                  <WeightPicker 
+                    weight={weight}
+                    isMetric={isMetric}
+                    onChange={handleWeightChange}
+                  />
+                </div>
                 <div className="text-center mt-5">
                   <button 
                     type="submit" 

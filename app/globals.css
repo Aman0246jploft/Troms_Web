@@ -155,9 +155,9 @@ a {
   z-index: 1;
   background: linear-gradient(
     96deg,
-    /* #fff 3.68%, */
+    #fff 3.68%,
     rgba(255, 255, 255, 0) 53.47%,
-    /* #fff 97.63% */
+    #fff 97.63%
   );
   padding: 1px;
 }
@@ -1607,14 +1607,17 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .weight-picker-container {
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .weight-picker-container .numbers-wrapper {
   position: relative;
   height: 60px;
-  width: 450px;
+  width: 100%;
+  max-width: 450px;
   margin: 0 auto;
 }
 
@@ -1654,32 +1657,50 @@ input[type="number"]::-webkit-outer-spin-button {
   box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.15);
   cursor: pointer;
   outline: none;
+  user-select: none;
+  touch-action: none;
+}
+
+.weight-picker-container .slider:hover {
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.weight-picker-container .slider:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 .weight-picker-container .ticks-wrapper {
   position: relative;
   height: 70px;
   width: 100%;
+  overflow: hidden;
 }
 
 .weight-picker-container .tick {
   position: absolute;
   background: rgb(255 255 255 / 40%);
   border-radius: 0px;
-  transition: 0.3s;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .weight-picker-container .tick.short {
   width: 1.5px;
-  height: 10px;
+  height: 15px;
   margin-left: -0.75px;
-  display: none;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(255 255 255 / 25%);
 }
 
 .weight-picker-container .tick.medium {
   width: 2px;
-  height: 25px;
-  display: none;
+  height: 30px;
+  margin-left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(255 255 255 / 35%);
 }
 
 .weight-picker-container .tick.long {
@@ -1705,18 +1726,18 @@ input[type="number"]::-webkit-outer-spin-button {
   position: absolute;
   top: 15px;
   width: 3px;
-  height: 32px;
-  margin-left: 10px;
+  height: 40px;
   background: #e2f163;
-  border-radius: 0px;
+  border-radius: 1px;
   z-index: 3;
-  transition: left 0.1s;
+  transition: left 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .trm-wgt-picker.weight-picker-container .pointer {
-  margin-left: -5px !important;
+  margin-left: 0 !important;
 }
 .trm-wgt-picker.weight-picker-container .bottom-triangle::after {
-  margin-left: -14px;
+  margin-left: -11.5px;
 }
 
 .weight-picker-container .bottom-triangle {
@@ -1728,10 +1749,10 @@ input[type="number"]::-webkit-outer-spin-button {
   background-image: url(/images/tringle.svg);
   width: 23px;
   height: 17px;
-  position: absolute;
   top: 2px;
   left: 0%;
   background-repeat: no-repeat;
+  margin-left: -11.5px;
 }
 
 .weight-picker-container .selected-weight {
@@ -2463,22 +2484,37 @@ input[type="number"]::-webkit-outer-spin-button {
   }
   .weight-picker-container {
     width: 100%;
+    padding: 0 10px;
   }
 
   .new-desired-weight .selected-weight .weight-number {
     font-size: 20px;
   }
   .weight-picker-container .number.current {
-    font-size: 15px;
+    font-size: 20px;
   }
   .weight-picker-container .number.near {
-    font-size: 15px;
+    font-size: 18px;
   }
   .weight-picker-container .number.far {
-    font-size: 15px;
+    font-size: 16px;
   }
   .weight-picker-container .numbers-wrapper {
-    width: 250px;
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .weight-picker-container .selected-weight .weight-number {
+    font-size: 32px;
+  }
+  
+  .weight-picker-container .slider {
+    height: 60px;
+  }
+  
+  .weight-picker-container .pointer {
+    height: 32px;
+    top: 14px;
   }
   .desired-lose-bx h5 {
     font-size: 16px;
