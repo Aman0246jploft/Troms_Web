@@ -7,6 +7,75 @@ import Accordion from "react-bootstrap/Accordion";
 
 export default function Home() {
   const [activeStep, setActiveStep] = useState(2); // default active = 02
+  
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: "", message: "" });
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'}/contact-us/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus({
+          type: "success",
+          message: "Thank you! Your message has been sent successfully."
+        });
+        // Reset form
+        setContactForm({
+          name: "",
+          email: "",
+          subject: "",
+          message: ""
+        });
+        // Hide success message after 2 seconds
+        setTimeout(() => {
+          setSubmitStatus({ type: "", message: "" });
+        }, 2000);
+      } else {
+        throw new Error(data.message || "Failed to send message");
+      }
+    } catch (error) {
+      setSubmitStatus({
+        type: "error",
+        message: error.message || "Failed to send message. Please try again."
+      });
+      // Hide error message after 2 seconds
+      setTimeout(() => {
+        setSubmitStatus({ type: "", message: "" });
+      }, 2000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <>
       <Header />
@@ -278,37 +347,73 @@ export default function Home() {
                   Reach out with inquiries about tickets, partnerships, or event
                   details.
                 </p>
-                <form>
+                
+                {/* Success/Error Message */}
+                {submitStatus.message && (
+                  <div className={`alert ${submitStatus.type === 'success' ? 'alert-success' : 'alert-danger'} mb-3`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+                
+                <form onSubmit={handleSubmit}>
                   <div className="frm-bx">
                     <input
                       type="text"
+                      name="name"
                       className="form-control"
                       placeholder="Name"
+                      value={contactForm.name}
+                      onChange={handleInputChange}
+                      required
+                      minLength={2}
+                      maxLength={100}
                     />
                   </div>
                   <div className="frm-bx">
                     <input
                       type="email"
+                      name="email"
                       className="form-control"
                       placeholder="Email"
+                      value={contactForm.email}
+                      onChange={handleInputChange}
+                      required
+                      maxLength={255}
                     />
                   </div>
                   <div className="frm-bx">
                     <input
                       type="text"
+                      name="subject"
                       className="form-control"
                       placeholder="Subject"
+                      value={contactForm.subject}
+                      onChange={handleInputChange}
+                      required
+                      minLength={5}
+                      maxLength={200}
                     />
                   </div>
                   <div className="frm-bx">
                     <textarea
+                      name="message"
                       className="form-control"
                       placeholder="Message"
+                      rows={4}
+                      value={contactForm.message}
+                      onChange={handleInputChange}
+                      required
+                      minLength={10}
+                      maxLength={1000}
                     ></textarea>
                   </div>
                   <div>
-                    <button className="custom-btn light-btn" type="button">
-                      Send message
+                    <button 
+                      className={`custom-btn light-btn ${isSubmitting ? 'disabled' : ''}`} 
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Sending...' : 'Send message'}
                     </button>
                   </div>
                 </form>
