@@ -1677,14 +1677,20 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .weight-picker-container .pointer {
   position: absolute;
-  top: 10px;
+  top: 15px;
   width: 3px;
   height: 32px;
-  margin-left: -2px;
+  margin-left: 10px;
   background: #e2f163;
   border-radius: 0px;
   z-index: 3;
   transition: left 0.1s;
+}
+.trm-wgt-picker.weight-picker-container .pointer {
+  margin-left: -5px !important;
+}
+.trm-wgt-picker.weight-picker-container .bottom-triangle::after {
+  margin-left: -14px;
 }
 
 .weight-picker-container .bottom-triangle {
@@ -1694,8 +1700,8 @@ input[type="number"]::-webkit-outer-spin-button {
   position: absolute;
   content: "";
   background-image: url(/images/tringle.svg);
-  width: 35px;
-  height: 24px;
+  width: 23px;
+  height: 17px;
   position: absolute;
   top: 2px;
   left: 0%;
@@ -1832,7 +1838,7 @@ input[type="number"]::-webkit-outer-spin-button {
   position: absolute;
   left: 12px;
   right: 12px;
-  top: 50%;
+  top: 55%;
   height: 3px;
   transform: translateY(-50%);
   background: #f0e44f;
@@ -1844,14 +1850,14 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Triangle pointer on the right */
 .horizontal-height .pointer {
   position: absolute;
-  top: 50%;
-  right: 0px;
+  top: 55%;
+  left: 0px;
   transform: translateY(-50%);
   width: 0;
   height: 0;
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
-  border-left: 10px solid #19a463;
+  border-left: 10px solid #0e6c4a;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
   pointer-events: none;
 }

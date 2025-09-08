@@ -250,7 +250,7 @@ const DesiredWeightPicker = ({
   };
   return (
     <>
-      <div className="weight-picker-container">
+      <div className="weight-picker-container trm-wgt-picker">
         <div className="numbers-wrapper">{renderNumbers()}</div>
 
         <div
