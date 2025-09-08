@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Elements,
   CardElement,
@@ -270,6 +271,7 @@ function StripePaymentForm({
 }
 
 function SubscriptionPage() {
+  const router = useRouter();
   const [storedUser, setStoredUser] = useState({});
   const { state, updateStep } = useOnboarding();
   const [plans, setPlans] = useState([]);
@@ -367,7 +369,7 @@ function SubscriptionPage() {
 
   const handlePaymentSuccess = async (result) => {
     console.log("🎉 Payment successful:", result);
-    setSuccess("Subscription created successfully! Welcome to TROMS Fitness!");
+    setSuccess("Subscription successful! Welcome to TROMS Fitness");
     setShowPayment(false);
     setError("");
 
@@ -420,12 +422,13 @@ function SubscriptionPage() {
       // Don't show error to user as payment was successful, just log it
     }
 
-    // Redirect to dashboard or success page after delay
-    console.log("⏰ Setting redirect timer (3 seconds)");
-    // setTimeout(() => {
-    //   console.log("🔄 Redirecting to dashboard...");
-    //   window.location.href = "/dashboard";
-    // }, 3000);
+    // Redirect to home page after 2 seconds and clear success message
+    console.log("⏰ Setting redirect timer (2 seconds)");
+    setTimeout(() => {
+      console.log("🔄 Redirecting to home page...");
+      setSuccess(""); // Clear success message
+      router.push("/"); // Redirect to home page
+    }, 2000);
   };
 
   const handlePaymentError = (errorMessage) => {
