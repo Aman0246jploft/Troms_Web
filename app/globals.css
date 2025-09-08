@@ -1213,7 +1213,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .goal-range .slider {
-  -webkit-appearance: none;
+  /* -webkit-appearance: none; */
   width: 100%;
   height: 8px;
   border-radius: 4px;

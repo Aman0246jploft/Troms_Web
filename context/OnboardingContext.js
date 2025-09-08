@@ -26,7 +26,7 @@ const initialState = {
   trainingDays: 3,
   feedback: true,
   weight: 0,
-  weightUnit: "lbs",
+  weightUnit: "kg",
   weightGoal: "",
   desiredWeight: 0,
   height: 0,
