@@ -155,9 +155,9 @@ a {
   z-index: 1;
   background: linear-gradient(
     96deg,
-    #fff 3.68%,
+    /* #fff 3.68%, */
     rgba(255, 255, 255, 0) 53.47%,
-    #fff 97.63%
+    /* #fff 97.63% */
   );
   padding: 1px;
 }

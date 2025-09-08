@@ -238,9 +238,9 @@ function RegisterPage() {
               </div>
 
               <div className="auth-cards login">
-                <h3>Register Yourself!</h3>
+                <h3>Welcome To Troms!</h3>
                 <p>
-                  Sign up to track your progress and get personalized fitness
+                  Join to track your progress and get personalized fitness
                   insights with AI.
                 </p>
                 <div className="login-innr">
@@ -255,7 +255,7 @@ function RegisterPage() {
                         className="me-2"
                         alt="Apple"
                       />
-                      {state.loading ? "Signing in..." : "Sign Up with Apple"}
+                      {state.loading ? "Signing in..." : "Continue with Apple"}
                     </button>
 
                     <button
@@ -268,7 +268,7 @@ function RegisterPage() {
                         className="me-2"
                         alt="Google"
                       />
-                      {state.loading ? "Signing in..." : "Sign Up with Google"}
+                      {state.loading ? "Signing in..." : "Continue with Google"}
                     </button>
                   </div>
 
