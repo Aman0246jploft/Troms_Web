@@ -98,9 +98,9 @@ export default function Home() {
                 <Link className="thm-btn" href="/auth">
                   <span>Get Started Free</span>
                 </Link>
-                <Link className="thm-btn dark-btn" href="">
+                {/* <Link className="thm-btn dark-btn" href="">
                   <span>Watch Demo</span>
-                </Link>
+                </Link> */}
               </div>
             </div>
             <div className="col-lg-6 col-md-6 order-1 order-lg-2 order-md-2 text-end">
