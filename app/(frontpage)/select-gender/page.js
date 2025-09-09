@@ -77,11 +77,12 @@ function SelectGenderPage() {
               />
 
               <div className="auth-cards gender">
-                <p className="text-uppercase mb-5">Your Gender</p>
+                <p className="text-uppercase mb-2">Your Gender</p>
                 <h3 className="mb-2">Share a bit about who you are</h3>
                 <p>To enhance your experience, please share your gender.</p>
-                <form onSubmit={handleContinue}>
-                  <div className="gender-cards">
+                <div className="px-135">
+                  <form onSubmit={handleContinue} className="">
+                    {/* <div className="gender-cards">
                     <div>
                       <input
                         type="radio"
@@ -124,17 +125,54 @@ function SelectGenderPage() {
                         Female
                       </label>
                     </div>
-                  </div>
-                  <div className="text-center">
-                    <button
-                      type="submit"
-                      className="custom-btn continue-btn"
-                      disabled={!selectedGender}
-                    >
-                      Continue
-                    </button>
-                  </div>
-                </form>
+                  </div> */}
+                    <div className="custom-check">
+                      <input
+                        type="radio"
+                        id="male"
+                        className="d-none"
+                        name="gender"
+                        value="male"
+                        checked={selectedGender === "male"}
+                        onChange={() => handleGenderChange("male")}
+                      />
+                      <label
+                        htmlFor="male"
+                        className={selectedGender === "male" ? "selected" : ""}
+                      >
+                        Male
+                      </label>
+                    </div>
+                    <div className="custom-check">
+                      <input
+                        type="radio"
+                        id="female"
+                        className="d-none"
+                        name="gender"
+                        value="female"
+                        checked={selectedGender === "female"}
+                        onChange={() => handleGenderChange("female")}
+                      />
+                      <label
+                        htmlFor="female"
+                        className={
+                          selectedGender === "female" ? "selected" : ""
+                        }
+                      >
+                        Female
+                      </label>
+                    </div>
+                    <div className="text-center">
+                      <button
+                        type="submit"
+                        className="custom-btn continue-btn"
+                        disabled={!selectedGender}
+                      >
+                        Continue
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

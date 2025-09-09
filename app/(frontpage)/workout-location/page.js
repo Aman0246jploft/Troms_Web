@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,38 +9,45 @@ import Alert from "../../../Components/Alert";
 function WorkoutLocationPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedLocation, setSelectedLocation] = useState(state.workoutLocation || '');
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [selectedLocation, setSelectedLocation] = useState(
+    state.workoutLocation || ""
+  );
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
-useEffect(() => {
-  if (state.isAuthChecked && state.isAuthenticated === false) {
-    router.push('/register');
-    return;
-  }
-  if (!state.desiredWeight || state.desiredWeight <= 0) {
-    router.push('/desired-weight');
-    return;
-  }
+  useEffect(() => {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
+    if (!state.desiredWeight || state.desiredWeight <= 0) {
+      router.push("/desired-weight");
+      return;
+    }
 
-  // Only update step if currentStep is different from target
-  if (state.currentStep !== 10) {
-    updateStep(10);
-  }
-}, [state.isAuthChecked, state.isAuthenticated, state.desiredWeight, state.currentStep, router, updateStep]);
-
-
+    // Only update step if currentStep is different from target
+    if (state.currentStep !== 10) {
+      updateStep(10);
+    }
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.desiredWeight,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
-    updateField('workoutLocation', location);
+    updateField("workoutLocation", location);
     hideAlert();
   };
 
@@ -48,7 +55,7 @@ useEffect(() => {
     e.preventDefault();
 
     if (!selectedLocation) {
-      showAlert('warning', 'Please select your workout location to continue.');
+      showAlert("warning", "Please select your workout location to continue.");
       return;
     }
 
@@ -80,9 +87,9 @@ useEffect(() => {
 
               <div className="auth-cards gender location">
                 <p className="text-uppercase mb-3">Workout Location</p>
-                <h3 className="mb-3">Choose your workout location</h3>
+                <h3 className="mb-4">Choose your workout location</h3>
                 <form onSubmit={handleContinue}>
-                  <div className="gender-cards ">
+                  {/* <div className="gender-cards ">
                     <div>
                       <input
                         type="radio"
@@ -90,10 +97,15 @@ useEffect(() => {
                         className="d-none"
                         name="location"
                         value="home"
-                        checked={selectedLocation === 'home'}
-                        onChange={() => handleLocationChange('home')}
+                        checked={selectedLocation === "home"}
+                        onChange={() => handleLocationChange("home")}
                       />
-                      <label htmlFor="home" className={selectedLocation === 'home' ? 'selected' : ''}>
+                      <label
+                        htmlFor="home"
+                        className={
+                          selectedLocation === "home" ? "selected" : ""
+                        }
+                      >
                         <div className="gender-img">
                           <img src="/images/location-01.png" alt="Home" />
                         </div>
@@ -107,10 +119,13 @@ useEffect(() => {
                         className="d-none"
                         name="location"
                         value="gym"
-                        checked={selectedLocation === 'gym'}
-                        onChange={() => handleLocationChange('gym')}
+                        checked={selectedLocation === "gym"}
+                        onChange={() => handleLocationChange("gym")}
                       />
-                      <label htmlFor="gym" className={selectedLocation === 'gym' ? 'selected' : ''}>
+                      <label
+                        htmlFor="gym"
+                        className={selectedLocation === "gym" ? "selected" : ""}
+                      >
                         <div className="gender-img">
                           <img src="/images/location-02.png" alt="Gym" />
                         </div>
@@ -124,18 +139,81 @@ useEffect(() => {
                         className="d-none"
                         name="location"
                         value="outdoors"
-                        checked={selectedLocation === 'outdoors'}
-                        onChange={() => handleLocationChange('outdoors')}
+                        checked={selectedLocation === "outdoors"}
+                        onChange={() => handleLocationChange("outdoors")}
                       />
-                      <label htmlFor="outdoors" className={selectedLocation === 'outdoors' ? 'selected' : ''}>
+                      <label
+                        htmlFor="outdoors"
+                        className={
+                          selectedLocation === "outdoors" ? "selected" : ""
+                        }
+                      >
                         <div className="gender-img">
                           <img src="/images/location-03.png" alt="Outdoors" />
                         </div>
                         Outdoors
                       </label>
                     </div>
+                  </div> */}
+
+                  <div className="px-135">
+                    <div className="custom-check">
+                      <input
+                        type="radio"
+                        id="home"
+                        className="d-none"
+                        name="location"
+                        value="home"
+                        checked={selectedLocation === "home"}
+                        onChange={() => handleLocationChange("home")}
+                      />
+                      <label
+                        htmlFor="home"
+                        className={
+                          selectedLocation === "home" ? "selected" : ""
+                        }
+                      >
+                        Home
+                      </label>
+                    </div>
+                    <div className="custom-check">
+                      <input
+                        type="radio"
+                        id="gym"
+                        className="d-none"
+                        name="location"
+                        value="gym"
+                        checked={selectedLocation === "gym"}
+                        onChange={() => handleLocationChange("gym")}
+                      />
+                      <label
+                        htmlFor="gym"
+                        className={selectedLocation === "gym" ? "selected" : ""}
+                      >
+                        Gym
+                      </label>
+                    </div>
+                    <div className="custom-check">
+                      <input
+                        type="radio"
+                        id="outdoors"
+                        className="d-none"
+                        name="location"
+                        value="outdoors"
+                        checked={selectedLocation === "outdoors"}
+                        onChange={() => handleLocationChange("outdoors")}
+                      />
+                      <label
+                        htmlFor="outdoors"
+                        className={
+                          selectedLocation === "outdoors" ? "selected" : ""
+                        }
+                      >
+                        Outdoors
+                      </label>
+                    </div>
                   </div>
-                  <div className="text-center">
+                  <div className="text-center mt-3">
                     <button
                       type="submit"
                       className="custom-btn continue-btn"

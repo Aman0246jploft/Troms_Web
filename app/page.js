@@ -7,13 +7,13 @@ import Accordion from "react-bootstrap/Accordion";
 
 export default function Home() {
   const [activeStep, setActiveStep] = useState(2); // default active = 02
-  
+
   // Contact form state
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
@@ -21,9 +21,9 @@ export default function Home() {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setContactForm(prev => ({
+    setContactForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -34,27 +34,32 @@ export default function Home() {
     setSubmitStatus({ type: "", message: "" });
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'}/contact-us/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactForm),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
+        }/contact-us/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(contactForm),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         setSubmitStatus({
           type: "success",
-          message: "Thank you! Your message has been sent successfully."
+          message: "Thank you! Your message has been sent successfully.",
         });
         // Reset form
         setContactForm({
           name: "",
           email: "",
           subject: "",
-          message: ""
+          message: "",
         });
         // Hide success message after 2 seconds
         setTimeout(() => {
@@ -66,7 +71,7 @@ export default function Home() {
     } catch (error) {
       setSubmitStatus({
         type: "error",
-        message: error.message || "Failed to send message. Please try again."
+        message: error.message || "Failed to send message. Please try again.",
       });
       // Hide error message after 2 seconds
       setTimeout(() => {
@@ -91,7 +96,7 @@ export default function Home() {
                 <h1>
                   Ai That Transform <br /> Your Fitness
                 </h1>
-                <p className="text-white">
+                <p>
                   Personalised workouts and meal plans designed just for you -
                   powered by Al.
                 </p>
@@ -347,14 +352,20 @@ export default function Home() {
                   Reach out with inquiries about tickets, partnerships, or event
                   details.
                 </p>
-                
+
                 {/* Success/Error Message */}
                 {submitStatus.message && (
-                  <div className={`alert ${submitStatus.type === 'success' ? 'alert-success' : 'alert-danger'} mb-3`}>
+                  <div
+                    className={`alert ${
+                      submitStatus.type === "success"
+                        ? "alert-success"
+                        : "alert-danger"
+                    } mb-3`}
+                  >
                     {submitStatus.message}
                   </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit}>
                   <div className="frm-bx">
                     <input
@@ -408,12 +419,14 @@ export default function Home() {
                     ></textarea>
                   </div>
                   <div>
-                    <button 
-                      className={`custom-btn light-btn ${isSubmitting ? 'disabled' : ''}`} 
+                    <button
+                      className={`custom-btn light-btn ${
+                        isSubmitting ? "disabled" : ""
+                      }`}
                       type="submit"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? 'Sending...' : 'Send message'}
+                      {isSubmitting ? "Sending..." : "Send message"}
                     </button>
                   </div>
                 </form>
