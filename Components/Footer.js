@@ -1,4 +1,4 @@
- import Link from "next/link";
+import Link from "next/link";
 import React from "react";
 
 function Footer() {
@@ -17,16 +17,16 @@ function Footer() {
                   </p>
                   <div className="follow">
                     <Link href="#" target="_blank">
-                      <img src="/images/facebook.svg" alt="Facebook" />
+                      <img src="/images/white-facebook.svg" alt="Facebook" />
                     </Link>
                     <Link href="#" target="_blank">
-                      <img src="/images/instagram.svg" alt="Instagram" />
+                      <img src="/images/white-instagram.svg" alt="Instagram" />
                     </Link>
                     <Link href="#" target="_blank">
-                      <img src="/images/grn-x.svg" alt="X" />
+                      <img src="/images/white-twitter.svg" alt="X" />
                     </Link>
                     <Link href="#" target="_blank">
-                      <img src="/images/youtube.svg" alt="YouTube" />
+                      <img src="/images/white-youtube.svg" alt="YouTube" />
                     </Link>
                   </div>
                 </div>

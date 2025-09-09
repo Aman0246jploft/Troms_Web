@@ -195,14 +195,7 @@ function StripePaymentForm({
       <form onSubmit={handlePayment}>
         <div className="mb-3">
           <label className="form-label fw-semibold">Card Information</label>
-          <div
-            style={{
-              padding: "12px",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-              backgroundColor: "#fff",
-            }}
-          >
+          <div className="dv_card_info">
             <CardElement
               options={{
                 style: {

@@ -28,7 +28,7 @@ function Header() {
       >
         <Navbar expand="lg" className="custom-nav">
           <Navbar.Brand href="#home">
-            <img src="/images/white-logo.svg" alt="logo" />
+            <img src="/images/dark-logo.svg" alt="logo" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav">
             <span></span>
