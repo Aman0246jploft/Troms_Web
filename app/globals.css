@@ -2120,10 +2120,142 @@ input[type="number"]::-webkit-outer-spin-button {
 .days-list-item label span {
   font-size: 12px;
 }
+.health-conditions .food-card label button {
+  display: block;
+  opacity: 1;
+}
+.health-conditions
+  .food-card
+  input[type="checkbox"]:checked
+  + label
+  button
+  img {
+  filter: brightness(0) invert(1);
+}
+.health-conditions .food-card label {
+  text-transform: capitalize;
+}
+.tooltip-btn {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tooltip-btn .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 180px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%; /* position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+}
+
+/* little arrow */
+.tooltip-btn .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* bottom of tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* show tooltip on hover */
+.tooltip-btn:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
 
 .days-list-item input[type="radio"]:checked + label {
   border-color: #06402b;
 }
+.custom-select {
+  position: relative;
+}
+
+.custom-select .selected {
+  cursor: pointer;
+  border-radius: 50px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 16px;
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08) inset,
+    0 4px 20px 0 rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(7.5px);
+}
+
+.custom-select .selected img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.custom-select .arrow {
+  margin-left: auto;
+  font-size: 14px;
+}
+
+.custom-select .options {
+  z-index: 10;
+  border-radius: 12px;
+  margin: 0;
+  padding: 10px 0;
+  list-style: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: #c8daad;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08) inset,
+    0 4px 20px 0 rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(7.5px);
+}
+
+.custom-select .options li {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-select .options li:hover {
+  background: #f0f0f0;
+}
+
+.custom-select .options img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.budget-check.custom-check label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.budget-check.custom-check label img {
+  width: 30px;
+  height: 30px;
+}
+
 /* responsive-css-start */
 @media (max-width: 1399px) {
   .login-btn a,
