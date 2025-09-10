@@ -7,7 +7,7 @@ const OnboardingContext = createContext();
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 26, // Updated to include country selection step
+  totalSteps: 28, // Updated to include health conditions and train-more steps
 
   // User data
   isAuthenticated: false,
@@ -48,6 +48,15 @@ const initialState = {
   // Location data
   selectedCountry: null, // { countryName, flagUrl, cities }
   selectedCity: "",
+
+  // Health conditions data
+  healthyConditions: [],
+
+  // Train more than once data
+  trainMoreThanOnce: {
+    isMoreThanOnce: false,
+    specificDays: []
+  },
 
   // Loading states
   loading: false,
@@ -228,6 +237,15 @@ export function OnboardingProvider({ children }) {
           return state.reachingGoals !== "";
         case 13: // Realistic target
           return state.realisticTarget > 0;
+        case 14: // Health conditions (optional)
+          return true; // Health conditions are optional
+        case 15: // Train more than once
+          if (!state.trainMoreThanOnce) return false;
+          // If user says they train more than once, they must select specific days
+          if (state.trainMoreThanOnce.isMoreThanOnce) {
+            return state.trainMoreThanOnce.specificDays && state.trainMoreThanOnce.specificDays.length > 0;
+          }
+          return true; // If they don't train more than once, it's valid
         default:
           return true;
       }
@@ -291,6 +309,8 @@ export function OnboardingProvider({ children }) {
         cheat_meal_food_items: state.cheatMealFoodItems,
         accessible_equipments: state.selectedEquipments,
         cooking_level: state.cookingLevel,
+        healthyConditions: state.healthyConditions,
+        trainMoreThanOnce: state.trainMoreThanOnce,
       };
     },
   };
