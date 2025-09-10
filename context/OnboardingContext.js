@@ -7,7 +7,7 @@ const OnboardingContext = createContext();
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 25,
+  totalSteps: 26, // Updated to include country selection step
 
   // User data
   isAuthenticated: false,
@@ -44,6 +44,10 @@ const initialState = {
   dislikedFoodItems: [],
   injuries: [],
   weeklyWeightLossGoal: 1.5,
+  
+  // Location data
+  selectedCountry: null, // { countryName, flagUrl, cities }
+  selectedCity: "",
 
   // Loading states
   loading: false,
