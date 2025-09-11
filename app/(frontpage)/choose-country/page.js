@@ -16,7 +16,7 @@ function ChooseCountryPage() {
 
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
-
+                                                                                      // Only update step if it's not already set to 2
     if (state.currentStep !== 2) {
       updateStep(2);
     }
