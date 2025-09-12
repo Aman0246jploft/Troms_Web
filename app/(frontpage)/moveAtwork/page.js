@@ -22,7 +22,7 @@ function MoveAtwork() {
   ];
 
   useEffect(() => {
-    if (!state.isAuthChecked) return; // wait for auth check
+    if (!state.isAuthChecked) return; 
 
     if (state.isAuthenticated === false) {
       router.push("/register");
