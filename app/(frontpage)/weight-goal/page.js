@@ -22,7 +22,7 @@ function WeightGoalPage() {
 
   // Set current step
   useEffect(() => {
-    updateStep(8);
+    updateStep(9);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const showAlert = (type, message) => {
@@ -47,8 +47,8 @@ function WeightGoalPage() {
       return;
     }
 
-    if (isStepValid(8)) {
-      updateStep(9);
+    if (isStepValid(9)) {
+      updateStep(10);
       router.push("/new-desired-weight");
     }
   };

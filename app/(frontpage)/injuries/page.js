@@ -11,9 +11,7 @@ function InjuriesPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [injuryList, setInjuryList] = useState([]);
-  const [selectedInjuries, setSelectedInjuries] = useState(
-    state.injuries || []
-  );
+  const [selectedInjuries, setSelectedInjuries] = useState([]);
   const [customInjury, setCustomInjury] = useState("");
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
@@ -34,7 +32,7 @@ function InjuriesPage() {
     // Only update step if it's not already set
 
     if (state.currentStep !== 21) {
-      updateStep(21);
+      updateStep(22);
     }
   }, [
     state.isAuthChecked,
@@ -44,6 +42,33 @@ function InjuriesPage() {
     router,
     updateStep,
   ]);
+
+  useEffect(() => {
+    // Load previously selected injuries from context/localStorage
+    if (state.injuries && state.injuries.length > 0) {
+      // Separate predefined injuries from custom injuries
+      const predefinedInjuries = [];
+      let customInjury = "";
+      
+      state.injuries.forEach(injury => {
+        // Check if this injury matches any of the fetched injuries
+        // If not, it's likely a custom injury
+        const isPredefined = injuryList.some(inj => inj.injury_name === injury);
+        if (isPredefined || injuryList.length === 0) {
+          // Include if it's predefined or if we haven't loaded injuries yet
+          predefinedInjuries.push(injury);
+        } else {
+          // This is likely a custom injury
+          customInjury = injury;
+        }
+      });
+      
+      setSelectedInjuries(predefinedInjuries);
+      if (customInjury) {
+        setCustomInjury(customInjury);
+      }
+    }
+  }, [state.injuries, injuryList]);
 
   useEffect(() => {
     fetchInjuries();
@@ -66,21 +91,8 @@ function InjuriesPage() {
 
       if (response.success) {
         const apiInjuries = response.result || [];
-
-        // Add custom injuries that were previously selected but not in API
-        const customInjuries = selectedInjuries
-          .filter(
-            (selectedInjury) =>
-              !apiInjuries.some(
-                (injury) => injury.injury_name === selectedInjury
-              )
-          )
-          .map((customInjury) => ({
-            id: `custom-${customInjury.replace(/\s+/g, "-").toLowerCase()}`,
-            injury_name: customInjury,
-          }));
-
-        setInjuryList([...apiInjuries, ...customInjuries]);
+        // Only set API injuries, don't add custom ones to the list
+        setInjuryList(apiInjuries);
       } else {
         showAlert("error", "Failed to load injuries. Please try again.");
       }
@@ -107,30 +119,9 @@ function InjuriesPage() {
     hideAlert();
   };
 
-  const handleCustomInjuryAdd = () => {
-    if (customInjury.trim()) {
-      const newInjury = customInjury.trim();
-      if (
-        !selectedInjuries.includes(newInjury) &&
-        !injuryList.some((injury) => injury.injury_name === newInjury)
-      ) {
-        // Add to the injury list for immediate display
-        const customInjuryObj = {
-          id: `custom-${Date.now()}`,
-          injury_name: newInjury,
-        };
-        setInjuryList((prev) => [...prev, customInjuryObj]);
-
-        // Also add to selected injuries
-        const newSelection = [...selectedInjuries, newInjury];
-        setSelectedInjuries(newSelection);
-        updateField("injuries", newSelection);
-        setCustomInjury("");
-        hideAlert();
-      } else {
-        showAlert("warning", "This injury is already in the list or selected.");
-      }
-    }
+  // Handle custom injury input changes
+  const handleCustomInjuryChange = (e) => {
+    setCustomInjury(e.target.value);
   };
 
   const handleRemoveInjury = (injuryName) => {
@@ -141,12 +132,20 @@ function InjuriesPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    if (selectedInjuries.length === 0) {
-      return;
+
+    const finalInjuries = [...selectedInjuries];
+    
+    // Add custom injury if specified
+    if (customInjury.trim()) {
+      finalInjuries.push(customInjury.trim());
     }
+
+    // Update the onboarding context
+    updateField("injuries", finalInjuries);
+    
     // Injuries are optional, so we can continue even with no selections
-    if (isStepValid(21)) {
-      updateStep(22);
+    if (isStepValid(22)) {
+      updateStep(23);
       router.push("/crash-goal");
     }
   };
@@ -154,7 +153,8 @@ function InjuriesPage() {
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCustomInjuryAdd();
+      // Don't add to list automatically, just save the input value
+      // User can manually select/add items if needed
     }
   };
 
@@ -243,7 +243,7 @@ function InjuriesPage() {
                         className="form-control"
                         placeholder="If other (please specify)"
                         value={customInjury}
-                        onChange={(e) => setCustomInjury(e.target.value)}
+                        onChange={handleCustomInjuryChange}
                         onKeyPress={handleKeyPress}
                       />
                     </div>

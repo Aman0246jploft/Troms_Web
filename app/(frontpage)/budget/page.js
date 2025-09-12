@@ -31,8 +31,8 @@ function BudgetPage() {
     }
 
     // Update step if needed
-    if (state.currentStep !== 21) {
-      updateStep(21);
+    if (state.currentStep !== 22) {
+      updateStep(22);
     }
   }, [
     state.isAuthChecked,
@@ -66,7 +66,7 @@ function BudgetPage() {
       return;
     }
 
-    updateStep(22);
+    updateStep(23);
     router.push("/shift");
   };
 

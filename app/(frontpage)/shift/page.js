@@ -32,8 +32,8 @@ function ShiftPage() {
     }
 
     // Update step if needed
-    if (state.currentStep !== 22) {
-      updateStep(22);
+    if (state.currentStep !== 23) {
+      updateStep(23);
     }
   }, [
     state.isAuthChecked,
@@ -66,7 +66,7 @@ function ShiftPage() {
       return;
     }
 
-    updateStep(23);
+    updateStep(24);
     router.push("/allergies"); // Continue with existing flow
   };
 

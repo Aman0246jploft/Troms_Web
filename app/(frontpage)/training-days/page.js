@@ -51,7 +51,7 @@ function TrainingDaysPage() {
 
     if (isStepValid(4)) {
       updateStep(5);
-      router.push('/feedback');
+      router.push('/train-more');
     }
   };
 

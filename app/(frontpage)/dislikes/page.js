@@ -23,10 +23,31 @@ function DislikesPage() {
 
 
   useEffect(() => {
-  if (state.dislikedFoodItems) {
-    setSelectedDislikes(state.dislikedFoodItems);
-  }
-}, [state.dislikedFoodItems]);
+    // Load previously selected dislikes from context/localStorage
+    if (state.dislikedFoodItems && state.dislikedFoodItems.length > 0) {
+      // Separate predefined dislikes from custom dislikes
+      const predefinedDislikes = [];
+      let customDislike = "";
+      
+      state.dislikedFoodItems.forEach(dislike => {
+        // Check if this dislike matches any of the fetched disliked foods
+        // If not, it's likely a custom dislike
+        const isPredefined = dislikedFoods.some(food => food.ingredients_name === dislike);
+        if (isPredefined || dislikedFoods.length === 0) {
+          // Include if it's predefined or if we haven't loaded foods yet
+          predefinedDislikes.push(dislike);
+        } else {
+          // This is likely a custom dislike
+          customDislike = dislike;
+        }
+      });
+      
+      setSelectedDislikes(predefinedDislikes);
+      if (customDislike) {
+        setCustomDislike(customDislike);
+      }
+    }
+  }, [state.dislikedFoodItems, dislikedFoods]);
 
 
   useEffect(() => {
@@ -44,7 +65,7 @@ function DislikesPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 20) {
-      updateStep(20);
+      updateStep(21);
     }
   }, [
     state.isAuthChecked,
@@ -76,21 +97,8 @@ function DislikesPage() {
 
       if (response.success) {
         const apiDislikes = response.result || [];
-
-        // Add custom dislikes that were previously selected but not in API
-        const customDislikes = selectedDislikes
-          .filter(
-            (selectedDislike) =>
-              !apiDislikes.some(
-                (food) => food.ingredients_name === selectedDislike
-              )
-          )
-          .map((customDislike) => ({
-            id: `custom-${customDislike.replace(/\s+/g, "-").toLowerCase()}`,
-            ingredients_name: customDislike,
-          }));
-
-        setDislikedFoods([...apiDislikes, ...customDislikes]);
+        // Only set API dislikes, don't add custom ones to the list
+        setDislikedFoods(apiDislikes);
       } else {
         showAlert(
           "error",
@@ -120,39 +128,16 @@ const handleDislikeToggle = (dislikeName) => {
   });
 };
 
-  const handleCustomDislikeAdd = () => {
-    if (customDislike.trim()) {
-      const newDislike = customDislike.trim();
-      if (
-        !selectedDislikes.includes(newDislike) &&
-        !dislikedFoods.some((food) => food.ingredients_name === newDislike)
-      ) {
-        // Add to the disliked foods list for immediate display
-        const customDislikeObj = {
-          id: `custom-${Date.now()}`,
-          ingredients_name: newDislike,
-        };
-        setDislikedFoods((prev) => [...prev, customDislikeObj]);
-
-        // Also add to selected dislikes
-        const newSelection = [...selectedDislikes, newDislike];
-        setSelectedDislikes(newSelection);
-        updateField("dislikedFoodItems", newSelection);
-        setCustomDislike("");
-        hideAlert();
-      } else {
-        showAlert(
-          "warning",
-          "This dislike is already in the list or selected."
-        );
-      }
-    }
+  // Handle custom dislike input changes
+  const handleCustomDislikeChange = (e) => {
+    setCustomDislike(e.target.value);
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCustomDislikeAdd();
+      // Don't add to list automatically, just save the input value
+      // User can manually select/add items if needed
     }
   };
 
@@ -166,14 +151,20 @@ const handleDislikeToggle = (dislikeName) => {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    if (selectedDislikes.length === 0) {
-      // showAlert('warning', 'Please select at least one dislike before continuing.');
-      return;
+
+    const finalDislikes = [...selectedDislikes];
+    
+    // Add custom dislike if specified
+    if (customDislike.trim()) {
+      finalDislikes.push(customDislike.trim());
     }
 
+    // Update the onboarding context
+    updateField("dislikedFoodItems", finalDislikes);
+    
     // Dislikes are optional, so we can continue even with no selections
-    if (isStepValid(20)) {
-      updateStep(21);
+    if (isStepValid(21)) {
+      updateStep(22);
       router.push("/injuries");
     }
   };
@@ -265,7 +256,7 @@ const handleDislikeToggle = (dislikeName) => {
                         className="form-control"
                         placeholder="If other (please specify)"
                         value={customDislike}
-                        onChange={(e) => setCustomDislike(e.target.value)}
+                        onChange={handleCustomDislikeChange}
                         onKeyPress={handleKeyPress}
                       />
                     </div>

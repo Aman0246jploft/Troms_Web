@@ -22,7 +22,7 @@ function ReachingGoalsPage() {
 
   // Set current step
   useEffect(() => {
-    updateStep(14);
+    updateStep(15);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,8 +48,8 @@ function ReachingGoalsPage() {
       return;
     }
 
-    if (isStepValid(14)) {
-      updateStep(15);
+    if (isStepValid(15)) {
+      updateStep(16);
       router.push('/preferred-diet');
     }
   };

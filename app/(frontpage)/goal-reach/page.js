@@ -51,9 +51,9 @@ function GoalRangePage() {
   }, [state.isAuthChecked, state.isAuthenticated, router]);
 
   useEffect(() => {
-    if (state.currentStep !== 12) {
+    if (state.currentStep !== 13) {
       // compare with the step you actually want
-      updateStep(12);
+      updateStep(13);
     }
   }, [state.currentStep, updateStep]);
 
@@ -80,7 +80,7 @@ function GoalRangePage() {
     // Optional: skip isStepValid if you want to debug
     // console.log("isStepValid:", isStepValid(11));
 
-    updateStep(13);
+    updateStep(14);
     router.push("/realistic-target");
   };
 

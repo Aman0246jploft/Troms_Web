@@ -18,7 +18,7 @@ function ChooseCountryPage() {
   useEffect(() => {
                                                                                       // Only update step if it's not already set to 2
     if (state.currentStep !== 20) {
-      updateStep(20);
+      updateStep(21);
     }
   }, [state.currentStep, updateStep]);    
 

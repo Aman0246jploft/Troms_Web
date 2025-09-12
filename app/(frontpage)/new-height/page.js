@@ -25,13 +25,15 @@ function NewHeightPage() {
       router.push('/borndate');
     } else if (!state.trainingDays) {
       router.push('/training-days');
+    } else if (state.trainMoreThanOnce === undefined) {
+      router.push('/train-more');
     } else if (state.feedback === null) {
       router.push('/feedback');
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.feedback, router]);
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.trainMoreThanOnce, state.feedback, router]);
 
   useEffect(() => {
-    updateStep(6);
+    updateStep(7);
     
     // Initialize height in global state if not already set
     if (!state.height && height > 0) {
@@ -72,8 +74,8 @@ function NewHeightPage() {
       return;
     }
 
-    if (isStepValid(6)) {
-      updateStep(7);
+    if (isStepValid(7)) {
+      updateStep(8);
       router.push('/new-weight');
     }
   };

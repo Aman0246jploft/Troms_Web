@@ -26,7 +26,7 @@ function WorkoutLocationPage() {
 
     // Only update step if currentStep is different from target
     if (state.currentStep !== 10) {
-      updateStep(10);
+      updateStep(11);
     }
   }, [
     state.isAuthChecked,
@@ -59,8 +59,8 @@ function WorkoutLocationPage() {
       return;
     }
 
-    if (isStepValid(10)) {
-      updateStep(11);
+    if (isStepValid(11)) {
+      updateStep(12);
       // Navigate to equipment with the selected location as a URL parameter
       router.push(`/equipment?location=${selectedLocation.toLowerCase()}`);
     }

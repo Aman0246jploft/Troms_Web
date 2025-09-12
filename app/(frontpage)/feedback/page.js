@@ -12,7 +12,6 @@ function FeedbackPage() {
   const [feedback, setFeedback] = useState(state.feedback ?? null); // true/false
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
-console.log("feedback",feedback)
 
   // Redirects based on previous steps
   useEffect(() => {
@@ -24,12 +23,14 @@ console.log("feedback",feedback)
       router.push('/borndate');
     } else if (!state.trainingDays) {
       router.push('/training-days');
+    } else if (state.trainMoreThanOnce === undefined) {
+      router.push('/train-more');
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, router]);
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.trainMoreThanOnce, router]);
 
   // Set current step
   useEffect(() => {
-    updateStep(5);
+    updateStep(6);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,9 +55,10 @@ console.log("feedback",feedback)
       showAlert('warning', 'Please select your feedback to continue.');
       return;
     }
+    console.log("545454",isStepValid(6))
 
-    if (isStepValid(5)) {
-      updateStep(6);
+    if (isStepValid(6)) {
+      updateStep(7);
       router.push('/new-height'); // next page
     }
   };

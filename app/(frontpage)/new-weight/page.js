@@ -31,15 +31,17 @@ function NewWeightPage() {
       router.push('/borndate');
     } else if (!state.trainingDays) {
       router.push('/training-days');
+    } else if (state.trainMoreThanOnce === undefined) {
+      router.push('/train-more');
     } else if (state.feedback === null) {
       router.push('/feedback');
     } else if (!state.height) {
       router.push('/new-height');
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.feedback, state.height, router]);
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.trainMoreThanOnce, state.feedback, state.height, router]);
 
   useEffect(() => {
-    updateStep(7);
+    updateStep(8);
     
     // Initialize weight if not set
     if (!state.weight) {
@@ -84,8 +86,8 @@ function NewWeightPage() {
       }
     }
 
-    if (isStepValid(7)) {
-      updateStep(8);
+    if (isStepValid(8)) {
+      updateStep(9);
       router.push('/weight-goal');
     }
   };

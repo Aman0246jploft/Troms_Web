@@ -101,8 +101,8 @@ function ApproachPage() {
     }
 
     // ✅ Only update step if not already set
-    if (state.currentStep !== 23) {
-      updateStep(23);
+    if (state.currentStep !== 24) {
+      updateStep(24);
     }
   }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, state.user]);
 
@@ -215,7 +215,7 @@ function ApproachPage() {
     }
 
     if (isCompleted) {
-      updateStep(24);
+      updateStep(25);
       router.push("/bmr");
     } else {
       handleSubmitUserInfo();

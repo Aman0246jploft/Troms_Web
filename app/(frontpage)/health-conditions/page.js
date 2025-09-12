@@ -47,8 +47,8 @@ function HealthConditionsPage() {
 
 
   useEffect(() => {
-    if (state.currentStep !== 19) {
-      updateStep(19);
+    if (state.currentStep !== 20) {
+      updateStep(20);
     }
   }, [state.currentStep, updateStep]);
 
@@ -89,7 +89,7 @@ function HealthConditionsPage() {
     updateField("healthyConditions", finalConditions);
     
     // Update step and navigate to next step  
-    updateStep(20);
+    updateStep(21);
     router.push("/choose-country");
   };
 

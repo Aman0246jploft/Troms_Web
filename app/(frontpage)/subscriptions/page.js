@@ -294,7 +294,7 @@ function SubscriptionPage() {
     // Update current step
     if (state.currentStep !== 25) {
       console.log(`📈 Updating step from ${state.currentStep} to 25`);
-      updateStep(25);
+      updateStep(26);
     }
     fetchSubscriptionPlans();
   }, [state.currentStep, updateStep]);

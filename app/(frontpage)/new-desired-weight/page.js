@@ -134,7 +134,7 @@ function DesiredWeightPage() {
 
     // Set current step
     if (state.currentStep !== 9) {
-      updateStep(9);
+      updateStep(10);
     }
 
     // Initialize default value if not already set
@@ -230,8 +230,8 @@ function DesiredWeightPage() {
       return;
     }
 
-    if (isStepValid(9)) {
-      updateStep(10);
+    if (isStepValid(10)) {
+      updateStep(11);
       router.push('/workout-location');
     } else {
       showAlert('warning', 'Please ensure your desired weight is appropriate for your selected goal.');

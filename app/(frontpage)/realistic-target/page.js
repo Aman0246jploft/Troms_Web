@@ -29,7 +29,7 @@ function RealisticTargetPage() {
   }, [state.weeklyWeightLossGoal]);
 
   useEffect(() => {
-    updateStep(13);
+    updateStep(14);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
 

@@ -21,10 +21,31 @@ function AllergiesPage() {
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
-    if (state.allergicFoodItems) {
-      setSelectedAllergies(state.allergicFoodItems);
+    // Load previously selected allergies from context/localStorage
+    if (state.allergicFoodItems && state.allergicFoodItems.length > 0) {
+      // Separate predefined allergies from custom allergies
+      const predefinedAllergies = [];
+      let customAllergy = "";
+      
+      state.allergicFoodItems.forEach(allergy => {
+        // Check if this allergy matches any of the fetched allergic foods
+        // If not, it's likely a custom allergy
+        const isPredefined = allergicFoods.some(food => food.ingredients_name === allergy);
+        if (isPredefined || allergicFoods.length === 0) {
+          // Include if it's predefined or if we haven't loaded foods yet
+          predefinedAllergies.push(allergy);
+        } else {
+          // This is likely a custom allergy
+          customAllergy = allergy;
+        }
+      });
+      
+      setSelectedAllergies(predefinedAllergies);
+      if (customAllergy) {
+        setCustomAllergy(customAllergy);
+      }
     }
-  }, [state.allergicFoodItems]);
+  }, [state.allergicFoodItems, allergicFoods]);
 
 
   useEffect(() => {
@@ -41,7 +62,7 @@ function AllergiesPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 19) {
-      updateStep(19);
+      updateStep(20);
     }
   }, [
     state.isAuthChecked,
@@ -73,21 +94,8 @@ function AllergiesPage() {
 
       if (response.success) {
         const apiAllergies = response.result || [];
-
-        // Add custom allergies that were previously selected but not in API
-        const customAllergies = selectedAllergies
-          .filter(
-            (selectedAllergy) =>
-              !apiAllergies.some(
-                (food) => food.ingredients_name === selectedAllergy
-              )
-          )
-          .map((customAllergy) => ({
-            id: `custom-${customAllergy.replace(/\s+/g, "-").toLowerCase()}`,
-            ingredients_name: customAllergy,
-          }));
-
-        setAllergicFoods([...apiAllergies, ...customAllergies]);
+        // Only set API allergies, don't add custom ones to the list
+        setAllergicFoods(apiAllergies);
       } else {
         showAlert(
           "error",
@@ -131,33 +139,10 @@ const handleAllergyToggle = (allergyName) => {
 };
 
 
-  const handleCustomAllergyAdd = () => {
-    if (customAllergy.trim()) {
-      const newAllergy = customAllergy.trim();
-      if (
-        !selectedAllergies.includes(newAllergy) &&
-        !allergicFoods.some((food) => food.ingredients_name === newAllergy)
-      ) {
-        // Add to the allergic foods list for immediate display
-        const customAllergyObj = {
-          id: `custom-${Date.now()}`,
-          ingredients_name: newAllergy,
-        };
-        setAllergicFoods((prev) => [...prev, customAllergyObj]);
 
-        // Also add to selected allergies
-        const newSelection = [...selectedAllergies, newAllergy];
-        setSelectedAllergies(newSelection);
-        updateField("allergicFoodItems", newSelection);
-        setCustomAllergy("");
-        hideAlert();
-      } else {
-        showAlert(
-          "warning",
-          "This allergy is already in the list or selected."
-        );
-      }
-    }
+  // Handle custom allergy input changes
+  const handleCustomAllergyChange = (e) => {
+    setCustomAllergy(e.target.value);
   };
 
   const handleRemoveAllergy = (allergyName) => {
@@ -171,13 +156,18 @@ const handleAllergyToggle = (allergyName) => {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (selectedAllergies.length === 0) {
-      // showAlert('warning', 'Please select at least one allergy before continuing.');
-      return;
+    const finalAllergies = [...selectedAllergies];
+    
+    // Add custom allergy if specified
+    if (customAllergy.trim()) {
+      finalAllergies.push(customAllergy.trim());
     }
 
-    if (isStepValid(19)) {
-      updateStep(20);
+    // Update the onboarding context
+    updateField("allergicFoodItems", finalAllergies);
+    
+    if (isStepValid(20)) {
+      updateStep(21);
       router.push("/dislikes");
     }
   };
@@ -185,7 +175,8 @@ const handleAllergyToggle = (allergyName) => {
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCustomAllergyAdd();
+      // Don't add to list automatically, just save the input value
+      // User can manually select/add items if needed
     }
   };
 
@@ -278,7 +269,7 @@ const handleAllergyToggle = (allergyName) => {
                         className="form-control"
                         placeholder="If other (please specify)"
                         value={customAllergy}
-                        onChange={(e) => setCustomAllergy(e.target.value)}
+                        onChange={handleCustomAllergyChange}
                         onKeyPress={handleKeyPress}
                       />
                     </div>

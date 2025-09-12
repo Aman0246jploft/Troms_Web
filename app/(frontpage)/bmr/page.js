@@ -19,7 +19,7 @@ function page() {
 
     // Update current step
     if (state.currentStep !== 24) {
-      updateStep(24);
+      updateStep(25);
     }
 
     // Simulate BMR calculation process

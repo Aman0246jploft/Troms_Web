@@ -40,7 +40,7 @@ function FavoriteFoodPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 16) {
-      updateStep(16);
+      updateStep(17);
     }
   }, [
     state.isAuthChecked,
@@ -172,8 +172,8 @@ function FavoriteFoodPage() {
     const finalFood = customFood.trim() || selectedMeal;
     updateField("cheatMealFoodItems", [finalFood]);
 
-    if (isStepValid(16)) {
-      updateStep(17);
+    if (isStepValid(17)) {
+      updateStep(18);
       router.push("/cooking");
     }
   };

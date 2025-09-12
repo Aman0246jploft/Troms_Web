@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -5,10 +7,46 @@ import { useOnboarding } from "../../../context/OnboardingContext";
 
 function TrainMorePage() {
   const router = useRouter();
-  const { state, updateField } = useOnboarding();
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [isMoreThanOnce, setIsMoreThanOnce] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [currentMonthDays, setCurrentMonthDays] = useState([]);
+
+  useEffect(() => {
+    if (!state.isAuthChecked) return; // wait for auth check
+
+    if (state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
+    if (!state.gender) {
+      router.push("/select-gender");
+      return;
+    }
+    if (!state.dateOfBirth || state.age < 13) {
+      router.push("/borndate");
+      return;
+    }
+    if (!state.trainingDays) {
+      router.push("/training-days");
+      return;
+    }
+
+    // Only update step if it's not already set
+    if (state.currentStep !== 5) {
+      updateStep(5);
+    }
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.gender,
+    state.dateOfBirth,
+    state.age,
+    state.trainingDays,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   useEffect(() => {
     // Generate current month days
@@ -67,12 +105,12 @@ function TrainMorePage() {
     // Immediately update the context and localStorage
     updateField("trainMoreThanOnce", {
       isMoreThanOnce: value,
-      specificDays: newSelectedDays                                                                         
+      specificDays: newSelectedDays
     });
   };
 
   const handleDayToggle = (dayValue) => {
-    console.log("Day toggle clicked:", dayValue); // Debug log                                       
+    console.log("Day toggle clicked:", dayValue); // Debug log
     setSelectedDays(prev => {
       console.log("Previous selected days:", prev); // Debug log
       const newSelectedDays = prev.includes(dayValue) 
@@ -104,9 +142,12 @@ function TrainMorePage() {
       specificDays: isMoreThanOnce ? selectedDays : []
     });
     
-    // Navigate to next step - assuming this comes after health-conditions
-    router.push("/choose-country");
+    if (isStepValid(5)) {
+      updateStep(6);
+      router.push("/feedback");
+    }
   };
+
   return (
     <>
       <section className="auth-section">
@@ -129,6 +170,8 @@ function TrainMorePage() {
                         id="yes"
                         className="d-none"
                         name="gym"
+                        checked={isMoreThanOnce === true}
+                        onChange={() => handleTrainMoreChange(true)}
                       />
                       <label htmlFor="yes">Yes</label>
                     </div>
@@ -138,90 +181,48 @@ function TrainMorePage() {
                         id="no"
                         className="d-none"
                         name="gym"
+                        checked={isMoreThanOnce === false}
+                        onChange={() => handleTrainMoreChange(false)}
                       />
                       <label htmlFor="no">No</label>
                     </div>
                   </div>
-                  <h5 className="text-center mt-3">
-                    Selection of specific days
-                  </h5>
-                  <ul className="days-list">
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="mon"
-                        className="d-none"
-                      />
-                      <label htmlFor="mon">
-                        <span>Sep 1 </span>
-                        Mon
-                      </label>
-                    </li>
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="Tue"
-                        className="d-none"
-                      />
-                      <label htmlFor="Tue">
-                        <span>Sep 2 </span>
-                        Tue
-                      </label>
-                    </li>
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="Wed"
-                        className="d-none"
-                      />
-                      <label htmlFor="Wed">
-                        <span>Sep 3 </span>
-                        Wed
-                      </label>
-                    </li>
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="Thu"
-                        className="d-none"
-                      />
-                      <label htmlFor="Thu">
-                        <span>Sep 4 </span>
-                        Thu
-                      </label>
-                    </li>
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="Fri"
-                        className="d-none"
-                      />
-                      <label htmlFor="Fri">
-                        <span>Sep 5 </span>
-                        Fri
-                      </label>
-                    </li>
-                    <li className="days-list-item">
-                      <input
-                        type="radio"
-                        name="select-days"
-                        id="Sat"
-                        className="d-none"
-                      />
-                      <label htmlFor="Sat">
-                        <span>Sep 6 </span>
-                        Sat
-                      </label>
-                    </li>
-                  </ul>
+                  {isMoreThanOnce && (
+                    <>
+                      <h5 className="text-center mt-3">
+                        Selection of specific days
+                      </h5>
+                      <ul className="days-list">
+                        {currentMonthDays.map((day) => {
+                          const isSelected = selectedDays.includes(day.dayValue);
+                          console.log(`Day ${day.dayValue} - Selected: ${isSelected}, Selected Days:`, selectedDays); // Debug log
+                          return (
+                          <li key={day.id} className={`days-list-item ${isSelected ? "active" : ""}`}>
+                            <input
+                              type="checkbox"
+                              name="select-days"
+                              id={day.id}
+                              className="d-none"
+                              checked={isSelected}
+                              onChange={() => handleDayToggle(day.dayValue)}
+                            />
+                            <label htmlFor={day.id}>
+                              <span>{day.month} {day.date} </span>
+                              {day.dayName}
+                            </label>
+                          </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  )}
                 </form>
                 <div className="text-center mt-3">
-                  <button type="submit" className="custom-btn continue-btn">
+                  <button 
+                    type="button" 
+                    className="custom-btn continue-btn"
+                    onClick={handleContinue}
+                  >
                     Continue
                   </button>
                 </div>
@@ -229,9 +230,14 @@ function TrainMorePage() {
             </div>
           </div>
         </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
+        </div>
       </section>
     </>
   );
 }
 
-export default page;
+export default TrainMorePage;
