@@ -2182,12 +2182,6 @@ input[type="number"]::-webkit-outer-spin-button {
 .days-list-item input[type="radio"]:checked + label {
   border-color: #06402b;
 }
-
-
-.days-list-item input[type="checkbox"]:checked + label{
-  border-color: #06402b;
-
-}
 .custom-select {
   position: relative;
 }

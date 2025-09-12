@@ -1,7 +1,14 @@
-import { useState, useEffect } from "react";
-import { apiService } from "../lib/api";
+import { useState } from "react";
 
-function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoading }) {
+const countries = [
+  { code: "uae", name: "United Arab Emirates (UAE)", flag: "images/uae-flag.png" },
+  { code: "india", name: "India", flag: "images/india-flag.png" },
+  { code: "usa", name: "United States", flag: "images/usa-flag.png" },
+  { code: "uk", name: "United Kingdom", flag: "images/uk-flag.png" },
+  { code: "canada", name: "Canada", flag: "images/canada-flag.png" },
+];
+
+function CountryPicker() {
   const [open, setOpen] = useState(false);
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,58 +49,26 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
   };
 
   const handleSelect = (country) => {
+    setSelected(country);
     setOpen(false);
-    if (onCountrySelect) {
-      onCountrySelect(country);
-    }
   };
-  if (loading || externalLoading) {
-    return (
-      <div className="custom-select">
-        <div className="selected">
-          <span>Loading countries...</span>
-              <span className="arrow">▼</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="custom-select">
-        <div className="selected" style={{color: '#dc3545'}}>
-          <span>{error}</span>
-              <span className="arrow">▼</span>
-        </div>
-      </div>
-    );
-  }
-
-  const displayCountry = selectedCountry || (countries.length > 0 ? countries[0] : null);
-
   return (
     <>
       <div className={`custom-select ${open ? "open" : ""}`}>
         {/* Selected */}
         <div className="selected" onClick={() => setOpen(!open)}>
-          {displayCountry ? (
-            <>
-              <img src={displayCountry.flagUrl} alt={displayCountry.countryName} />
-              <span>{displayCountry.countryName}</span>
-            </>
-          ) : (
-            <span>Select a country</span>
-          )}
-              <span className="arrow">▼</span>
+          <img src={selected.flag} alt={selected.name} />
+          <span>{selected.name}</span>
+          <span className="arrow">▼</span>
         </div>
 
         {/* Dropdown Options */}
         {open && (
           <ul className="options">
-            {countries.map((country, index) => (
-              <li key={country.isoCode || index} onClick={() => handleSelect(country)}>
-                <img src={country.flagUrl} alt={country.countryName} />
-                {country.countryName}
+            {countries.map((country) => (
+              <li key={country.code} onClick={() => handleSelect(country)}>
+                <img src={country.flag} alt={country.name} />
+                {country.name}
               </li>
             ))}
           </ul>

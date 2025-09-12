@@ -1,4 +1,4 @@
-"use client";
+"use client"; // add this if you’re using Next.js 13+ with app router
 import CountryPicker from "../../../Components/CountryPicker";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -92,50 +92,17 @@ function ChooseCountryPage() {
                   location.
                 </h3>
                 <div className="px-135">
-                  <form onSubmit={handleContinue}>
+                  <form>
                     <div className="custom-frm-bx">
-                      <CountryPicker 
-                        onCountrySelect={handleCountrySelect}
-                        selectedCountry={selectedCountry}
-                      />
+                      <CountryPicker />
                     </div>
                     <div className="custom-frm-bx">
-                      <select 
-                        className="form-select" 
-                        value={selectedCity}
-                        onChange={handleCitySelect}
-                        disabled={!selectedCountry || cities.length === 0}
-                      >
-                        <option value="">
-                          {!selectedCountry 
-                            ? "Select a country first" 
-                            : cities.length === 0 
-                            ? "No cities available" 
-                            : "Select City"
-                          }
-                        </option>
-                        {cities.map((city, index) => (
-                          <option key={index} value={city}>
-                            {city}
-                          </option>
-                        ))}
+                      <select className="form-select">
+                        <option>Select City</option>
                       </select>
                     </div>
-                    
-                    {alert.show && (
-                      <Alert
-                        type={alert.type}
-                        message={alert.message}
-                        onClose={hideAlert}
-                      />
-                    )}
-
                     <div className="text-center mt-3">
-                      <button 
-                        type="submit" 
-                        className="custom-btn continue-btn"
-                        disabled={!selectedCountry || !selectedCity}
-                      >
+                      <button type="submit" className="custom-btn continue-btn">
                         Continue
                       </button>
                     </div>
@@ -155,4 +122,4 @@ function ChooseCountryPage() {
   );
 }
 
-export default ChooseCountryPage;
+export default page;
