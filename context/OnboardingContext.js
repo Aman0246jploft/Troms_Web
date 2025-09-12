@@ -7,7 +7,7 @@ const OnboardingContext = createContext();
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 25,
+  totalSteps: 28, // Updated to include health conditions and train-more steps
 
   // User data
   isAuthenticated: false,
