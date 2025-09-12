@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useReducer, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 const OnboardingContext = createContext();
 
 const initialState = {
@@ -167,6 +168,7 @@ function validateDesiredWeight(state) {
 
 export function OnboardingProvider({ children }) {
 const isFirstLoad = useRef(true);
+  const router = useRouter();
 
   const [state, dispatch] = useReducer(onboardingReducer, initialState);
 
@@ -194,6 +196,58 @@ useEffect(() => {
     localStorage.setItem("onboardingState", JSON.stringify(state));
   }
 }, [state]);
+
+  // Validate user credentials and redirect to register if missing
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    // Skip validation on certain pages to avoid infinite redirects
+    const currentPath = window.location.pathname;
+    const skipValidationPaths = ["/register", "/auth", "/"];
+    
+    if (skipValidationPaths.includes(currentPath)) return;
+    
+    // Only validate on onboarding pages
+    const onboardingPaths = [
+      "/select-gender", "/borndate", "/training-days", "/train-more", "/feedback",
+      "/new-height", "/new-weight", "/weight-goal", "/new-desired-weight",
+      "/workout-location", "/equipment", "/goal-reach", "/realistic-target",
+      "/achieve-goal", "/preferred-diet", "/favorite-food", "/cooking",
+      "/accomplish", "/health-conditions", "/choose-country", "/budget",
+      "/job-type", "/moveAtwork", "/shift", "/allergies", "/dislikes",
+      "/injuries", "/approach", "/bmr", "/subscriptions"
+    ];
+    
+    const isOnboardingPage = onboardingPaths.some(path => currentPath.includes(path));
+    
+    if (!isOnboardingPage) return;
+    
+    // Check for user data from localStorage and state
+    const checkUserData = () => {
+      try {
+        const savedState = localStorage.getItem("onboardingState");
+        if (savedState) {
+          const parsedState = JSON.parse(savedState);
+          return parsedState.user || {};
+        }
+      } catch (error) {
+        console.error("Error reading user data from localStorage:", error);
+      }
+      return {};
+    };
+
+    const currentUser = state.user || {};
+    const localStorageUser = checkUserData();
+    
+    const userEmail = currentUser.email || localStorageUser.email;
+    const userUsername = currentUser.username || localStorageUser.username;
+
+    // If email or username is missing on an onboarding page, redirect to register
+    if (!userEmail || !userUsername) {
+      console.log("Missing user credentials on onboarding page - redirecting to register");
+      router.push("/register");
+    }
+  }, [state.user, router]);
 
 
   const value = {

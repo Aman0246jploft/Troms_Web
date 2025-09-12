@@ -50,6 +50,13 @@ function StripePaymentForm({
       return;
     }
 
+    // Check if userInfoId exists before processing payment
+    if (!userInfoId) {
+      console.error("❌ User information missing - userInfoId required for payment");
+      onError("User information is missing. Please complete registration again.");
+      return;
+    }
+
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) {
       console.error("❌ Card element not found");
@@ -349,6 +356,7 @@ function SubscriptionPage() {
     console.log("💰 Purchase button clicked");
     console.log("📋 Selected plan:", selectedPlan);
     console.log("📜 Terms accepted:", termsAccepted);
+    console.log("👤 User Info ID:", userInfoId);
 
     if (!selectedPlan) {
       console.error("❌ No plan selected");
@@ -360,8 +368,18 @@ function SubscriptionPage() {
       setError("Please accept the terms and conditions");
       return;
     }
+    
+    // Check if userInfoId exists before proceeding to payment
+    if (!userInfoId) {
+      console.error("❌ User information missing - userInfoId not found");
+      setError("User information is missing. Please complete registration again.");
+      setTimeout(() => {
+        router.push("/register");
+      }, 2000);
+      return;
+    }
 
-    console.log("✅ Proceeding to payment");
+    console.log("✅ All validations passed, proceeding to payment");
     setShowPayment(true);
   };
 
@@ -582,7 +600,8 @@ function SubscriptionPage() {
                       <button
                         className="custom-btn continue-btn"
                         onClick={handlePurchase}
-                        disabled={!selectedPlan || !termsAccepted}
+                        disabled={!selectedPlan || !termsAccepted }
+                        title={!userInfoId ? "User information missing - please complete registration" : ""}
                       >
                         Pay
                       </button>
