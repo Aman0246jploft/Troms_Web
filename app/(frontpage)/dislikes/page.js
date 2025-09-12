@@ -36,18 +36,22 @@ function DislikesPage() {
         if (isPredefined || dislikedFoods.length === 0) {
           // Include if it's predefined or if we haven't loaded foods yet
           predefinedDislikes.push(dislike);
-        } else {
-          // This is likely a custom dislike
-          customDislike = dislike;
         }
+        // Comment out the old custom dislike loading logic
+        // else {
+        //   // This is likely a custom dislike
+        //   customDislike = dislike;
+        // }
       });
       
       setSelectedDislikes(predefinedDislikes);
-      if (customDislike) {
-        setCustomDislike(customDislike);
-      }
     }
-  }, [state.dislikedFoodItems, dislikedFoods]);
+    
+    // Load custom dislike from the new field
+    if (state.disliked_food_other_item) {
+      setCustomDislike(state.disliked_food_other_item);
+    }
+  }, [state.dislikedFoodItems, state.disliked_food_other_item, dislikedFoods]);
 
 
   useEffect(() => {
@@ -130,7 +134,10 @@ const handleDislikeToggle = (dislikeName) => {
 
   // Handle custom dislike input changes
   const handleCustomDislikeChange = (e) => {
-    setCustomDislike(e.target.value);
+    const value = e.target.value;
+    setCustomDislike(value);
+    // Store the input value in context immediately
+    updateField("disliked_food_other_item", value);
   };
 
   const handleKeyPress = (e) => {
@@ -154,13 +161,14 @@ const handleDislikeToggle = (dislikeName) => {
 
     const finalDislikes = [...selectedDislikes];
     
-    // Add custom dislike if specified
-    if (customDislike.trim()) {
-      finalDislikes.push(customDislike.trim());
-    }
+    // Comment out the append logic - now we store custom input separately
+    // if (customDislike.trim()) {
+    //   finalDislikes.push(customDislike.trim());
+    // }
 
-    // Update the onboarding context
+    // Update the onboarding context with selected dislikes and custom input separately
     updateField("dislikedFoodItems", finalDislikes);
+    updateField("disliked_food_other_item", customDislike.trim());
     
     // Dislikes are optional, so we can continue even with no selections
     if (isStepValid(21)) {

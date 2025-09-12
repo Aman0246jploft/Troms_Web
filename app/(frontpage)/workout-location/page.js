@@ -12,30 +12,55 @@ function WorkoutLocationPage() {
   const [selectedLocation, setSelectedLocation] = useState(
     state.workoutLocation || ""
   );
-  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" }); 
 
-  useEffect(() => {
-    if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push("/register");
-      return;
-    }
-    if (!state.desiredWeight || state.desiredWeight <= 0) {
-      router.push("/desired-weight");
-      return;
-    }
+  // useEffect(() => {
+  //   if (state.isAuthChecked && state.isAuthenticated === false) {
+  //     router.push("/register");
+  //     return;
+  //   }
+  //   if (!state.desiredWeight || state.desiredWeight <= 0) {
+  //     router.push("/desired-weight");
+  //     return;
+  //   }
 
-    // Only update step if currentStep is different from target
-    if (state.currentStep !== 10) {
-      updateStep(11);
-    }
-  }, [
-    state.isAuthChecked,
-    state.isAuthenticated,
-    state.desiredWeight,
-    state.currentStep,
-    router,
-    updateStep,
-  ]);
+  //   // Only update step if currentStep is different from target
+  //   if (state.currentStep !== 10) {
+  //     updateStep(11);
+  //   }
+  // }, [
+  //   state.isAuthChecked,
+  //   state.isAuthenticated,
+  //   state.desiredWeight,
+  //   state.currentStep,
+  //   router,
+  //   updateStep,
+  // ]);
+
+
+useEffect(() => {
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push("/register");
+    return;
+  }
+  if (!state.desiredWeight || state.desiredWeight <= 0) {
+    router.push("/desired-weight");
+    return;
+  }
+
+  // Only update step if it's less than 11
+  if (state.currentStep < 11) {
+    updateStep(11);
+  }
+}, [
+  state.isAuthChecked,
+  state.isAuthenticated,
+  state.desiredWeight,
+  state.currentStep,
+  router,
+  updateStep,
+]);
+
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });

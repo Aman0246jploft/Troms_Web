@@ -1,13 +1,12 @@
 "use client";
 
-import { createContext, useContext, useReducer, useEffect } from "react";
-
+import { createContext, useContext, useReducer, useEffect, useRef } from "react";
 const OnboardingContext = createContext();
 
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 28, // Updated to include health conditions and train-more steps
+  totalSteps: 29, // Updated to include health conditions and train-more steps
 
   // User data
   isAuthenticated: false,
@@ -43,6 +42,12 @@ const initialState = {
   allergicFoodItems: [],
   dislikedFoodItems: [],
   injuries: [],
+  
+  // Other item fields for custom inputs
+  allergic_food_other_item: "",
+  disliked_food_other_item: "",
+  injuries_other: "",
+  cheat_meal_food_other_item: "",
   weeklyWeightLossGoal: 1.5,
   
   // Location data
@@ -159,6 +164,8 @@ function validateDesiredWeight(state) {
 }
 
 export function OnboardingProvider({ children }) {
+const isFirstLoad = useRef(true);
+
   const [state, dispatch] = useReducer(onboardingReducer, initialState);
 
   useEffect(() => {
@@ -176,11 +183,16 @@ export function OnboardingProvider({ children }) {
   }, []);
 
   // Save state to localStorage when it changes
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("onboardingState", JSON.stringify(state));
-    }
-  }, [state]);
+useEffect(() => {
+  if (isFirstLoad.current) {
+    isFirstLoad.current = false; // skip saving on first render
+    return;
+  }
+  if (typeof window !== "undefined") {
+    localStorage.setItem("onboardingState", JSON.stringify(state));
+  }
+}, [state]);
+
 
   const value = {
     state,
@@ -223,80 +235,54 @@ export function OnboardingProvider({ children }) {
           return state.dateOfBirth !== "" && state.age > 0;
         case 4: // Training days
           return state.trainingDays > 0;
-        case 5: // Feedback
-          return true; // boolean field, always valid
-        case 6: // Height
+        case 5: // Train more
+          return state.trainMoreThanOnce !== undefined;
+        case 6: // Feedback
+          return state.feedback !== null; // boolean field, always valid
+        case 7: // Height
           return state.height > 0;
-        case 7: // Weight
+        case 8: // Weight
           return state.weight > 0;
-        case 8: // Weight goal
+        case 9: // Weight goal
           return state.weightGoal !== "";
-        case 9: // Desired weight
+        case 10: // Desired weight
           return state.desiredWeight > 0 && validateDesiredWeight(state);
-        case 10: // Workout location
+        case 11: // Workout location
           return state.workoutLocation !== "";
-        case 11: // Equipment
+        case 12: // Equipment
           return state.selectedEquipments.length > 0;
-        case 12: // Goal reach
+        case 13: // Goal reach
           return state.reachingGoals !== "";
-        case 13: // Realistic target
+        case 14: // Realistic target
           return state.realisticTarget > 0;
-        case 14: // Achieve goal
+        case 15: // Achieve goal
           return state.reachingGoals !== "";
-        case 15: // Preferred diet
+        case 16: // Preferred diet
           return state.dietType !== "";
-        case 16: // Favorite food
+        case 17: // Favorite food
           return state.cheatMealFoodItems.length > 0;
-        case 17: // Cooking
+        case 18: // Cooking
           return state.cookingLevel !== "";
-        case 18: // Accomplish
+        case 19: // Accomplish
           return state.accomplish.length > 0;
-        case 19: // Health conditions (optional)
+        case 20: // Health conditions (optional)
           return true; // Health conditions are optional
-        case 20: // Choose country
-          return state.selectedCountry !== null && state.selectedCity !== "";
-        case 21: // Budget
-          return state.budget !== "";
-        case 22: // Shift
-          return state.workShift !== "";
-        case 23: // Allergies
+        case 21: // Allergies
           return true; // Allergies are optional
+        case 22: // Dislikes
+          return true; // Dislikes are optional
+        case 23: // Injuries
+          return true; // Injuries are optional
+        case 24: // Choose country
+          return state.selectedCountry !== null && state.selectedCity !== "";
+        case 25: // Budget
+          return state.budget !== "";
+        case 26: // Shift
+          return state.workShift !== "";
         default:
           return true;
       }
     },
-
-    // Validate desired weight based on goal
-    // validateDesiredWeight: (state) => {
-    //   if (!state.weightGoal || !state.desiredWeight || !state.weight) return false;
-
-    //   const currentWeight = state.weight;
-    //   const desiredWeight = state.desiredWeight;
-    //   const goal = state.weightGoal;
-
-    //   // Convert to same unit for comparison
-    //   let currentWeightInUnit, desiredWeightInUnit;
-
-    //   if (state.weightUnit === 'kg') {
-    //     currentWeightInUnit = currentWeight;
-    //     desiredWeightInUnit = desiredWeight;
-    //   } else {
-    //     // Convert kg to lbs for comparison
-    //     currentWeightInUnit = currentWeight * 2.20462;
-    //     desiredWeightInUnit = desiredWeight * 2.20462;
-    //   }
-
-    //   if (goal === 'LOSE_WEIGHT') {
-    //     return desiredWeightInUnit < currentWeightInUnit;
-    //   } else if (goal === 'GAIN_WEIGHT') {
-    //     return desiredWeightInUnit > currentWeightInUnit;
-    //   } else if (goal === 'MAINTAIN') {
-    //     const tolerance = state.weightUnit === 'kg' ? 2 : 5;
-    //     return Math.abs(desiredWeightInUnit - currentWeightInUnit) <= tolerance;
-    //   }
-
-    //   return false;
-    // },
 
     // Get final payload for API
     getFinalPayload: () => {
@@ -330,6 +316,13 @@ export function OnboardingProvider({ children }) {
         selectedCity: state.selectedCity,
         budget: state.budget,
         workShift: state.workShift,
+
+
+allergic_food_other_item:state.allergic_food_other_item,
+disliked_food_other_item:state.disliked_food_other_item,
+injuries_other:state.injuries_other,
+cheat_meal_food_other_item:state.cheat_meal_food_other_item,
+
       };
     },
   };

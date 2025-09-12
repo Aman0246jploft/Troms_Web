@@ -18,9 +18,7 @@ function FavoriteFoodPage() {
       : ""
   );
   const [customFood, setCustomFood] = useState(
-    state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0 
-      ? state.cheatMealFoodItems[0] 
-      : ""
+    state.cheat_meal_food_other_item || ""
   );
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
@@ -134,15 +132,18 @@ function FavoriteFoodPage() {
     const value = e.target.value;
     setCustomFood(value);
     
-    // If there's text in the input field, use it as the selected meal
-    if (value.trim()) {
-      setSelectedMeal(value.trim());
-      updateField("cheatMealFoodItems", [value.trim()]);
-    } else {
-      // If input is empty, clear the selection
-      setSelectedMeal("");
-      updateField("cheatMealFoodItems", []);
-    }
+    // Comment out the old append logic - now we store custom input separately
+    // if (value.trim()) {
+    //   setSelectedMeal(value.trim());
+    //   updateField("cheatMealFoodItems", [value.trim()]);
+    // } else {
+    //   // If input is empty, clear the selection
+    //   setSelectedMeal("");
+    //   updateField("cheatMealFoodItems", []);
+    // }
+    
+    // Store the input value in context immediately with new key
+    updateField("cheat_meal_food_other_item", value);
     hideAlert();
   };
 
@@ -168,9 +169,18 @@ function FavoriteFoodPage() {
       return;
     }
 
-    // Ensure the latest value is saved
-    const finalFood = customFood.trim() || selectedMeal;
-    updateField("cheatMealFoodItems", [finalFood]);
+    // Comment out the append logic - now we store selected meal and custom input separately
+    // const finalFood = customFood.trim() || selectedMeal;
+    // updateField("cheatMealFoodItems", [finalFood]);
+    
+    // Store selected meal in original array and custom input in separate field
+    if (selectedMeal && !customFood.trim()) {
+      updateField("cheatMealFoodItems", [selectedMeal]);
+    } 
+    // else {
+    //   updateField("cheatMealFoodItems", []); // Clear the array when using custom input
+    // }
+    updateField("cheat_meal_food_other_item", customFood.trim());
 
     if (isStepValid(17)) {
       updateStep(18);

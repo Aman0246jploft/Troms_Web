@@ -57,18 +57,22 @@ function InjuriesPage() {
         if (isPredefined || injuryList.length === 0) {
           // Include if it's predefined or if we haven't loaded injuries yet
           predefinedInjuries.push(injury);
-        } else {
-          // This is likely a custom injury
-          customInjury = injury;
         }
+        // Comment out the old custom injury loading logic
+        // else {
+        //   // This is likely a custom injury
+        //   customInjury = injury;
+        // }
       });
       
       setSelectedInjuries(predefinedInjuries);
-      if (customInjury) {
-        setCustomInjury(customInjury);
-      }
     }
-  }, [state.injuries, injuryList]);
+    
+    // Load custom injury from the new field
+    if (state.injuries_other) {
+      setCustomInjury(state.injuries_other);
+    }
+  }, [state.injuries, state.injuries_other, injuryList]);
 
   useEffect(() => {
     fetchInjuries();
@@ -121,7 +125,10 @@ function InjuriesPage() {
 
   // Handle custom injury input changes
   const handleCustomInjuryChange = (e) => {
-    setCustomInjury(e.target.value);
+    const value = e.target.value;
+    setCustomInjury(value);
+    // Store the input value in context immediately
+    updateField("injuries_other", value);
   };
 
   const handleRemoveInjury = (injuryName) => {
@@ -135,13 +142,14 @@ function InjuriesPage() {
 
     const finalInjuries = [...selectedInjuries];
     
-    // Add custom injury if specified
-    if (customInjury.trim()) {
-      finalInjuries.push(customInjury.trim());
-    }
+    // Comment out the append logic - now we store custom input separately
+    // if (customInjury.trim()) {
+    //   finalInjuries.push(customInjury.trim());
+    // }
 
-    // Update the onboarding context
+    // Update the onboarding context with selected injuries and custom input separately
     updateField("injuries", finalInjuries);
+    updateField("injuries_other", customInjury.trim());
     
     // Injuries are optional, so we can continue even with no selections
     if (isStepValid(22)) {

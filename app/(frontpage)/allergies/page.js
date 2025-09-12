@@ -34,18 +34,22 @@ function AllergiesPage() {
         if (isPredefined || allergicFoods.length === 0) {
           // Include if it's predefined or if we haven't loaded foods yet
           predefinedAllergies.push(allergy);
-        } else {
-          // This is likely a custom allergy
-          customAllergy = allergy;
         }
+        // Comment out the old custom allergy loading logic
+        // else {
+        //   // This is likely a custom allergy
+        //   customAllergy = allergy;
+        // }
       });
       
       setSelectedAllergies(predefinedAllergies);
-      if (customAllergy) {
-        setCustomAllergy(customAllergy);
-      }
     }
-  }, [state.allergicFoodItems, allergicFoods]);
+    
+    // Load custom allergy from the new field
+    if (state.allergic_food_other_item) {
+      setCustomAllergy(state.allergic_food_other_item);
+    }
+  }, [state.allergicFoodItems, state.allergic_food_other_item, allergicFoods]);
 
 
   useEffect(() => {
@@ -142,7 +146,10 @@ const handleAllergyToggle = (allergyName) => {
 
   // Handle custom allergy input changes
   const handleCustomAllergyChange = (e) => {
-    setCustomAllergy(e.target.value);
+    const value = e.target.value;
+    setCustomAllergy(value);
+    // Store the input value in context immediately
+    updateField("allergic_food_other_item", value);
   };
 
   const handleRemoveAllergy = (allergyName) => {
@@ -158,13 +165,14 @@ const handleAllergyToggle = (allergyName) => {
 
     const finalAllergies = [...selectedAllergies];
     
-    // Add custom allergy if specified
-    if (customAllergy.trim()) {
-      finalAllergies.push(customAllergy.trim());
-    }
+    // Comment out the append logic - now we store custom input separately
+    // if (customAllergy.trim()) {
+    //   finalAllergies.push(customAllergy.trim());
+    // }
 
-    // Update the onboarding context
+    // Update the onboarding context with selected allergies and custom input separately
     updateField("allergicFoodItems", finalAllergies);
+    updateField("allergic_food_other_item", customAllergy.trim());
     
     if (isStepValid(20)) {
       updateStep(21);

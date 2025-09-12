@@ -139,7 +139,11 @@ function ApproachPage() {
         return;
       }
 
-      const payload = getFinalPayload();
+      let payload = getFinalPayload();
+      payload={...payload,trainMoreThanOnce:payload?.trainMoreThanOnce?.isMoreThanOnce,specificDays:payload?.trainMoreThanOnce?.specificDays,country:payload?.selectedCountry?.countryName,city:payload?.selectedCity}
+      delete payload.selectedCountry
+      delete payload.selectedCity
+
       console.log("Submitting user data:", payload);
 
       const response = await apiService.createUserInfo(payload);
