@@ -10,29 +10,53 @@ function page() {
   const { state, updateStep } = useOnboarding();
   const [isProcessing, setIsProcessing] = useState(true);
 
+  // useEffect(() => {
+  //   // Redirect if not authenticated
+  //   if (state.isAuthChecked && state.isAuthenticated === false) {
+  //     router.push("/register");
+  //     return;
+  //   }
+
+  //   // Update current step
+  //   if (state.currentStep !== 24) {
+  //     updateStep(25);
+  //   }
+
+  //   // Simulate BMR calculation process
+  //   const timer = setTimeout(() => {
+  //     setIsProcessing(false);
+  //     // Redirect to subscriptions after BMR calculation
+  //     setTimeout(() => {
+  //       router.push("/subscriptions");
+  //     }, 1500);
+  //   }, 3000); // 3 seconds for BMR calculation simulation
+
+  //   return () => clearTimeout(timer);
+  // }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, router, updateStep]);
+
+
   useEffect(() => {
-    // Redirect if not authenticated
-    if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push("/register");
-      return;
-    }
+  // Redirect if not authenticated
+  if (state.isAuthChecked && state.isAuthenticated === false) {
+    router.push("/register");
+    return;
+  }
 
-    // Update current step
-    if (state.currentStep !== 24) {
-      updateStep(25);
-    }
+  // Update current step only if it's less than 25
+  if (state.currentStep < 25) {
+    updateStep(25);
+  }
 
-    // Simulate BMR calculation process
-    const timer = setTimeout(() => {
-      setIsProcessing(false);
-      // Redirect to subscriptions after BMR calculation
-      setTimeout(() => {
-        router.push("/subscriptions");
-      }, 1500);
-    }, 3000); // 3 seconds for BMR calculation simulation
+  const timer = setTimeout(() => {
+    setIsProcessing(false);
+    setTimeout(() => router.push("/subscriptions"), 1500);
+  }, 3000);
 
-    return () => clearTimeout(timer);
-  }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, router, updateStep]);
+  return () => clearTimeout(timer);
+}, [state.isAuthChecked, state.isAuthenticated, state.currentStep, router, updateStep]);
+
+
+
 
   return (
     <>

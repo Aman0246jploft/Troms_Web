@@ -285,19 +285,24 @@ function SubscriptionPage() {
     }
   }, []);
 
-  console.log("HIIIIII", plans);
 
   useEffect(() => {
     console.log("🏁 SubscriptionPage component mounted");
     console.log("📊 Current onboarding state:", state);
 
-    // Update current step
-    if (state.currentStep !== 25) {
-      console.log(`📈 Updating step from ${state.currentStep} to 25`);
-      updateStep(26);
-    }
+
     fetchSubscriptionPlans();
   }, [state.currentStep, updateStep]);
+
+
+
+  useEffect(() => {
+  if (state.currentStep !== 25) {
+    updateStep(26);
+  }
+  fetchSubscriptionPlans();
+}, []); // <- empty array, runs once
+
 
   const fetchSubscriptionPlans = async () => {
     console.log("🔄 Fetching subscription plans...");
