@@ -1,4 +1,4 @@
-"use client"; // add this if you’re using Next.js 13+ with app router
+"use client";
 import CountryPicker from "../../../Components/CountryPicker";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -16,7 +16,7 @@ function ChooseCountryPage() {
 
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
-
+                                                                                      // Only update step if it's not already set to 2
     if (state.currentStep !== 20) {
       updateStep(20);
     }
@@ -92,17 +92,50 @@ function ChooseCountryPage() {
                   location.
                 </h3>
                 <div className="px-135">
-                  <form>
+                  <form onSubmit={handleContinue}>
                     <div className="custom-frm-bx">
-                      <CountryPicker />
+                      <CountryPicker 
+                        onCountrySelect={handleCountrySelect}
+                        selectedCountry={selectedCountry}
+                      />
                     </div>
                     <div className="custom-frm-bx">
-                      <select className="form-select">
-                        <option>Select City</option>
+                      <select 
+                        className="form-select" 
+                        value={selectedCity}
+                        onChange={handleCitySelect}
+                        disabled={!selectedCountry || cities.length === 0}
+                      >
+                        <option value="">
+                          {!selectedCountry 
+                            ? "Select a country first" 
+                            : cities.length === 0 
+                            ? "No cities available" 
+                            : "Select City"
+                          }
+                        </option>
+                        {cities.map((city, index) => (
+                          <option key={index} value={city}>
+                            {city}
+                          </option>
+                        ))}
                       </select>
                     </div>
+                    
+                    {alert.show && (
+                      <Alert
+                        type={alert.type}
+                        message={alert.message}
+                        onClose={hideAlert}
+                      />
+                    )}
+
                     <div className="text-center mt-3">
-                      <button type="submit" className="custom-btn continue-btn">
+                      <button 
+                        type="submit" 
+                        className="custom-btn continue-btn"
+                        disabled={!selectedCountry || !selectedCity}
+                      >
                         Continue
                       </button>
                     </div>
@@ -112,14 +145,9 @@ function ChooseCountryPage() {
             </div>
           </div>
         </div>
-        <div className="auth-bttm">
-          <p>
-            <span>{state.currentStep}/</span> {state.totalSteps}
-          </p>
-        </div>
       </section>
     </>
   );
 }
 
-export default page;
+export default ChooseCountryPage;

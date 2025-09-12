@@ -15,7 +15,7 @@ function ShiftPage() {
   const shiftOptions = [
     { id: "DAY", label: "Day", icon: "/images/low-icon.svg" },
     { id: "NIGHT", label: "Night", icon: "/images/medium-icon.svg" },
-    { id: "ROTATING", label: "Rotating shifts", icon: "/images/high-icon.svg" },
+    { id: "ROTATING_SHIFTS", label: "Rotating shifts", icon: "/images/high-icon.svg" },
     { id: "VARIES", label: "Varies", icon: "/images/high-icon.svg" },
   ];
 
