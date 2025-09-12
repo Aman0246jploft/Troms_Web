@@ -69,12 +69,12 @@ function TrainMorePage() {
     // Immediately update the context and localStorage
     updateField("trainMoreThanOnce", {
       isMoreThanOnce: value,
-      specificDays: newSelectedDays
+      specificDays: newSelectedDays                                                                         
     });
   };
 
   const handleDayToggle = (dayValue) => {
-    console.log("Day toggle clicked:", dayValue); // Debug log
+    console.log("Day toggle clicked:", dayValue); // Debug log                                       
     setSelectedDays(prev => {
       console.log("Previous selected days:", prev); // Debug log
       const newSelectedDays = prev.includes(dayValue) 

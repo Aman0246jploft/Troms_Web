@@ -52,6 +52,10 @@ const initialState = {
   // Health conditions data
   healthyConditions: [],
 
+  // Budget and work shift data
+  budget: "",
+  workShift: "",
+
   // Train more than once data
   trainMoreThanOnce: {
     isMoreThanOnce: false,
@@ -237,15 +241,26 @@ export function OnboardingProvider({ children }) {
           return state.reachingGoals !== "";
         case 13: // Realistic target
           return state.realisticTarget > 0;
-        case 14: // Health conditions (optional)
+        case 14: // Achieve goal
+          return state.reachingGoals !== "";
+        case 15: // Preferred diet
+          return state.dietType !== "";
+        case 16: // Favorite food
+          return state.cheatMealFoodItems.length > 0;
+        case 17: // Cooking
+          return state.cookingLevel !== "";
+        case 18: // Accomplish
+          return state.accomplish.length > 0;
+        case 19: // Health conditions (optional)
           return true; // Health conditions are optional
-        case 15: // Train more than once
-          if (!state.trainMoreThanOnce) return false;
-          // If user says they train more than once, they must select specific days
-          if (state.trainMoreThanOnce.isMoreThanOnce) {
-            return state.trainMoreThanOnce.specificDays && state.trainMoreThanOnce.specificDays.length > 0;
-          }
-          return true; // If they don't train more than once, it's valid
+        case 20: // Choose country
+          return state.selectedCountry !== null && state.selectedCity !== "";
+        case 21: // Budget
+          return state.budget !== "";
+        case 22: // Shift
+          return state.workShift !== "";
+        case 23: // Allergies
+          return true; // Allergies are optional
         default:
           return true;
       }
@@ -311,6 +326,10 @@ export function OnboardingProvider({ children }) {
         cooking_level: state.cookingLevel,
         healthyConditions: state.healthyConditions,
         trainMoreThanOnce: state.trainMoreThanOnce,
+        selectedCountry: state.selectedCountry,
+        selectedCity: state.selectedCity,
+        budget: state.budget,
+        workShift: state.workShift,
       };
     },
   };

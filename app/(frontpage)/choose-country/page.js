@@ -17,8 +17,8 @@ function ChooseCountryPage() {
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
 
-    if (state.currentStep !== 2) {
-      updateStep(2);
+    if (state.currentStep !== 20) {
+      updateStep(20);
     }
   }, [state.currentStep, updateStep]);    
 
@@ -71,7 +71,7 @@ function ChooseCountryPage() {
     }
 
     // Navigate to the next step - you can change this to the appropriate next page
-    router.push("/select-gender");
+    router.push("/budget");
   };
 
   return (
@@ -144,6 +144,11 @@ function ChooseCountryPage() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
         </div>
       </section>
     </>

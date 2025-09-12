@@ -1,7 +1,75 @@
-import Link from "next/link";
-import React from "react";
+"use client";
 
-function page() {
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
+
+function ShiftPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep } = useOnboarding();
+  const [selectedShift, setSelectedShift] = useState(state.workShift || "");
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+  const shiftOptions = [
+    { id: "DAY", label: "Day", icon: "/images/low-icon.svg" },
+    { id: "NIGHT", label: "Night", icon: "/images/medium-icon.svg" },
+    { id: "ROTATING", label: "Rotating shifts", icon: "/images/high-icon.svg" },
+    { id: "VARIES", label: "Varies", icon: "/images/high-icon.svg" },
+  ];
+
+  useEffect(() => {
+    if (!state.isAuthChecked) return; // wait for auth check
+
+    if (state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
+    if (!state.budget) {
+      router.push("/budget");
+      return;
+    }
+
+    // Update step if needed
+    if (state.currentStep !== 22) {
+      updateStep(22);
+    }
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.budget,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: "", message: "" });
+  };
+
+  const handleShiftChange = (shiftId) => {
+    setSelectedShift(shiftId);
+    updateField("workShift", shiftId);
+    hideAlert();
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+
+    if (!selectedShift) {
+      showAlert("warning", "Please select when you work.");
+      return;
+    }
+
+    updateStep(23);
+    router.push("/allergies"); // Continue with existing flow
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -13,63 +81,46 @@ function page() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              <div className="auth-cards ">
+
+              <Alert
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
+              <div className="auth-cards">
                 <p className="text-uppercase mb-2">Shift</p>
                 <h3 className="mb-4">When do you work?</h3>
-                <form>
+                <form onSubmit={handleContinue}>
                   <div className="px-135">
-                    <div className="custom-check budget-check">
-                      <input
-                        id="Day"
-                        className="d-none"
-                        type="radio"
-                        name="shift"
-                      />
-                      <label htmlFor="Day" className="">
-                        <img src="/images/low-icon.svg" alt="Day Shift" /> Day
-                      </label>
-                    </div>
-                    <div className="custom-check budget-check">
-                      <input
-                        id="Night"
-                        className="d-none"
-                        type="radio"
-                        name="shift"
-                      />
-                      <label htmlFor="Night" className="">
-                        <img src="/images/medium-icon.svg" alt="Night Shift" />{" "}
-                        Night
-                      </label>
-                    </div>
-                    <div className="custom-check budget-check">
-                      <input
-                        id="Rotating"
-                        className="d-none"
-                        type="radio"
-                        name="shift"
-                      />
-                      <label htmlFor="Rotating" className="">
-                        <img
-                          src="/images/high-icon.svg"
-                          alt="Rotating shifts"
-                        />{" "}
-                        Rotating shifts
-                      </label>
-                    </div>
-                    <div className="custom-check budget-check">
-                      <input
-                        id="Varies"
-                        className="d-none"
-                        type="radio"
-                        name="shift"
-                      />
-                      <label htmlFor="Varies" className="">
-                        <img src="/images/high-icon.svg" alt="Varies" /> Varies
-                      </label>
-                    </div>
+                    {shiftOptions.map((option) => (
+                      <div key={option.id} className="custom-check budget-check">
+                        <input
+                          id={option.id}
+                          className="d-none"
+                          type="radio"
+                          name="shift"
+                          value={option.id}
+                          checked={selectedShift === option.id}
+                          onChange={() => handleShiftChange(option.id)}
+                        />
+                        <label 
+                          htmlFor={option.id} 
+                          className={selectedShift === option.id ? "selected" : ""}
+                        >
+                          <img src={option.icon} alt={`${option.label} Shift`} />{" "}
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                   <div className="text-center mt-3">
-                    <button type="submit" className="custom-btn continue-btn">
+                    <button 
+                      type="submit" 
+                      className="custom-btn continue-btn"
+                      disabled={!selectedShift}
+                    >
                       Continue
                     </button>
                   </div>
@@ -78,9 +129,14 @@ function page() {
             </div>
           </div>
         </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
+        </div>
       </section>
     </>
   );
 }
 
-export default page;
+export default ShiftPage;

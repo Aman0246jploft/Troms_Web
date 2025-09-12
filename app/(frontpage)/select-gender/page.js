@@ -45,6 +45,7 @@ function SelectGenderPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
+    console.log(selectedGender,isStepValid(2));
 
     if (!selectedGender) {
       showAlert("warning", "Please select your gender to continue.");

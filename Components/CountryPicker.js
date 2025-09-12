@@ -16,8 +16,8 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
       setLoading(true);
       setError(null);
       const response = await apiService.getCountriesWithFlags();
-      
-      if (response.success && response.data) {
+                    
+      if (response.success && response.data) {                                                                                                                              
         // Filter out countries without flags and sort alphabetically
         const validCountries = response.data
           .filter(country => country.flagUrl && country.countryName)

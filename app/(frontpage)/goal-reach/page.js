@@ -80,7 +80,7 @@ function GoalRangePage() {
     // Optional: skip isStepValid if you want to debug
     // console.log("isStepValid:", isStepValid(11));
 
-    updateStep(12);
+    updateStep(13);
     router.push("/realistic-target");
   };
 

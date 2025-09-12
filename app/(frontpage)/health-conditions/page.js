@@ -8,7 +8,7 @@ import { apiService } from "../../../lib/api";
 
 function HealthConditionsPage() {
   const router = useRouter();
-  const { state, updateField } = useOnboarding();
+  const { state, updateField, updateStep } = useOnboarding();
   const [healthConditions, setHealthConditions] = useState([]);
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [otherCondition, setOtherCondition] = useState("");
@@ -43,7 +43,9 @@ function HealthConditionsPage() {
 
   useEffect(() => {
     fetchHealthConditions();
-  }, []);
+    // Set current step
+    updateStep(19);
+  }, [updateStep]);
 
   const fetchHealthConditions = async () => {
     try {
@@ -80,7 +82,8 @@ function HealthConditionsPage() {
     // Update the onboarding context
     updateField("healthyConditions", finalConditions);
     
-    // Navigate to next step
+    // Update step and navigate to next step  
+    updateStep(20);
     router.push("/choose-country");
   };
 
@@ -183,6 +186,11 @@ function HealthConditionsPage() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
         </div>
       </section>
     </>

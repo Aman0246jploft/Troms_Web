@@ -1,7 +1,75 @@
-import Link from "next/link";
-import React from "react";
+"use client";
 
-function page() {
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
+
+function BudgetPage() {
+  const router = useRouter();
+  const { state, updateField, updateStep } = useOnboarding();
+  const [selectedBudget, setSelectedBudget] = useState(state.budget || "");
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
+  const budgetOptions = [
+    { id: "LOW", label: "Low", icon: "/images/low-icon.svg" },
+    { id: "MEDIUM", label: "Medium", icon: "/images/medium-icon.svg" },
+    { id: "HIGH", label: "High", icon: "/images/high-icon.svg" },
+  ];
+
+  useEffect(() => {
+    if (!state.isAuthChecked) return; // wait for auth check
+
+    if (state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
+    if (!state.selectedCountry || !state.selectedCity) {
+      router.push("/choose-country");
+      return;
+    }
+
+    // Update step if needed
+    if (state.currentStep !== 21) {
+      updateStep(21);
+    }
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.selectedCountry,
+    state.selectedCity,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
+
+  const showAlert = (type, message) => {
+    setAlert({ show: true, type, message });
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, type: "", message: "" });
+  };
+
+  const handleBudgetChange = (budgetId) => {
+    setSelectedBudget(budgetId);
+    updateField("budget", budgetId);
+    hideAlert();
+  };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+
+    if (!selectedBudget) {
+      showAlert("warning", "Please select your preferred budget.");
+      return;
+    }
+
+    updateStep(22);
+    router.push("/shift");
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -13,52 +81,46 @@ function page() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              <div className="auth-cards ">
+
+              <Alert
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
+
+              <div className="auth-cards">
                 <p className="text-uppercase mb-2">Budget</p>
                 <h3 className="mb-4">Select your preferred budget.</h3>
-                <form>
+                <form onSubmit={handleContinue}>
                   <div className="px-135">
-                    <div className="custom-check budget-check">
-                      <input
-                        id="low"
-                        className="d-none"
-                        type="radio"
-                        name="budget"
-                      />
-                      <label htmlFor="low" className="">
-                        <img src="/images/low-icon.svg" alt="Low Budget" /> Low
-                      </label>
-                    </div>
-                    <div className="custom-check budget-check">
-                      <input
-                        id="Medium"
-                        className="d-none"
-                        type="radio"
-                        name="budget"
-                      />
-                      <label htmlFor="Medium" className="">
-                        <img
-                          src="/images/medium-icon.svg"
-                          alt="Medium Budget"
-                        />{" "}
-                        Medium
-                      </label>
-                    </div>
-                    <div className="custom-check budget-check">
-                      <input
-                        id="high"
-                        className="d-none"
-                        type="radio"
-                        name="budget"
-                      />
-                      <label htmlFor="high" className="">
-                        <img src="/images/high-icon.svg" alt="High Budget" />{" "}
-                        High
-                      </label>
-                    </div>
+                    {budgetOptions.map((option) => (
+                      <div key={option.id} className="custom-check budget-check">
+                        <input
+                          id={option.id}
+                          className="d-none"
+                          type="radio"
+                          name="budget"
+                          value={option.id}
+                          checked={selectedBudget === option.id}
+                          onChange={() => handleBudgetChange(option.id)}
+                        />
+                        <label 
+                          htmlFor={option.id} 
+                          className={selectedBudget === option.id ? "selected" : ""}
+                        >
+                          <img src={option.icon} alt={`${option.label} Budget`} />{" "}
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
                   </div>
                   <div className="text-center mt-3">
-                    <button type="submit" className="custom-btn continue-btn">
+                    <button 
+                      type="submit" 
+                      className="custom-btn continue-btn"
+                      disabled={!selectedBudget}
+                    >
                       Continue
                     </button>
                   </div>
@@ -67,9 +129,14 @@ function page() {
             </div>
           </div>
         </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
+        </div>
       </section>
     </>
   );
 }
 
-export default page;
+export default BudgetPage;

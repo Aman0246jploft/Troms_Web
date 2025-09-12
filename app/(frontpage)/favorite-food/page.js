@@ -17,7 +17,11 @@ function FavoriteFoodPage() {
       ? state.cheatMealFoodItems[0] 
       : ""
   );
-  const [customFood, setCustomFood] = useState("");
+  const [customFood, setCustomFood] = useState(
+    state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0 
+      ? state.cheatMealFoodItems[0] 
+      : ""
+  );
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
@@ -51,6 +55,26 @@ function FavoriteFoodPage() {
     fetchCheatMeals();
   }, []);
 
+  // Handle prefilling the input field when returning to page
+  useEffect(() => {
+    if (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) {
+      const savedFood = state.cheatMealFoodItems[0];
+      
+      // Check if the saved food is in the predefined list
+      const isInPredefinedList = cheatMeals.some(meal => meal.name === savedFood);
+      
+      if (!isInPredefinedList && savedFood) {
+        // If it's not in the predefined list, it's a custom food - prefill the input
+        setCustomFood(savedFood);
+        setSelectedMeal(savedFood);
+      } else if (isInPredefinedList) {
+        // If it's in the predefined list, clear the input and select from list
+        setCustomFood("");
+        setSelectedMeal(savedFood);
+      }
+    }
+  }, [cheatMeals, state.cheatMealFoodItems]);
+
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
@@ -80,20 +104,8 @@ function FavoriteFoodPage() {
           }
         });
 
-        // Add custom food if it was previously selected but not in API
-        const customFoods = [];
-        if (selectedMeal && !apiMeals.some((meal) => meal.name === selectedMeal)) {
-          customFoods.push({
-            id: `custom-${selectedMeal.replace(/\s+/g, "-").toLowerCase()}`,
-            name: selectedMeal,
-            user_count: 0,
-            is_approved_by_admin: true,
-          });
-        }
-
-        // Sort by user_count (popularity) descending, custom foods will be at the end
-        const allMeals = [...apiMeals, ...customFoods];
-        const sortedMeals = allMeals.sort(
+        // Sort by user_count (popularity) descending
+        const sortedMeals = apiMeals.sort(
           (a, b) => b.user_count - a.user_count
         );
         setCheatMeals(sortedMeals);
@@ -113,51 +125,52 @@ function FavoriteFoodPage() {
 
   const handleMealSelect = (mealName) => {
     setSelectedMeal(mealName);
+    setCustomFood(""); // Clear the input field when selecting from list
     updateField("cheatMealFoodItems", [mealName]); // Store as array for compatibility
     hideAlert();
   };
 
-  const handleCustomFoodAdd = () => {
-    if (customFood.trim()) {
-      const newFood = customFood.trim();
-      if (!cheatMeals.some((meal) => meal.name === newFood)) {
-        // Add to the cheat meals list for immediate display
-        const customFoodObj = {
-          id: `custom-${Date.now()}`,
-          name: newFood,
-          user_count: 0,
-          is_approved_by_admin: true,
-        };
-        setCheatMeals((prev) => [...prev, customFoodObj]);
-
-        // Select this new custom food
-        setSelectedMeal(newFood);
-        updateField("cheatMealFoodItems", [newFood]);
-        setCustomFood("");
-        hideAlert();
-      } else {
-        showAlert("warning", "This food is already in the list.");
-      }
+  const handleCustomFoodChange = (e) => {
+    const value = e.target.value;
+    setCustomFood(value);
+    
+    // If there's text in the input field, use it as the selected meal
+    if (value.trim()) {
+      setSelectedMeal(value.trim());
+      updateField("cheatMealFoodItems", [value.trim()]);
+    } else {
+      // If input is empty, clear the selection
+      setSelectedMeal("");
+      updateField("cheatMealFoodItems", []);
     }
+    hideAlert();
   };
 
   const handleKeyPress = (e) => {
+    // Remove the auto-add behavior on Enter
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCustomFoodAdd();
+      // Just let the onChange handle the selection
     }
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (!selectedMeal) {
+    // Check if either a meal is selected from list or custom food is entered
+    const hasSelection = selectedMeal || customFood.trim();
+    
+    if (!hasSelection) {
       showAlert(
         "warning",
-        "Please select your favorite food or cheat meal."
+        "Please select your favorite food or enter a custom food."
       );
       return;
     }
+
+    // Ensure the latest value is saved
+    const finalFood = customFood.trim() || selectedMeal;
+    updateField("cheatMealFoodItems", [finalFood]);
 
     if (isStepValid(16)) {
       updateStep(17);
@@ -237,44 +250,6 @@ function FavoriteFoodPage() {
                          </div>
                        </div>
                      ))}
-                     
-                     {/* Custom foods section */}
-                     {cheatMeals.some(meal => meal.id.startsWith('custom-')) && (
-                       <div className="category-section">
-                         <h4 className="category-heading mb-3">Custom Foods</h4>
-                         <div className="food-card">
-                           {cheatMeals
-                             .filter(meal => meal.id.startsWith('custom-'))
-                             .map((meal) => (
-                               <div key={meal.id} className="food-bx">
-                                 <input
-                                   type="checkbox"
-                                   className="d-none"
-                                   id={`meal-${meal.id}-${meal.name.replace(
-                                     /\s+/g,
-                                     "-"
-                                   )}`}
-                                   checked={selectedMeal === meal.name}
-                                   onChange={() => handleMealSelect(meal.name)}
-                                 />
-                                 <label
-                                   htmlFor={`meal-${meal.id}-${meal.name.replace(
-                                     /\s+/g,
-                                     "-"
-                                   )}`}
-                                   className={
-                                     selectedMeal === meal.name
-                                       ? "selected"
-                                       : ""
-                                   }
-                                 >
-                                   {meal.name}
-                                 </label>
-                               </div>
-                             ))}
-                         </div>
-                       </div>
-                     )}
                    </div>
 
                     <div className="custom-frm-bx mt-4 px-135">
@@ -283,7 +258,7 @@ function FavoriteFoodPage() {
                         className="form-control"
                         placeholder="If other (please specify)"
                         value={customFood}
-                        onChange={(e) => setCustomFood(e.target.value)}
+                        onChange={handleCustomFoodChange}
                         onKeyPress={handleKeyPress}
                       />
                     </div>
@@ -300,7 +275,7 @@ function FavoriteFoodPage() {
                    <button
                      onClick={handleContinue}
                      className="custom-btn continue-btn"
-                     disabled={!selectedMeal || loading}
+                     disabled={(!selectedMeal && !customFood.trim()) || loading}
                    >
                      Continue
                    </button>

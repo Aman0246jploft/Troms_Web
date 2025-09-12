@@ -77,7 +77,7 @@ function AccomplishPage() {
 
     if (isStepValid(18)) {
       updateStep(19);
-      router.push("/allergies");
+      router.push("/health-conditions");
     } 
   };
 
