@@ -127,6 +127,12 @@ function DesiredWeightPage() {
       router.push('/register');
       return;
     }
+    
+    // If user has MAINTAIN goal, they should skip this step and go directly to workout location
+    if (state.weightGoal === 'MAINTAIN') {
+      router.push('/workout-location');
+      return;
+    }
     if (!state.weightGoal) {
       router.push('/weight-goal');
       return;

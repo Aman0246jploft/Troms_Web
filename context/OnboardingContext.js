@@ -302,6 +302,10 @@ useEffect(() => {
         case 9: // Weight goal
           return state.weightGoal !== "";
         case 10: // Desired weight
+          // For MAINTAIN goal, desired weight is automatically set to current weight, so it's always valid
+          if (state.weightGoal === "MAINTAIN") {
+            return state.desiredWeight > 0;
+          }
           return state.desiredWeight > 0 && validateDesiredWeight(state);
         case 11: // Workout location
           return state.workoutLocation !== "";

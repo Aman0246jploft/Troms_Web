@@ -48,8 +48,17 @@ function WeightGoalPage() {
     }
 
     if (isStepValid(9)) {
-      updateStep(10);
-      router.push("/new-desired-weight");
+      // If user selects MAINTAIN, skip the desired weight step
+      if (selectedGoal === "MAINTAIN") {
+        // Set desired weight equal to current weight for maintenance
+        updateField("desiredWeight", state.weight);
+        updateStep(11); // Skip step 10 (desired weight) and go to step 11 (workout location)
+        router.push("/workout-location");
+      } else {
+        // For LOSE_WEIGHT and GAIN_WEIGHT, go to desired weight step
+        updateStep(10);
+        router.push("/new-desired-weight");
+      }
     }
   };
 

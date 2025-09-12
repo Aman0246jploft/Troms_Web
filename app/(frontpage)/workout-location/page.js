@@ -43,8 +43,23 @@ useEffect(() => {
     router.push("/register");
     return;
   }
-  if (!state.desiredWeight || state.desiredWeight <= 0) {
-    router.push("/desired-weight");
+  
+  // Check if we have a weight goal first
+  if (!state.weightGoal) {
+    router.push("/weight-goal");
+    return;
+  }
+  
+  // For non-MAINTAIN goals, check if desired weight is set
+  // For MAINTAIN goals, desired weight should be automatically set to current weight
+  if (state.weightGoal !== "MAINTAIN" && (!state.desiredWeight || state.desiredWeight <= 0)) {
+    router.push("/new-desired-weight");
+    return;
+  }
+  
+  // For MAINTAIN goals, ensure desired weight is set to current weight if not already set
+  if (state.weightGoal === "MAINTAIN" && (!state.desiredWeight || state.desiredWeight <= 0)) {
+    router.push("/weight-goal");
     return;
   }
 
@@ -55,6 +70,7 @@ useEffect(() => {
 }, [
   state.isAuthChecked,
   state.isAuthenticated,
+  state.weightGoal,
   state.desiredWeight,
   state.currentStep,
   router,
