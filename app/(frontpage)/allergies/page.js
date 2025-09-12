@@ -65,8 +65,8 @@ function AllergiesPage() {
     }
 
     // Only update step if it's not already set
-    if (state.currentStep !== 19) {
-      updateStep(20);
+    if (state.currentStep !== 26) {
+      updateStep(26);
     }
   }, [
     state.isAuthChecked,
@@ -174,8 +174,8 @@ const handleAllergyToggle = (allergyName) => {
     updateField("allergicFoodItems", finalAllergies);
     updateField("allergic_food_other_item", customAllergy.trim());
     
-    if (isStepValid(20)) {
-      updateStep(21);
+    if (isStepValid(26)) {
+      updateStep(27);
       router.push("/dislikes");
     }
   };

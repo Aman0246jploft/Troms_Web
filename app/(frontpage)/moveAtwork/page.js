@@ -6,16 +6,19 @@ import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import Alert from "../../../Components/Alert";
 
-function BudgetPage() {
+function MoveAtwork() {
   const router = useRouter();
   const { state, updateField, updateStep } = useOnboarding();
-  const [selectedBudget, setSelectedBudget] = useState(state.budget || "");
+  const [selectedActivityLevel, setSelectedActivityLevel] = useState(state.workActivityLevel || "");
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
-  const budgetOptions = [
-    { id: "LOW", label: "Low", icon: "/images/low-icon.svg" },
-    { id: "MEDIUM", label: "Medium", icon: "/images/medium-icon.svg" },
-    { id: "HIGH", label: "High", icon: "/images/high-icon.svg" },
+
+
+  const activityOptions = [
+    { id: "MOSTLY_SIT", label: "Mostly sit", icon: "/images/low-icon.svg" },
+    { id: "SIT_AND_STAND", label: "Sit & stand", icon: "/images/medium-icon.svg" },
+    { id: "ON_FEET_MOST_OF_THE_TIME", label: "On feet most of the time", icon: "/images/high-icon.svg" },
+    { id: "HEAVY_LIFTING", label: "Heavy lifting", icon: "/images/high-icon.svg" },
   ];
 
   useEffect(() => {
@@ -25,20 +28,24 @@ function BudgetPage() {
       router.push("/register");
       return;
     }
-    if (!state.selectedCountry || !state.selectedCity) {
-      router.push("/choose-country");
+    if (!state.budget) {
+      router.push("/budget");
+      return;
+    }
+    if (!state.occupation) {
+      router.push("/job-type");
       return;
     }
 
     // Update step if needed
-    if (state.currentStep !== 22) {
-      updateStep(22);
+    if (state.currentStep !== 24) {
+      updateStep(24);
     }
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
-    state.selectedCountry,
-    state.selectedCity,
+    state.budget,
+    state.occupation,
     state.currentStep,
     router,
     updateStep,
@@ -52,22 +59,22 @@ function BudgetPage() {
     setAlert({ show: false, type: "", message: "" });
   };
 
-  const handleBudgetChange = (budgetId) => {
-    setSelectedBudget(budgetId);
-    updateField("budget", budgetId);
+  const handleActivityLevelChange = (activityId) => {
+    setSelectedActivityLevel(activityId);
+    updateField("workActivityLevel", activityId);
     hideAlert();
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (!selectedBudget) {
-      showAlert("warning", "Please select your preferred budget.");
+    if (!selectedActivityLevel) {
+      showAlert("warning", "Please select your work activity level.");
       return;
     }
 
-    updateStep(23);
-    router.push("/job-type");
+    updateStep(25);
+    router.push("/shift"); // Continue to shift page
   };
 
   return (
@@ -90,26 +97,26 @@ function BudgetPage() {
               />
 
               <div className="auth-cards">
-                <p className="text-uppercase mb-2">Budget</p>
-                <h3 className="mb-4">Select your preferred budget.</h3>
+                <p className="text-uppercase mb-2">Movement</p>
+                <h3 className="mb-4">How much do you move at work?</h3>
                 <form onSubmit={handleContinue}>
                   <div className="px-135">
-                    {budgetOptions.map((option) => (
+                    {activityOptions.map((option) => (
                       <div key={option.id} className="custom-check budget-check">
                         <input
                           id={option.id}
                           className="d-none"
                           type="radio"
-                          name="budget"
+                          name="activityLevel"
                           value={option.id}
-                          checked={selectedBudget === option.id}
-                          onChange={() => handleBudgetChange(option.id)}
+                          checked={selectedActivityLevel === option.id}
+                          onChange={() => handleActivityLevelChange(option.id)}
                         />
                         <label 
                           htmlFor={option.id} 
-                          className={selectedBudget === option.id ? "selected" : ""}
+                          className={selectedActivityLevel === option.id ? "selected" : ""}
                         >
-                          <img src={option.icon} alt={`${option.label} Budget`} />{" "}
+                          <img src={option.icon} alt={`${option.label} Activity`} />{" "}
                           {option.label}
                         </label>
                       </div>
@@ -119,7 +126,7 @@ function BudgetPage() {
                     <button 
                       type="submit" 
                       className="custom-btn continue-btn"
-                      disabled={!selectedBudget}
+                      disabled={!selectedActivityLevel}
                     >
                       Continue
                     </button>
@@ -139,4 +146,4 @@ function BudgetPage() {
   );
 }
 
-export default BudgetPage;
+export default MoveAtwork;

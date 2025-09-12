@@ -30,15 +30,25 @@ function ShiftPage() {
       router.push("/budget");
       return;
     }
+    if (!state.occupation) {
+      router.push("/job-type");
+      return;
+    }
+    if (!state.workActivityLevel) {
+      router.push("/moveAtwork");
+      return;
+    }
 
     // Update step if needed
-    if (state.currentStep !== 23) {
-      updateStep(23);
+    if (state.currentStep !== 25) {
+      updateStep(25);
     }
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
     state.budget,
+    state.occupation,
+    state.workActivityLevel,
     state.currentStep,
     router,
     updateStep,
@@ -66,7 +76,7 @@ function ShiftPage() {
       return;
     }
 
-    updateStep(24);
+    updateStep(26);
     router.push("/allergies"); // Continue with existing flow
   };
 

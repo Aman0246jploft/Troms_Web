@@ -6,7 +6,7 @@ const OnboardingContext = createContext();
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 29, // Updated to include health conditions and train-more steps
+  totalSteps: 31, // Updated to include health conditions, train-more, job-type, and moveAtwork steps
 
   // User data
   isAuthenticated: false,
@@ -59,7 +59,9 @@ const initialState = {
 
   // Budget and work shift data
   budget: "",
+  occupation: "",
   workShift: "",
+  workActivityLevel: "",
 
   // Train more than once data
   trainMoreThanOnce: {
@@ -267,18 +269,22 @@ useEffect(() => {
           return state.accomplish.length > 0;
         case 20: // Health conditions (optional)
           return true; // Health conditions are optional
-        case 21: // Allergies
-          return true; // Allergies are optional
-        case 22: // Dislikes
-          return true; // Dislikes are optional
-        case 23: // Injuries
-          return true; // Injuries are optional
-        case 24: // Choose country
+        case 21: // Choose country
           return state.selectedCountry !== null && state.selectedCity !== "";
-        case 25: // Budget
+        case 22: // Budget
           return state.budget !== "";
-        case 26: // Shift
+        case 23: // Occupation
+          return state.occupation !== "";
+        case 24: // Work Activity Level
+          return state.workActivityLevel !== "";
+        case 25: // Shift
           return state.workShift !== "";
+        case 26: // Allergies
+          return true; // Allergies are optional
+        case 27: // Dislikes
+          return true; // Dislikes are optional
+        case 28: // Injuries
+          return true; // Injuries are optional
         default:
           return true;
       }
@@ -316,12 +322,13 @@ useEffect(() => {
         selectedCity: state.selectedCity,
         budget: state.budget,
         workShift: state.workShift,
+        workActivityLevel: state.workActivityLevel,
 
-
-allergic_food_other_item:state.allergic_food_other_item,
-disliked_food_other_item:state.disliked_food_other_item,
-injuries_other:state.injuries_other,
-cheat_meal_food_other_item:state.cheat_meal_food_other_item,
+        occupation: state.occupation,
+        allergic_food_other_item:state.allergic_food_other_item,
+        disliked_food_other_item:state.disliked_food_other_item,
+        injuries_other:state.injuries_other,
+        cheat_meal_food_other_item:state.cheat_meal_food_other_item,
 
       };
     },

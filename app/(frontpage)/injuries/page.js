@@ -31,8 +31,8 @@ function InjuriesPage() {
 
     // Only update step if it's not already set
 
-    if (state.currentStep !== 21) {
-      updateStep(22);
+    if (state.currentStep !== 28) {
+      updateStep(28);
     }
   }, [
     state.isAuthChecked,
@@ -152,8 +152,8 @@ function InjuriesPage() {
     updateField("injuries_other", customInjury.trim());
     
     // Injuries are optional, so we can continue even with no selections
-    if (isStepValid(22)) {
-      updateStep(23);
+    if (isStepValid(28)) {
+      updateStep(29);
       router.push("/crash-goal");
     }
   };

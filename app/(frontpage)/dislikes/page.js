@@ -68,8 +68,8 @@ function DislikesPage() {
     }
 
     // Only update step if it's not already set
-    if (state.currentStep !== 20) {
-      updateStep(21);
+    if (state.currentStep !== 27) {
+      updateStep(27);
     }
   }, [
     state.isAuthChecked,
@@ -171,8 +171,8 @@ const handleDislikeToggle = (dislikeName) => {
     updateField("disliked_food_other_item", customDislike.trim());
     
     // Dislikes are optional, so we can continue even with no selections
-    if (isStepValid(21)) {
-      updateStep(22);
+    if (isStepValid(27)) {
+      updateStep(28);
       router.push("/injuries");
     }
   };
