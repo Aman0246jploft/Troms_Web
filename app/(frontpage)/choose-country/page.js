@@ -1,5 +1,6 @@
 "use client";
 import CountryPicker from "../../../Components/CountryPicker";
+import CityPicker from "../../../Components/CityPicker";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -13,10 +14,10 @@ function ChooseCountryPage() {
   const [selectedCity, setSelectedCity] = useState(state.selectedCity || "");
   const [cities, setCities] = useState([]);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const [activeDropdown, setActiveDropdown] = useState(null); // 'country' or 'city' or null
 
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
-                                                                                      // Only update step if it's not already set to 2
     if (state.currentStep !== 20) {
       updateStep(21);
     }
@@ -50,8 +51,7 @@ function ChooseCountryPage() {
     hideAlert();
   };
 
-  const handleCitySelect = (e) => {
-    const city = e.target.value;
+  const handleCitySelect = (city) => {
     setSelectedCity(city);
     updateField("selectedCity", city);
     hideAlert();
@@ -97,29 +97,19 @@ function ChooseCountryPage() {
                       <CountryPicker 
                         onCountrySelect={handleCountrySelect}
                         selectedCountry={selectedCountry}
+                        isOpen={activeDropdown === 'country'}
+                        onToggle={setActiveDropdown}
                       />
                     </div>
                     <div className="custom-frm-bx">
-                      <select 
-                        className="form-select" 
-                        value={selectedCity}
-                        onChange={handleCitySelect}
+                      <CityPicker 
+                        cities={cities}
+                        onCitySelect={handleCitySelect}
+                        selectedCity={selectedCity}
                         disabled={!selectedCountry || cities.length === 0}
-                      >
-                        <option value="">
-                          {!selectedCountry 
-                            ? "Select a country first" 
-                            : cities.length === 0 
-                            ? "No cities available" 
-                            : "Select City"
-                          }
-                        </option>
-                        {cities.map((city, index) => (
-                          <option key={index} value={city}>
-                            {city}
-                          </option>
-                        ))}
-                      </select>
+                        isOpen={activeDropdown === 'city'}
+                        onToggle={setActiveDropdown}
+                      />
                     </div>
                     
                     {alert.show && (

@@ -1,15 +1,54 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { apiService } from "../lib/api";
 
-function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoading }) {
-  const [open, setOpen] = useState(false);
+function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoading, isOpen, onToggle }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isOpen !== undefined ? isOpen : internalOpen;
+  const setOpen = isOpen !== undefined ? (value) => onToggle && onToggle(value ? 'country' : null) : setInternalOpen;
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCountries, setFilteredCountries] = useState([]);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchCountries();
   }, []);
+
+  // Filter countries based on search term
+  useEffect(() => {
+    if (countries.length > 0) {
+      const filtered = countries.filter(country =>
+        country.countryName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCountries(filtered);
+    }
+  }, [countries, searchTerm]);
+
+  // Handle outside click to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+        setSearchTerm("");
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [open]);
+
+  // Auto-select first country if none is selected and countries are available
+  useEffect(() => {
+    if (!selectedCountry && countries.length > 0 && onCountrySelect) {
+      onCountrySelect(countries[0]);
+    }
+  }, [countries, selectedCountry, onCountrySelect]);
 
   const fetchCountries = async () => {
     try {
@@ -43,8 +82,20 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
 
   const handleSelect = (country) => {
     setOpen(false);
+    setSearchTerm("");
     if (onCountrySelect) {
       onCountrySelect(country);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const toggleDropdown = () => {
+    setOpen(!open);
+    if (!open) {
+      setSearchTerm("");
     }
   };
   if (loading || externalLoading) {
@@ -73,9 +124,9 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
 
   return (
     <>
-      <div className={`custom-select ${open ? "open" : ""}`}>
+      <div className={`custom-select ${open ? "open" : ""}`} ref={dropdownRef}>
         {/* Selected */}
-        <div className="selected" onClick={() => setOpen(!open)}>
+        <div className="selected" onClick={toggleDropdown}>
           {displayCountry ? (
             <>
               <img src={displayCountry.flagUrl} alt={displayCountry.countryName} />
@@ -89,14 +140,52 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
 
         {/* Dropdown Options */}
         {open && (
-          <ul className="options">
-            {countries.map((country, index) => (
-              <li key={country.isoCode || index} onClick={() => handleSelect(country)}>
-                <img src={country.flagUrl} alt={country.countryName} />
-                {country.countryName}
-              </li>
-            ))}
-          </ul>
+          <div className="dropdown-content">
+            <div className="search-box" style={{ padding: "8px" }}>
+              <input
+                type="text"
+                placeholder="Search countries..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onClick={(e) => e.stopPropagation()}
+                className="form-control"
+                style={{
+                  height: "40px",
+                  borderRadius: "50px",
+                  color: "#000",
+                  padding: "8px 15px",
+                  border: "1px solid rgba(255, 255, 255, 0.4)",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.08) inset, 0 4px 20px 0 rgba(0, 0, 0, 0.15)",
+                  backdropFilter: "blur(7.5px)",
+                  width: "100%",
+                  fontSize: "14px",
+                  outline: "none"
+                }}
+              />
+            </div>
+            <ul className="options"
+                style={{
+                  maxHeight: "200px", // reduced to account for search box
+                  overflowY: "auto",  // enable vertical scroll
+                  margin: "0",
+                  padding: "0"
+                }}
+            >
+              {filteredCountries.length > 0 ? (
+                filteredCountries.map((country, index) => (
+                  <li key={country.isoCode || index} onClick={() => handleSelect(country)}>
+                    <img src={country.flagUrl} alt={country.countryName} />
+                    {country.countryName}
+                  </li>
+                ))
+              ) : (
+                <li style={{ padding: "8px", color: "#666", textAlign: "center" }}>
+                  No countries found
+                </li>
+              )}
+            </ul>
+          </div>
         )}
       </div>
     </>
