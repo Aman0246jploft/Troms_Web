@@ -385,7 +385,7 @@ function SubscriptionPage() {
 
   const handlePaymentSuccess = async (result) => {
     console.log("🎉 Payment successful:", result);
-    // setSuccess("Subscription successful! Welcome to TROMS Fitness");
+    setSuccess("Subscription successful! Welcome to TROMS Fitness");
     setShowPayment(false);
     setError("");
 
