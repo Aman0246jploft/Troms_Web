@@ -12,6 +12,8 @@ function RegisterPage() {
   const { state, setUser, setLoading, setError, updateStep, resetState } =
     useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const [appleLoading, setAppleLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   useEffect(() => {
     localStorage.removeItem("onboardingState");
     resetState();
@@ -40,8 +42,10 @@ function RegisterPage() {
     setAlert({ show: false, type: "", message: "" });
   };
 
-  const handleSocialLoginAPI = async (userData) => {
+  const handleSocialLoginAPI = async (userData, loginType = null) => {
     setLoading(true);
+    if (loginType === 'apple') setAppleLoading(true);
+    if (loginType === 'google') setGoogleLoading(true);
     hideAlert();
 
     try {
@@ -102,6 +106,8 @@ function RegisterPage() {
       );
     } finally {
       setLoading(false);
+      if (loginType === 'apple') setAppleLoading(false);
+      if (loginType === 'google') setGoogleLoading(false);
     }
   };
 
@@ -131,7 +137,7 @@ function RegisterPage() {
                   platform: "web",
                   // userInfoId: userInfo.sub,
                 };
-                handleSocialLoginAPI(userData);
+                handleSocialLoginAPI(userData, 'google');
               })
               .catch((err) => {
                 console.error("Google userinfo fetch error:", err);
@@ -153,7 +159,7 @@ function RegisterPage() {
         platform: "android",
         userInfoId: "google_" + Date.now(),
       };
-      handleSocialLoginAPI(mockGoogleUser);
+      handleSocialLoginAPI(mockGoogleUser, 'google');
     }
   };
 
@@ -184,7 +190,7 @@ function RegisterPage() {
         userInfoId: userInfo.sub,
         // userInfoId: userInfo.sub
       };
-      handleSocialLoginAPI(userData);
+      handleSocialLoginAPI(userData, 'google');
     } catch (error) {
       console.error("Error processing Google callback:", error);
       showAlert("error", "Failed to process Google login. Please try again.");
@@ -207,7 +213,7 @@ function RegisterPage() {
             platform: "ios",
             userInfoId: response.user?.sub || "apple_" + Date.now(),
           };
-          handleSocialLoginAPI(userData);
+          handleSocialLoginAPI(userData, 'apple');
         })
         .catch((error) => {
           console.error("Apple Sign-In error:", error);
@@ -221,7 +227,7 @@ function RegisterPage() {
         platform: "ios",
         userInfoId: "apple_" + Date.now(),
       };
-      handleSocialLoginAPI(mockAppleUser);
+      handleSocialLoginAPI(mockAppleUser, 'apple');
     }
   };
 
@@ -247,7 +253,7 @@ function RegisterPage() {
                   <div className="login-btn">
                     <button
                       onClick={handleAppleLogin}
-                      disabled={state.loading}
+                      disabled={appleLoading || googleLoading}
                       className=""
                     >
                       <img
@@ -255,12 +261,12 @@ function RegisterPage() {
                         className="me-2"
                         alt="Apple"
                       />
-                      {state.loading ? "Signing in..." : "Continue with Apple"}
+                      {appleLoading ? "Signing in..." : "Continue with Apple"}
                     </button>
 
                     <button
                       onClick={handleGoogleLogin}
-                      disabled={state.loading}
+                      disabled={appleLoading || googleLoading}
                       className=""
                     >
                       <img
@@ -268,7 +274,7 @@ function RegisterPage() {
                         className="me-2"
                         alt="Google"
                       />
-                      {state.loading ? "Signing in..." : "Continue with Google"}
+                      {googleLoading ? "Signing in..." : "Continue with Google"}
                     </button>
                   </div>
 
