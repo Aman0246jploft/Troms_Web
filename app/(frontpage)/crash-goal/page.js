@@ -35,7 +35,7 @@ function page() {
               <div className="auth-cards food">
                 <p className="text-uppercase mb-2">Crash your goal</p>
                 <h3 className="mb-4">
-                  Do you have any past injuries <br /> or movement limitations?
+                  You have Great Potential <br /> to crush your goal
                 </h3>
                 <div className="d-flex justify-content-center py-2  ">
                   <img src="/images/chart.svg" alt="Crash your goal" />
