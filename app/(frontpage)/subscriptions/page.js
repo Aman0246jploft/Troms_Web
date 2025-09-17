@@ -644,6 +644,10 @@ function SubscriptionPage() {
             <p>
               <span>25/</span> 25
             </p>
+  {/* <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p> */}
+
           </div>
         </div>
       </section>

@@ -1,7 +1,22 @@
+'use client'
 import Link from "next/link";
 import React from "react";
+import { useOnboarding } from "../../../context/OnboardingContext";
+import { useRouter } from "next/navigation";
 
 function page() {
+  
+  const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const router = useRouter();
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+
+      updateStep(30);
+      router.push("/approach");
+   
+  };
+
   return (
     <>
       <section className="auth-section">
@@ -22,17 +37,20 @@ function page() {
                   <img src="/images/chart.svg" alt="Crash your goal" />
                 </div>
                 <div className="text-center mt-3">
-                  <Link href="/approach" className="custom-btn continue-btn">
+                  <button onClick={handleContinue} className="custom-btn continue-btn">
                     Continue
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div className="auth-bttm">
-          <p>
+          {/* <p>
             <span>22/</span> 25
+          </p> */}
+            <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
           </p>
         </div>
       </section>
