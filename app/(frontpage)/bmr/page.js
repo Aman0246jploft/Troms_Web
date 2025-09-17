@@ -42,10 +42,9 @@ function page() {
     return;
   }
 
-  // Update current step only if it's less than 25
-  if (state.currentStep < 25) {
-    updateStep(25);
-  }
+
+    // updateStep(31);
+
 
   const timer = setTimeout(() => {
     setIsProcessing(false);
@@ -107,8 +106,11 @@ function page() {
           </div>
         </div>
         <div className="auth-bttm">
-          <p>
+          {/* <p>
             <span>24/</span> 25
+          </p> */}
+              <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
           </p>
         </div>
       </section>

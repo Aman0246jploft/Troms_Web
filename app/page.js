@@ -406,9 +406,9 @@ export default function Home() {
                     />
                   </div>
                   <div className="frm-bx">
-                    <textarea
+                    <input
                       name="message"
-                      className="form-control"
+                      className="form-control textarea"
                       placeholder="Message"
                       rows={4}
                       value={contactForm.message}
@@ -416,7 +416,7 @@ export default function Home() {
                       required
                       minLength={10}
                       maxLength={1000}
-                    ></textarea>
+                    />
                   </div>
                   <div>
                     <button
