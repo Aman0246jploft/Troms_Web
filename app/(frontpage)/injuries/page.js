@@ -140,22 +140,13 @@ function InjuriesPage() {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    const finalInjuries = [...selectedInjuries];
-    
-    // Comment out the append logic - now we store custom input separately
-    // if (customInjury.trim()) {
-    //   finalInjuries.push(customInjury.trim());
-    // }
-
     // Update the onboarding context with selected injuries and custom input separately
-    updateField("injuries", finalInjuries);
+    updateField("injuries", selectedInjuries);
     updateField("injuries_other", customInjury.trim());
     
     // Injuries are optional, so we can continue even with no selections
-    if (isStepValid(28)) {
-      updateStep(29);
-      router.push("/crash-goal");
-    }
+    updateStep(29);
+    router.push("/crash-goal");
   };
 
   const handleKeyPress = (e) => {
@@ -268,7 +259,7 @@ function InjuriesPage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading || selectedInjuries.length === 0}
+                    disabled={loading}
                   >
                     Continue
                   </button>

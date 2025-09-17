@@ -176,11 +176,11 @@ function BornDatePage() {
                   onYearChange={setSelectedYear}
                 />
 
-                {state.age > 0 && (
-                  <div className="text-center mt-2">
-                    <h6 className="clr fw-600">Age: {state.age} years old</h6>
-                  </div>
-                )}
+                {/* {state.age > 0 && ( */}
+                  {/* <div className="text-center mt-2"> */}
+                    {/* <h6 className="clr fw-600">Age: {state.age} years old</h6> */}
+                  {/* </div> */}
+                {/* )} */}
                 
                 <div className="text-center mt-4">
                   <button

@@ -163,21 +163,26 @@ const handleAllergyToggle = (allergyName) => {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    const finalAllergies = [...selectedAllergies];
+    // Check if either predefined allergies are selected or custom allergy is entered
+    // Check both local state and context state to ensure we catch all cases
+    const hasLocalSelection = selectedAllergies.length > 0 || customAllergy.trim();
+    const hasContextSelection = (state.allergicFoodItems && state.allergicFoodItems.length > 0) || state.allergic_food_other_item;
+    const hasSelection = hasLocalSelection || hasContextSelection;
     
-    // Comment out the append logic - now we store custom input separately
-    // if (customAllergy.trim()) {
-    //   finalAllergies.push(customAllergy.trim());
-    // }
+    if (!hasSelection) {
+      showAlert(
+        "warning",
+        "Please select your allergies or enter a custom allergy."
+      );
+      return;
+    }
 
     // Update the onboarding context with selected allergies and custom input separately
-    updateField("allergicFoodItems", finalAllergies);
+    updateField("allergicFoodItems", selectedAllergies);
     updateField("allergic_food_other_item", customAllergy.trim());
     
-    if (isStepValid(26)) {
-      updateStep(27);
-      router.push("/dislikes");
-    }
+    updateStep(27);
+    router.push("/dislikes");
   };
 
   const handleKeyPress = (e) => {
@@ -294,7 +299,7 @@ const handleAllergyToggle = (allergyName) => {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading || selectedAllergies.length === 0}
+                    disabled={loading || (selectedAllergies.length === 0 && !customAllergy.trim() && !state.allergicFoodItems?.length && !state.allergic_food_other_item)}
                   >
                     Continue
                   </button>

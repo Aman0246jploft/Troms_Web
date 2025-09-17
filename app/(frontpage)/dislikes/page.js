@@ -159,22 +159,13 @@ const handleDislikeToggle = (dislikeName) => {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    const finalDislikes = [...selectedDislikes];
-    
-    // Comment out the append logic - now we store custom input separately
-    // if (customDislike.trim()) {
-    //   finalDislikes.push(customDislike.trim());
-    // }
-
     // Update the onboarding context with selected dislikes and custom input separately
-    updateField("dislikedFoodItems", finalDislikes);
+    updateField("dislikedFoodItems", selectedDislikes);
     updateField("disliked_food_other_item", customDislike.trim());
     
     // Dislikes are optional, so we can continue even with no selections
-    if (isStepValid(27)) {
-      updateStep(28);
-      router.push("/injuries");
-    }
+    updateStep(28);
+    router.push("/injuries");
   };
 
   return (
@@ -281,7 +272,7 @@ const handleDislikeToggle = (dislikeName) => {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading || selectedDislikes.length === 0}
+                    disabled={loading}
                   >
                     Continue
                   </button>

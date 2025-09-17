@@ -69,17 +69,9 @@ function ApproachPage() {
       "trainingDays",
       "weight",
       "weightGoal",
-      "desiredWeight",
       "workoutLocation",
       "selectedEquipments",
       "reachingGoals",
-      "accomplish",
-      "dietType",
-      "cheatMealFoodItems",
-      "cookingLevel",
-      "allergicFoodItems",
-      "dislikedFoodItems",
-      "injuries",
     ];
 
     const missingFields = requiredFields.filter((field) => {
@@ -94,9 +86,9 @@ function ApproachPage() {
         "error",
         "Required information is missing. Redirecting to registration to complete setup..."
       );
-      setTimeout(() => {
-        router.push("/register");
-      }, 2000);
+      // setTimeout(() => {
+      //   router.push("/register");
+      // }, 2000);
       return;
     }
 
@@ -111,6 +103,47 @@ function ApproachPage() {
       handleSubmitUserInfo();
     }
   }, [state.currentStep, isCompleted, isSubmitting]);
+
+  // Auto-click continue button when no errors are present
+  useEffect(() => {
+    // Only auto-click if we're on the approach page and not already processing
+    if (state.currentStep === 24 && !isSubmitting && !isCompleted && !alert.show) {
+      // Check if all required fields are filled (same validation as in the main useEffect)
+      const requiredFields = [
+        "gender",
+        "dateOfBirth", 
+        "age",
+        "trainingDays",
+        "weight",
+        "weightGoal",
+        "desiredWeight",
+        "workoutLocation",
+        "selectedEquipments",
+        "reachingGoals",
+        "accomplish",
+        "dietType",
+        "cheatMealFoodItems",
+        "cookingLevel",
+        "allergicFoodItems",
+        "dislikedFoodItems",
+        "injuries",
+      ];
+
+      const missingFields = requiredFields.filter((field) => {
+        const value = state[field];
+        if (Array.isArray(value)) return value.length === 0;
+        return !value || value === "";
+      });
+
+      // If no missing fields and no errors, auto-click continue
+      if (missingFields.length === 0) {
+        console.log("All fields complete, auto-clicking continue button");
+        setTimeout(() => {
+          handleContinue();
+        }, 1000); // Small delay to ensure UI is ready
+      }
+    }
+  }, [state.currentStep, isSubmitting, isCompleted, alert.show, state]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });

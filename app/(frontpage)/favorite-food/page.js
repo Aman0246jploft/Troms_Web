@@ -55,23 +55,31 @@ function FavoriteFoodPage() {
 
   // Handle prefilling the input field when returning to page
   useEffect(() => {
+    // First, handle custom food input if it exists
+    if (state.cheat_meal_food_other_item) {
+      setCustomFood(state.cheat_meal_food_other_item);
+      setSelectedMeal(""); // Clear any predefined selection when custom food exists
+      return; // Exit early since custom food takes priority
+    }
+
+    // Then handle predefined selections
     if (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) {
       const savedFood = state.cheatMealFoodItems[0];
       
       // Check if the saved food is in the predefined list
       const isInPredefinedList = cheatMeals.some(meal => meal.name === savedFood);
       
-      if (!isInPredefinedList && savedFood) {
-        // If it's not in the predefined list, it's a custom food - prefill the input
-        setCustomFood(savedFood);
-        setSelectedMeal(savedFood);
-      } else if (isInPredefinedList) {
+      if (isInPredefinedList) {
         // If it's in the predefined list, clear the input and select from list
         setCustomFood("");
         setSelectedMeal(savedFood);
+      } else if (savedFood) {
+        // If it's not in the predefined list, it's a custom food - prefill the input
+        setCustomFood(savedFood);
+        setSelectedMeal("");
       }
     }
-  }, [cheatMeals, state.cheatMealFoodItems]);
+  }, [cheatMeals, state.cheatMealFoodItems, state.cheat_meal_food_other_item]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -122,9 +130,16 @@ function FavoriteFoodPage() {
   };
 
   const handleMealSelect = (mealName) => {
-    setSelectedMeal(mealName);
-    setCustomFood(""); // Clear the input field when selecting from list
-    updateField("cheatMealFoodItems", [mealName]); // Store as array for compatibility
+    // Toggle selection - if already selected, deselect it
+    if (selectedMeal === mealName) {
+      setSelectedMeal("");
+      updateField("cheatMealFoodItems", []); // Clear the array when deselecting
+    } else {
+      setSelectedMeal(mealName);
+      updateField("cheatMealFoodItems", [mealName]); // Store as array for compatibility
+    }
+    setCustomFood(""); // Clear the input field when selecting/deselecting from list
+    updateField("cheat_meal_food_other_item", ""); // Clear custom food when selecting predefined meal
     hideAlert();
   };
 
@@ -132,15 +147,11 @@ function FavoriteFoodPage() {
     const value = e.target.value;
     setCustomFood(value);
     
-    // Comment out the old append logic - now we store custom input separately
-    // if (value.trim()) {
-    //   setSelectedMeal(value.trim());
-    //   updateField("cheatMealFoodItems", [value.trim()]);
-    // } else {
-    //   // If input is empty, clear the selection
-    //   setSelectedMeal("");
-    //   updateField("cheatMealFoodItems", []);
-    // }
+    // Clear predefined meal selection when typing custom food
+    if (value.trim()) {
+      setSelectedMeal("");
+      updateField("cheatMealFoodItems", []); // Clear predefined selection
+    }
     
     // Store the input value in context immediately with new key
     updateField("cheat_meal_food_other_item", value);
@@ -159,33 +170,33 @@ function FavoriteFoodPage() {
     e.preventDefault();
 
     // Check if either a meal is selected from list or custom food is entered
-    const hasSelection = selectedMeal || customFood.trim();
+    // Check both local state and context state to ensure we catch all cases
+    const hasLocalSelection = selectedMeal || customFood.trim();
+    const hasContextSelection = (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) || state.cheat_meal_food_other_item;
+    const hasSelection = hasLocalSelection || hasContextSelection;
+    console.log("hiiii", hasSelection)
     
     if (!hasSelection) {
       showAlert(
         "warning",
         "Please select your favorite food or enter a custom food."
-      );
+      );                    
       return;
     }
 
-    // Comment out the append logic - now we store selected meal and custom input separately
-    // const finalFood = customFood.trim() || selectedMeal;
-    // updateField("cheatMealFoodItems", [finalFood]);
-    
     // Store selected meal in original array and custom input in separate field
     if (selectedMeal && !customFood.trim()) {
       updateField("cheatMealFoodItems", [selectedMeal]);
-    } 
-    // else {
-    //   updateField("cheatMealFoodItems", []); // Clear the array when using custom input
-    // }
-    updateField("cheat_meal_food_other_item", customFood.trim());
+      updateField("cheat_meal_food_other_item", ""); // Clear custom food
+    } else if (customFood.trim()) {
+      updateField("cheatMealFoodItems", []); // Clear predefined selection
+      updateField("cheat_meal_food_other_item", customFood.trim());
+    }
 
-    if (isStepValid(17)) {
+
       updateStep(18);
       router.push("/cooking");
-    }
+   
   };
 
   return (
@@ -228,7 +239,7 @@ function FavoriteFoodPage() {
                    <div className="food-list">
                      {categories.map((category, categoryIndex) => (
                        <div key={categoryIndex} className="category-section">
-                         <h6 className="text-sm mb-3">{category.name}</h6>
+                         {/* <h6 className="text-sm mb-3">{category.name}</h6> */}
                          <div className="food-card">
                                                        {(category.list_data || []).map((meal) => (
                               <div key={meal.id} className="food-bx">
@@ -285,7 +296,7 @@ function FavoriteFoodPage() {
                    <button
                      onClick={handleContinue}
                      className="custom-btn continue-btn"
-                     disabled={(!selectedMeal && !customFood.trim()) || loading}
+                     disabled={(!selectedMeal && !customFood.trim() && !state.cheatMealFoodItems?.length && !state.cheat_meal_food_other_item) || loading}
                    >
                      Continue
                    </button>

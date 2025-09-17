@@ -105,7 +105,7 @@ function GoalRangePage() {
             <div className="auth-cards gender">
               <p className="text-uppercase mb-3">Reach your goal</p>
               <h3 className="mb-2">How fast do you wanna reach your goal?</h3>
-              <p>Weight loss speed per week</p>
+              <p>Weight lose speed per week</p>
               <div className="goal-range">
                 <h5 className="text-center">
                   {getDisplayValue(value)} {weightUnit}
