@@ -387,7 +387,7 @@ function SubscriptionPage() {
 
   const handlePaymentSuccess = async (result) => {
     console.log("🎉 Payment successful:", result);
-    setSuccess("Subscription successful! Welcome to TROMS Fitness");
+    // setSuccess("Subscription successful! Welcome to TROMS Fitness");
     setShowPayment(false);
     setError("");
 
@@ -446,7 +446,7 @@ function SubscriptionPage() {
       console.log("🔄 Redirecting to home page...");
       setSuccess(""); // Clear success message
       router.push("/download-app"); // Redirect to home page
-    }, 2000);
+    }, 1000);
   };
 
   const handlePaymentError = (errorMessage) => {
