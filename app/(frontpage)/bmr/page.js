@@ -43,11 +43,11 @@ function page() {
   }
 
 
-    // updateStep(31);
 
 
   const timer = setTimeout(() => {
     setIsProcessing(false);
+    updateStep(31);
     setTimeout(() => router.push("/subscriptions"), 1500);
   }, 3000);
 

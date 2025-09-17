@@ -641,12 +641,12 @@ function SubscriptionPage() {
             </div>
           </div>
           <div className="auth-bttm">
-            <p>
+            {/* <p>
               <span>25/</span> 25
-            </p>
-  {/* <p>
+            </p> */}
+  <p>
             <span>{state.currentStep}/</span> {state.totalSteps}
-          </p> */}
+          </p>
 
           </div>
         </div>
