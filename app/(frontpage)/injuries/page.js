@@ -17,6 +17,12 @@ function InjuriesPage() {
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
+    if (state.currentStep !== 28) {
+      updateStep(28);
+    }
+  }, [state.currentStep, updateStep]); 
+
+  useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
@@ -31,9 +37,6 @@ function InjuriesPage() {
 
     // Only update step if it's not already set
 
-    if (state.currentStep !== 28) {
-      updateStep(28);
-    }
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -143,10 +146,14 @@ function InjuriesPage() {
     // Update the onboarding context with selected injuries and custom input separately
     updateField("injuries", selectedInjuries);
     updateField("injuries_other", customInjury.trim());
+
+
+    if(selectedInjuries.length>0||customInjury.trim()){
+      router.push("/crash-goal");
+    }
     
-    // Injuries are optional, so we can continue even with no selections
-    updateStep(29);
-    router.push("/crash-goal");
+
+    // router.push("/crash-goal");
   };
 
   const handleKeyPress = (e) => {

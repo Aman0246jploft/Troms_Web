@@ -18,6 +18,14 @@ function BudgetPage() {
     { id: "HIGH", label: "High", icon: "/images/high-icon.svg" },
   ];
 
+
+  // Set the step for country selection (adding as step 2 after registration)
+  useEffect(() => {
+    if (state.currentStep !== 22) {
+      updateStep(22);
+    }
+  }, [state.currentStep, updateStep]);    
+
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
@@ -31,9 +39,7 @@ function BudgetPage() {
     }
 
     // Update step if needed
-    if (state.currentStep !== 22) {
-      updateStep(22);
-    }
+   
   }, [
     state.isAuthChecked,
     state.isAuthenticated,

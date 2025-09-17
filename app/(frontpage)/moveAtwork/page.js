@@ -21,6 +21,15 @@ function MoveAtwork() {
     { id: "HEAVY_LIFTING", label: "Heavy lifting", icon: "/images/high-icon.svg" },
   ];
 
+
+  useEffect(() => {
+    if (state.currentStep !== 24) {
+      updateStep(24);
+    }
+  }, [state.currentStep, updateStep]); 
+
+
+
   useEffect(() => {
     if (!state.isAuthChecked) return; 
 
@@ -37,10 +46,10 @@ function MoveAtwork() {
       return;
     }
 
-    // Update step if needed
-    if (state.currentStep !== 24) {
-      updateStep(24);
-    }
+    // // Update step if needed
+    // if (state.currentStep !== 24) {
+    //   updateStep(24);
+    // }
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -73,7 +82,7 @@ function MoveAtwork() {
       return;
     }
 
-    updateStep(25);
+    // updateStep(25);
     router.push("/shift"); // Continue to shift page
   };
 

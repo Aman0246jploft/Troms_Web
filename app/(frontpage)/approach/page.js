@@ -20,6 +20,11 @@ function ApproachPage() {
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  useEffect(() => {
+    if (state.currentStep !== 30) {
+      updateStep(30);
+    }
+  }, [state.currentStep, updateStep]); 
 
   useEffect(() => {
     // Check for user data from localStorage if state is empty
@@ -92,14 +97,10 @@ function ApproachPage() {
       return;
     }
 
-    // ✅ Only update step if not already set
-    if (state.currentStep !== 24) {
-      updateStep(24);
-    }
   }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, state.user]);
 
   useEffect(() => {
-    if (state.currentStep === 23 && !isCompleted && !isSubmitting) {
+    if (!isCompleted && !isSubmitting) {
       handleSubmitUserInfo();
     }
   }, [state.currentStep, isCompleted, isSubmitting]);
@@ -107,7 +108,7 @@ function ApproachPage() {
   // Auto-click continue button when no errors are present
   useEffect(() => {
     // Only auto-click if we're on the approach page and not already processing
-    if (state.currentStep === 24 && !isSubmitting && !isCompleted && !alert.show) {
+    if ( !isSubmitting && !isCompleted && !alert.show) {
       // Check if all required fields are filled (same validation as in the main useEffect)
       const requiredFields = [
         // "gender",

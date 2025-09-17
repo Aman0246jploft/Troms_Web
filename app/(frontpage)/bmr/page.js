@@ -34,6 +34,12 @@ function page() {
   //   return () => clearTimeout(timer);
   // }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, router, updateStep]);
 
+  useEffect(() => {
+    if (state.currentStep !== 31) {
+      updateStep(31);
+    }
+  }, [state.currentStep, updateStep]); 
+
 
   useEffect(() => {
   // Redirect if not authenticated
@@ -42,7 +48,7 @@ function page() {
     return;
   }
 
-
+ 
 
 
   const timer = setTimeout(() => {

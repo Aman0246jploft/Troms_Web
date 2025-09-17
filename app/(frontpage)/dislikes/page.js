@@ -21,6 +21,11 @@ function DislikesPage() {
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
+  useEffect(() => {
+    if (state.currentStep !== 27) {
+      updateStep(27);
+    }
+  }, [state.currentStep, updateStep]); 
 
   useEffect(() => {
     // Load previously selected dislikes from context/localStorage
@@ -67,10 +72,7 @@ function DislikesPage() {
       return;
     }
 
-    // Only update step if it's not already set
-    if (state.currentStep !== 27) {
-      updateStep(27);
-    }
+
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -162,10 +164,16 @@ const handleDislikeToggle = (dislikeName) => {
     // Update the onboarding context with selected dislikes and custom input separately
     updateField("dislikedFoodItems", selectedDislikes);
     updateField("disliked_food_other_item", customDislike.trim());
+    // if(selectedDislikes)
+
+    if(selectedDislikes.length>0||customDislike.trim()){
+      router.push("/injuries");
+    }
+
     
     // Dislikes are optional, so we can continue even with no selections
-    updateStep(28);
-    router.push("/injuries");
+   
+    // router.push("/injuries");
   };
 
   return (

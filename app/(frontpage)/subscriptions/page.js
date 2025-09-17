@@ -301,12 +301,14 @@ function SubscriptionPage() {
     fetchSubscriptionPlans();
   }, [state.currentStep, updateStep]);
 
-
+  useEffect(() => {
+    if (state.currentStep !== 31) {
+      updateStep(31);
+    }
+  }, [state.currentStep, updateStep]); 
 
   useEffect(() => {
-  if (state.currentStep !== 25) {
-    updateStep(26);
-  }
+
   fetchSubscriptionPlans();
 }, []); // <- empty array, runs once
 

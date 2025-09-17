@@ -21,6 +21,12 @@ function AllergiesPage() {
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
+    if (state.currentStep !== 26) {
+      updateStep(26);
+    }
+  }, [state.currentStep, updateStep]); 
+
+  useEffect(() => {
     // Load previously selected allergies from context/localStorage
     if (state.allergicFoodItems && state.allergicFoodItems.length > 0) {
       // Separate predefined allergies from custom allergies
@@ -64,10 +70,7 @@ function AllergiesPage() {
       return;
     }
 
-    // Only update step if it's not already set
-    if (state.currentStep !== 26) {
-      updateStep(26);
-    }
+
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -180,8 +183,7 @@ const handleAllergyToggle = (allergyName) => {
     // Update the onboarding context with selected allergies and custom input separately
     updateField("allergicFoodItems", selectedAllergies);
     updateField("allergic_food_other_item", customAllergy.trim());
-    
-    updateStep(27);
+
     router.push("/dislikes");
   };
 

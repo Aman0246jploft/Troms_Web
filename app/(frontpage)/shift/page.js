@@ -20,6 +20,12 @@ function ShiftPage() {
   ];
 
   useEffect(() => {
+    if (state.currentStep !== 25) {
+      updateStep(25);
+    }
+  }, [state.currentStep, updateStep]); 
+
+  useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
@@ -39,10 +45,7 @@ function ShiftPage() {
       return;
     }
 
-    // Update step if needed
-    if (state.currentStep !== 25) {
-      updateStep(25);
-    }
+
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -76,7 +79,6 @@ function ShiftPage() {
       return;
     }
 
-    updateStep(26);
     router.push("/allergies"); // Continue with existing flow
   };
 

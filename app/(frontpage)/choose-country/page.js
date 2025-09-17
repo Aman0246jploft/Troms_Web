@@ -18,7 +18,7 @@ function ChooseCountryPage() {
 
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
-    if (state.currentStep !== 20) {
+    if (state.currentStep !== 21) {
       updateStep(21);
     }
   }, [state.currentStep, updateStep]);    
@@ -64,7 +64,6 @@ function ChooseCountryPage() {
       showAlert("warning", "Please select a country to continue.");
       return;
     }
-
     if (!selectedCity) {
       showAlert("warning", "Please select a city to continue.");
       return;
@@ -134,6 +133,12 @@ function ChooseCountryPage() {
               </div>
             </div>
           </div>
+          
+        </div>
+        <div className="auth-bttm">
+          <p>
+            <span>{state.currentStep}/</span> {state.totalSteps}
+          </p>
         </div>
       </section>
     </>

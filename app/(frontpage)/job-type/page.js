@@ -16,6 +16,13 @@ function JobTypePage() {
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
+
+  useEffect(() => {
+    if (state.currentStep !== 23) {
+      updateStep(23);
+    }
+  }, [state.currentStep, updateStep]); 
+
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
@@ -29,9 +36,7 @@ function JobTypePage() {
     }
 
     // Update step if needed
-    if (state.currentStep !== 23) {
-      updateStep(23);
-    }
+  
   }, [
     state.isAuthChecked,
     state.isAuthenticated,

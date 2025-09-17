@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { useRouter } from "next/navigation";
 
@@ -8,11 +8,15 @@ function page() {
   
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const router = useRouter();
+  useEffect(() => {
+    if (state.currentStep !== 29) {
+      updateStep(29);
+    }
+  }, [state.currentStep, updateStep]); 
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-      updateStep(30);
       router.push("/approach");
    
   };
