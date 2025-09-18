@@ -23,7 +23,8 @@ const DesiredWeightPicker = ({
     // Ensure initial weight is within min/max range
     return Math.max(min, Math.min(max, externalWeight));
   });
-  const [dragging, setDragging] = useState(false);
+  // const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
 
   const pickerRef = useRef(null);
 
@@ -74,7 +75,7 @@ const DesiredWeightPicker = ({
   const handlePointerDown = (e) => {
     if (disabled) return; // Don't handle events when disabled
     e.preventDefault();
-    setDragging(true);
+   draggingRef.current = true
     moveHandle(e);
 
     // Add global listeners for smooth dragging
@@ -85,19 +86,19 @@ const DesiredWeightPicker = ({
   };
 
   const handlePointerMove = (e) => {
-    if (!dragging) return;
+    if (!draggingRef.current) return;
     e.preventDefault();
     moveHandle(e);
   };
 
   const handleTouchMove = (e) => {
-    if (!dragging) return;
+    if (!draggingRef.current) return;
     e.preventDefault();
     moveHandle(e.touches[0]);
   };
 
   const handlePointerUp = () => {
-    setDragging(false);
+ draggingRef.current = true
 
     // Remove global listeners
     document.removeEventListener("pointermove", handlePointerMove);

@@ -16,7 +16,9 @@ const WeightPicker = ({
   const max = maxWeight || defaultMaxWeight;
   
   const [weight, setWeight] = useState(externalWeight);
-  const [dragging, setDragging] = useState(false);
+  // const [dragging, setDragging] = useState(false);
+
+  const draggingRef = useRef(false);
 
   const pickerRef = useRef(null);
 
@@ -56,8 +58,9 @@ const WeightPicker = ({
 
   const handlePointerDown = (e) => {
     e.preventDefault();
-    setDragging(true);
+   draggingRef.current = true;
     moveHandle(e);
+    console.log("Pointer down at", e.clientX);
     
     // Add global listeners for smooth dragging
     document.addEventListener('pointermove', handlePointerMove, { passive: false });
@@ -67,19 +70,19 @@ const WeightPicker = ({
   };
 
   const handlePointerMove = (e) => {
-    if (!dragging) return;
+    if (!draggingRef.current) return;
     e.preventDefault();
     moveHandle(e);
   };
 
   const handleTouchMove = (e) => {
-    if (!dragging) return;
+    if (!draggingRef.current) return;
     e.preventDefault();
     moveHandle(e.touches[0]);
   };
 
   const handlePointerUp = () => {
-    setDragging(false);
+draggingRef.current = true;
     
     // Remove global listeners
     document.removeEventListener('pointermove', handlePointerMove);
