@@ -66,7 +66,7 @@ const initialState = {
 
   // Train more than once data
   trainMoreThanOnce: {
-    isMoreThanOnce: false,
+    isMoreThanOnce: true,
     specificDays: []
   },
 
