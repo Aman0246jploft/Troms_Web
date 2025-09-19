@@ -24,7 +24,7 @@ function ApproachPage() {
     if (state.currentStep !== 30) {
       updateStep(31);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
   useEffect(() => {
     // Check for user data from localStorage if state is empty
