@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import Alert from "../../../Components/Alert";
 
-function TrainingDaysPage() {
+function trainingDayPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedDays, setSelectedDays] = useState(state.trainingDays);
+  const [selectedDays, setSelectedDays] = useState(state.trainingDays || []);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   // Redirects based on previous steps
   useEffect(() => {
@@ -35,17 +36,24 @@ function TrainingDaysPage() {
     setAlert({ show: false, type: '', message: '' });
   };
 
-  const handleDaysChange = (days) => {
-    setSelectedDays(days);
-    updateField('trainingDays', days);
+  const handleDaysChange = (day) => {
+    let updatedDays;
+    if (selectedDays.includes(day)) {
+      updatedDays = selectedDays.filter(d => d !== day);
+    } else {
+      updatedDays = [...selectedDays, day];
+    }
+    setSelectedDays(updatedDays);
+    updateField('trainingDays', updatedDays);
+    updateField('trainingDay', updatedDays.length);
     hideAlert();
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (!selectedDays || selectedDays < 1) {
-      showAlert('warning', 'Please select how many days per week you can train.');
+    if (!selectedDays || selectedDays.length < 1) {
+      showAlert('warning', 'Please select at least one day per week you can train.');
       return;
     }
 
@@ -83,20 +91,20 @@ function TrainingDaysPage() {
                 <form onSubmit={handleContinue}>
                   <h6>Training days</h6>
                   <div className="training-day-list">
-                    {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+                    {WEEKDAYS.map((day, index) => (
                       <div key={day}>
                         <input
-                          type="radio"
-                          className="d-none"
+                          type="checkbox"
+                          className="d-none"  
                           id={`day-${day}`}
                           name="training-days"
                           value={day}
-                          checked={selectedDays === day}
+                          checked={selectedDays.includes(day)}
                           onChange={() => handleDaysChange(day)}
                         />
                         <label
                           htmlFor={`day-${day}`}
-                          className={selectedDays === day ? 'selected' : ''}
+                          className={selectedDays.includes(day) ? 'selected' : ''}
                         >
                           {day}
                         </label>
@@ -107,7 +115,7 @@ function TrainingDaysPage() {
                     <button
                       type="submit"
                       className="custom-btn continue-btn"
-                      disabled={!selectedDays || selectedDays < 1}
+                      disabled={!selectedDays || selectedDays.length < 1}
                     >
                       Continue
                     </button>
@@ -127,4 +135,4 @@ function TrainingDaysPage() {
   );
 }
 
-export default TrainingDaysPage;
+export default trainingDayPage;

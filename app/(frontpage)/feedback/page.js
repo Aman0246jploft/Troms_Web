@@ -21,12 +21,12 @@ function FeedbackPage() {
       router.push('/select-gender');
     } else if (!state.dateOfBirth || state.age < 13) {
       router.push('/borndate');
-    } else if (!state.trainingDays) {
+    } else if (!state.trainingDay) {
       router.push('/training-days');
     } else if (state.trainMoreThanOnce === undefined) {
       router.push('/train-more');
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.trainMoreThanOnce, router]);
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, router]);
 
   // Set current step
   useEffect(() => {

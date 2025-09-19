@@ -27,7 +27,7 @@ function TrainMorePage() {
       router.push("/borndate");
       return;
     }
-    if (!state.trainingDays) {
+    if (!state.trainingDay) {
       router.push("/training-days");
       return;
     }
@@ -42,7 +42,7 @@ function TrainMorePage() {
     state.gender,
     state.dateOfBirth,
     state.age,
-    state.trainingDays,
+    state.trainingDay,
     state.currentStep,
     router,
     updateStep,
@@ -57,9 +57,17 @@ function TrainMorePage() {
       setIsMoreThanOnce(state.trainMoreThanOnce.isMoreThanOnce);
       setSelectedDays(state.trainMoreThanOnce.specificDays || []);
     }
-  }, [state.trainMoreThanOnce]);
+  }, [state.trainMoreThanOnce, state.trainingDays]);
 
   const generateCurrentMonthDays = () => {
+    // Get the selected training days from the previous page
+    const selectedTrainingDays = state.trainingDays || [];
+    
+    if (selectedTrainingDays.length === 0) {
+      setCurrentMonthDays([]);
+      return;
+    }
+    
     const now = new Date();
     
     // Find the start of the current week (Sunday)
@@ -67,29 +75,42 @@ function TrainMorePage() {
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - currentDay);
     
-    // Generate 7 days starting from Sunday
-    const days = [];
+    // Day mapping for correct indexing
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayMapping = {
+      "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, 
+      "THU": 4, "FRI": 5, "SAT": 6
+    };
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      
-      const dayName = dayNames[i]; // i corresponds to day index (0=Sun, 1=Mon, etc.)
-      const dayValue = dayName.toUpperCase(); // SUN, MON, TUE, etc.
-      
-      days.push({
-        date: date.getDate(),
-        month: monthNames[date.getMonth()],
-        dayName: dayName,
-        dayValue: dayValue,
-        id: dayValue.toLowerCase()
-      });
-    }
+    const days = [];
     
-    console.log("Generated days:", days); // Debug log
+    // Only generate days that were selected in training-days page
+    selectedTrainingDays.forEach(selectedDay => {
+      const dayIndex = dayMapping[selectedDay];
+      if (dayIndex !== undefined) {
+        const date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + dayIndex);
+        
+        const dayName = dayNames[dayIndex];
+        const dayValue = selectedDay; // Use the selected day value (MON, TUE, etc.)
+        
+        days.push({
+          date: date.getDate(),
+          month: monthNames[date.getMonth()],
+          dayName: dayName,
+          dayValue: dayValue,
+          id: dayValue.toLowerCase()
+        });
+      }
+    });
+    
+    // Sort days by their original week order
+    days.sort((a, b) => dayMapping[a.dayValue] - dayMapping[b.dayValue]);
+    
+    console.log("Generated days based on selected training days:", days); // Debug log
+    console.log("Selected training days:", selectedTrainingDays); // Debug log
     setCurrentMonthDays(days);
   };
 

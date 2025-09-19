@@ -29,7 +29,7 @@ function NewWeightPage() {
       router.push('/select-gender');
     } else if (!state.dateOfBirth || state.age < 13) {
       router.push('/borndate');
-    } else if (!state.trainingDays) {
+    } else if (!state.trainingDay) {
       router.push('/training-days');
     } else if (state.trainMoreThanOnce === undefined) {
       router.push('/train-more');
@@ -38,7 +38,7 @@ function NewWeightPage() {
     } else if (!state.height) {
       router.push('/new-height');
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDays, state.trainMoreThanOnce, state.feedback, state.height, router]);
+  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, state.height, router]);
 
   useEffect(() => {
     updateStep(8);

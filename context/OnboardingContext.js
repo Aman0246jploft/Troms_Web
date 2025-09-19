@@ -23,7 +23,8 @@ const initialState = {
   gender: "",
   dateOfBirth: "",
   age: 0,
-  trainingDays: 3,
+  trainingDay: 3,
+  trainingDays: [],
   feedback: true,
   weight: 0,
   weightUnit: "kg",
@@ -290,7 +291,7 @@ useEffect(() => {
         case 3: // Birth date
           return state.dateOfBirth !== "" && state.age > 0;
         case 4: // Training days
-          return state.trainingDays > 0;
+          return state.trainingDay > 0;
         case 5: // Train more
           return state.trainMoreThanOnce !== undefined;
         case 6: // Feedback
@@ -354,7 +355,8 @@ useEffect(() => {
         gender: state.gender.toUpperCase(),
         db: new Date(state.dateOfBirth).toISOString(),
         age: state.age,
-        trainingDay: state.trainingDays,
+        trainingDay: state.trainingDay,
+        trainingDays: state.trainingDays,
         weightGoal: state.weightGoal,
         desiredWeight: state.desiredWeight,
         height: state.height,
