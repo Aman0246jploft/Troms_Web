@@ -38,7 +38,7 @@ function page() {
     if (state.currentStep !== 31) {
       updateStep(32);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
 
   useEffect(() => {
