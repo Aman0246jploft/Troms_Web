@@ -2123,6 +2123,31 @@ input[type="number"]::-webkit-outer-spin-button {
   font-weight: 500;
   display: flex;
 }
+
+
+.days-list-items label {
+  -webkit-backdrop-filter: blur(7.5px);
+  backdrop-filter: blur(7.5px);
+  color: #000;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(0, 0, 0, 0);
+  border-radius: 15px;
+  flex-direction: column;
+  width: 60px;
+  height: 60px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+}
+
+
+
+
+
 .days-list-item label span {
   font-size: 12px;
 }
@@ -2192,6 +2217,13 @@ input[type="number"]::-webkit-outer-spin-button {
 .days-list-item input[type="checkbox"]:checked + label {
   border-color: #06402b;
 }
+
+
+.days-list-items input[type="checkbox"]:checked + label {
+  border-color: #06402b;
+}
+
+
 .custom-select {
   position: relative;
 }

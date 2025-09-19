@@ -11,7 +11,7 @@ function trainingDayPage() {
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedDays, setSelectedDays] = useState(state.trainingDays || []);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-  const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   // Redirects based on previous steps
   useEffect(() => {
@@ -90,27 +90,34 @@ function trainingDayPage() {
                 <p>Personalizing Your Plan Based on Your Input</p>
                 <form onSubmit={handleContinue}>
                   <h6>Training days</h6>
-                  <div className="training-day-list">
-                    {WEEKDAYS.map((day, index) => (
-                      <div key={day}>
-                        <input
-                          type="checkbox"
-                          className="d-none"  
-                          id={`day-${day}`}
-                          name="training-days"
-                          value={day}
-                          checked={selectedDays.includes(day)}
-                          onChange={() => handleDaysChange(day)}
-                        />
-                        <label
-                          htmlFor={`day-${day}`}
-                          className={selectedDays.includes(day) ? 'selected' : ''}
-                        >
-                          {day}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+               <div>
+  <ul className="days-list">
+    {WEEKDAYS.map((day, index) => {
+      const isSelected = selectedDays.includes(day);
+      return (
+        <li
+          key={day}
+          className={`days-list-items ${isSelected ? "active" : ""}`}
+          style={{ transitionDelay: `${index * 50}ms` }}
+        >
+          <input
+            type="checkbox"
+            className="d-none"
+            id={`day-${day}`}
+            name="training-days"
+            value={day}
+            checked={isSelected}
+            onChange={() => handleDaysChange(day)}
+          />
+          <label htmlFor={`day-${day}`}>
+            <span>{day}</span>
+          </label>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
                   <div className="text-center mt-5">
                     <button
                       type="submit"
