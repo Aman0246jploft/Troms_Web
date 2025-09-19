@@ -10,9 +10,9 @@ function page() {
   const router = useRouter();
   useEffect(() => {
     if (state.currentStep !== 29) {
-      updateStep(29);
+      updateStep(30);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep ]); 
 
   const handleContinue = (e) => {
     e.preventDefault();

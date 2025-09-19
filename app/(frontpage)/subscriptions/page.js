@@ -303,7 +303,7 @@ function SubscriptionPage() {
 
   useEffect(() => {
     if (state.currentStep !== 31) {
-      updateStep(31);
+      updateStep(32);
     }
   }, [state.currentStep, updateStep]); 
 

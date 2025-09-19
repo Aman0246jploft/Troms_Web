@@ -51,9 +51,9 @@ function GoalRangePage() {
   }, [state.isAuthChecked, state.isAuthenticated, router]);
 
   useEffect(() => {
-    if (state.currentStep !== 13) {
+    if (state.currentStep !== 14) {
       // compare with the step you actually want
-      updateStep(13);
+      updateStep(14);
     }
   }, [state.currentStep, updateStep]);
 

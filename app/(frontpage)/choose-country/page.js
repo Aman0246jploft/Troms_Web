@@ -19,9 +19,9 @@ function ChooseCountryPage() {
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
     if (state.currentStep !== 21) {
-      updateStep(21);
+      updateStep(22);
     }
-  }, [state.currentStep, updateStep]);    
+  }, []);    
 
   // Initialize cities if country is already selected
   useEffect(() => {

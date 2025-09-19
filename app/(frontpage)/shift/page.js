@@ -21,9 +21,9 @@ function ShiftPage() {
 
   useEffect(() => {
     if (state.currentStep !== 25) {
-      updateStep(25);
+      updateStep(26);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check

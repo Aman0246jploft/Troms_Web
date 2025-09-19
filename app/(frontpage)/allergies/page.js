@@ -22,9 +22,9 @@ function AllergiesPage() {
 
   useEffect(() => {
     if (state.currentStep !== 26) {
-      updateStep(26);
+      updateStep(27);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
   useEffect(() => {
     // Load previously selected allergies from context/localStorage

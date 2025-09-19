@@ -7,7 +7,7 @@ const OnboardingContext = createContext();
 const initialState = {
   // Step tracking
   currentStep: 1,
-  totalSteps: 31, // Updated to include health conditions, train-more, job-type, and moveAtwork steps
+  totalSteps: 32, // Updated to include health conditions, train-more, job-type, moveAtwork, and sports-exercises steps
 
   // User data
   isAuthenticated: false,
@@ -34,6 +34,7 @@ const initialState = {
   unitSystem: "metric", // Global unit system: "metric" or "imperial"
   workoutLocation: "",
   selectedEquipments: [],
+  sportExercises: [],
   reachingGoals: "",
   // realisticTarget: 0,
   accomplish: [],
@@ -212,7 +213,7 @@ useEffect(() => {
     const onboardingPaths = [
       "/select-gender", "/borndate", "/training-days", "/train-more", "/feedback",
       "/new-height", "/new-weight", "/weight-goal", "/new-desired-weight",
-      "/workout-location", "/equipment", "/goal-reach", "/realistic-target",
+      "/workout-location", "/equipment", "/sports-exercises", "/goal-reach", "/realistic-target",
       "/achieve-goal", "/preferred-diet", "/favorite-food", "/cooking",
       "/accomplish", "/health-conditions", "/choose-country", "/budget",
       "/job-type", "/moveAtwork", "/shift", "/allergies", "/dislikes",
@@ -312,37 +313,39 @@ useEffect(() => {
           return state.workoutLocation !== "";
         case 12: // Equipment
           return state.selectedEquipments.length > 0;
-        case 13: // Goal reach
+        case 13: // Sports Exercises
+          return state.sportExercises.length > 0;
+        case 14: // Goal reach
           return state.reachingGoals !== "";
-        case 14: // Realistic target
+        case 15: // Realistic target
           return state.realisticTarget > 0;
-        case 15: // Achieve goal
+        case 16: // Achieve goal
           return state.reachingGoals !== "";
-        case 16: // Preferred diet
+        case 17: // Preferred diet
           return state.dietType !== "";
-        case 17: // Favorite food
+        case 18: // Favorite food
           return state.cheatMealFoodItems.length > 0;
-        case 18: // Cooking
+        case 19: // Cooking
           return state.cookingLevel !== "";
-        case 19: // Accomplish
+        case 20: // Accomplish
           return state.accomplish.length > 0;
-        case 20: // Health conditions (optional)
+        case 21: // Health conditions (optional)
           return true; // Health conditions are optional
-        case 21: // Choose country
+        case 22: // Choose country
           return state.selectedCountry !== null && state.selectedCity !== "";
-        case 22: // Budget
+        case 23: // Budget
           return state.budget !== "";
-        case 23: // Occupation
+        case 24: // Occupation
           return state.occupation !== "";
-        case 24: // Work Activity Level
+        case 25: // Work Activity Level
           return state.workActivityLevel !== "";
-        case 25: // Shift
+        case 26: // Shift
           return state.workShift !== "";
-        case 26: // Allergies
+        case 27: // Allergies
           return true; // Allergies are optional
-        case 27: // Dislikes
+        case 28: // Dislikes
           return true; // Dislikes are optional
-        case 28: // Injuries
+        case 29: // Injuries
           return true; // Injuries are optional
         default:
           return true;
@@ -375,6 +378,7 @@ useEffect(() => {
         injuries: state.injuries,
         cheat_meal_food_items: state.cheatMealFoodItems,
         accessible_equipments: state.selectedEquipments,
+        sportExercises: state.sportExercises,
         cooking_level: state.cookingLevel,
         healthyConditions: state.healthyConditions,
         trainMoreThanOnce: state.trainMoreThanOnce,

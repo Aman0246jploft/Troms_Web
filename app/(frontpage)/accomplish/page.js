@@ -35,7 +35,7 @@ function AccomplishPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 18) {
-      updateStep(19);
+      updateStep(20);
     }
   }, [
     state.isAuthChecked,
@@ -75,8 +75,8 @@ function AccomplishPage() {
       return;
     }
 
-    if (isStepValid(19)) {
-      updateStep(20);
+    if (isStepValid(20)) {
+      updateStep(21);
       router.push("/health-conditions");
     } 
   };

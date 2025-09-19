@@ -24,9 +24,9 @@ function MoveAtwork() {
 
   useEffect(() => {
     if (state.currentStep !== 24) {
-      updateStep(24);
+      updateStep(25);
     }
-  }, [state.currentStep, updateStep]); 
+  }, []); 
 
 
 

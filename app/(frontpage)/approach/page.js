@@ -22,7 +22,7 @@ function ApproachPage() {
   const [isCompleted, setIsCompleted] = useState(false);
   useEffect(() => {
     if (state.currentStep !== 30) {
-      updateStep(30);
+      updateStep(31);
     }
   }, [state.currentStep, updateStep]); 
 
@@ -262,7 +262,7 @@ function ApproachPage() {
     }
 
     if (isCompleted) {
-      updateStep(25);
+      updateStep(32);
       router.push("/bmr");
     } else {
       handleSubmitUserInfo();

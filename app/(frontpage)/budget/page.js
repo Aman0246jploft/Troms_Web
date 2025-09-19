@@ -22,9 +22,9 @@ function BudgetPage() {
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
     if (state.currentStep !== 22) {
-      updateStep(22);
+      updateStep(23);
     }
-  }, [state.currentStep, updateStep]);    
+  }, []);    
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -72,7 +72,7 @@ function BudgetPage() {
       return;
     }
 
-    updateStep(23);
+    updateStep(24);
     router.push("/job-type");
   };
 

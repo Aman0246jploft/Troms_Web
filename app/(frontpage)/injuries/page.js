@@ -18,9 +18,9 @@ function InjuriesPage() {
 
   useEffect(() => {
     if (state.currentStep !== 28) {
-      updateStep(28);
+      updateStep(29);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check

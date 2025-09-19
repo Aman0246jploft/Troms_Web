@@ -147,7 +147,7 @@ function EquipmentContent() {
 
     if (isStepValid(12)) {
       updateStep(13);
-      router.push("/goal-reach");
+      router.push("/sports-exercises");
     }
   };
 

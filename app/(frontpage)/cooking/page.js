@@ -26,7 +26,7 @@ function CookingPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 17) {
-      updateStep(18);
+      updateStep(19);
     }
   }, [state.isAuthChecked, state.isAuthenticated, state.cheatMealFoodItems, state.currentStep, router, updateStep]);
 
@@ -52,8 +52,8 @@ function CookingPage() {
       return;
     }
 
-    if (isStepValid(18)) {
-      updateStep(19);
+    if (isStepValid(19)) {
+      updateStep(20);
       router.push('/accomplish');
     }
   };

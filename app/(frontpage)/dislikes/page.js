@@ -23,9 +23,9 @@ function DislikesPage() {
 
   useEffect(() => {
     if (state.currentStep !== 27) {
-      updateStep(27);
+      updateStep(28);
     }
-  }, [state.currentStep, updateStep]); 
+  }, [state.currentStep]); 
 
   useEffect(() => {
     // Load previously selected dislikes from context/localStorage

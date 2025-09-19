@@ -19,9 +19,9 @@ function JobTypePage() {
 
   useEffect(() => {
     if (state.currentStep !== 23) {
-      updateStep(23);
+      updateStep(24);
     }
-  }, [state.currentStep, updateStep]); 
+  }, []); 
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -145,8 +145,8 @@ function JobTypePage() {
     // Update with final occupation value
     updateField("occupation", finalOccupation);
 
-    if (isStepValid(23)) {
-      updateStep(24);
+    if (isStepValid(24)) {
+      updateStep(25);
       router.push("/moveAtwork");
     }
   };

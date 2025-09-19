@@ -48,9 +48,9 @@ function HealthConditionsPage() {
 
   useEffect(() => {
     if (state.currentStep !== 20) {
-      updateStep(20);
+      updateStep(21);
     }
-  }, [state.currentStep, updateStep]);
+  }, []);
 
 
   const fetchHealthConditions = async () => {
@@ -89,7 +89,7 @@ function HealthConditionsPage() {
     updateField("healthyConditions", finalConditions);
     
     // Update step and navigate to next step  
-    updateStep(21);
+    updateStep(22);
     router.push("/choose-country");
   };
 

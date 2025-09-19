@@ -38,7 +38,7 @@ function FavoriteFoodPage() {
 
     // Only update step if it's not already set
     if (state.currentStep !== 16) {
-      updateStep(17);
+      updateStep(18);
     }
   }, [
     state.isAuthChecked,
@@ -194,7 +194,7 @@ function FavoriteFoodPage() {
     }
 
 
-      updateStep(18);
+      updateStep(19);
       router.push("/cooking");
    
   };

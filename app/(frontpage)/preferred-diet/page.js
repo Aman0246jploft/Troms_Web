@@ -21,7 +21,7 @@ function PreferredDietPage() {
 
   // Set current step
   useEffect(() => {
-    updateStep(16);
+    updateStep(17);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,7 +48,7 @@ function PreferredDietPage() {
     }
 
     if (isStepValid(16)) {
-      updateStep(17);
+      updateStep(18);
       router.push("/favorite-food");
     }
   };
