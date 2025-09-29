@@ -92,8 +92,9 @@ function RegisterPage() {
           showAlert("success", "Welcome back! You've already completed setup.");
 
           setTimeout(() => {
+            window.alert("You have already completed onboarding. Redirecting to dashboard.");
             // Redirect to BMR page or dashboard since onboarding is complete
-            router.push("/bmr");
+            router.push("/");
           }, 1500);
         }
       } else {
