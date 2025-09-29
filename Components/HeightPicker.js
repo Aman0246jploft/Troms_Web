@@ -46,13 +46,34 @@ export default function HeightPicker({
     return out;
   }, [minCm, maxCm]);
 
-  const labelValues = useMemo(() => {
-    const out = [];
-    for (let v = minCm; v <= maxCm; v += 5) out.push(v);
-    return out;
-  }, [minCm, maxCm]);
+  // const labelValues = useMemo(() => {
+  //   const out = [];
+  //   for (let v = minCm; v <= maxCm; v += 5) out.push(v);
+  //   return out;
+  // }, [minCm, maxCm]);
 
   // Position list so that current value aligns with center line
+  
+  
+  
+const labelValues = useMemo(() => {
+  const out = [];
+  for (let v = minCm; v <= maxCm; v += 5) {
+    if (unit === "metric") {
+      // numeric in cm, display in cm
+      out.push({ value: v, display: v }); // 165, 170, etc.
+    } else {
+      // numeric in cm, display in ft/in
+      const { feet, inches } = cmToFeetInches(v);
+      out.push({ value: v, display: `${feet}′${inches}″` });
+    }
+  }
+  return out;
+}, [minCm, maxCm, unit]);
+
+
+  
+  
   const translateY = useMemo(() => {
     // centerY - positionOfValue
     return wrapperHeight / 2 - (valueCm - minCm) * PX_PER_CM;
@@ -155,7 +176,7 @@ export default function HeightPicker({
             className="labelsScroller"
             style={{ transform: `translateY(${translateY - wrapperHeight / 2}px)` }}
           >
-            {labelValues.map((v) => {
+            {/* {labelValues.map((v) => {
               // Highlight the label closest to the current value
               const isCurrent = Math.abs(v - valueCm) < 2.5;
               return (
@@ -167,7 +188,22 @@ export default function HeightPicker({
                   {v}
                 </div>
               );
-            })}
+            })} */}
+{labelValues.map(({ value, display }) => {
+  const isCurrent = Math.abs(value - valueCm) < 2.5;
+  return (
+    <div
+      key={`lbl-${value}`}
+      className={`label ${isCurrent ? "labelCurrent" : ""}`}
+      style={{ height: PX_PER_CM * 5 }}
+    >
+      {display} {/* Shows 165 for metric, 5′5″ for imperial */}
+    </div>
+  );
+})}
+
+
+
           </div>
         </div>
 

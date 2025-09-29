@@ -102,9 +102,9 @@ function NewHeightPage() {
               <div className="auth-cards horizontal-height">
                 <p className="text-uppercase mb-2">Your height</p>
                 <h3 className="mb-2">What is your current height?</h3>
-                <p className="mb-2">You can update it later if needed</p>
+                <p className="mb-3">You can update it later if needed</p>
                 
-                <div className="weight-switch mb-3">
+                {/* <div className="weight-switch mb-3">
                   <span>Imperial</span>
                   <label className="switch">
                     <input 
@@ -116,7 +116,7 @@ function NewHeightPage() {
                     <span className="slider"></span>
                   </label>
                   <span>Metric</span>
-                </div>
+                </div> */}
                 
                 <HeightPicker 
                   defaultValueCm={height}

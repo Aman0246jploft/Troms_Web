@@ -5,18 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import Alert from "../../../Components/Alert";
+import { flushSync } from "react-dom";
 
 function NewWeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [weight, setWeight] = useState(() => {
-    // Initialize weight based on saved unit or default
-    if (state.weight) {
-      return state.weight;
-    }
-    return state.unitSystem === 'metric' ? 75 : 165;
-  });
-  
+  const { state, updateField, updateStep, isStepValid,toggleUnitSystem } = useOnboarding();
+
+  const [loading, setLoading] = useState(false);
+const [weight, setWeight] = useState(() => {
+  if (state.weight) return state.weight;
+  return state.unitSystem === 'metric' ? 75 : 165;
+});
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
@@ -54,6 +53,47 @@ function NewWeightPage() {
     setAlert({ show: true, type, message });
   };
 
+//  const handleUnitToggle = () => {
+//     toggleUnitSystem();
+//   };
+
+
+const handleUnitToggle = () => {
+  setLoading(true); // show full-screen loader
+
+  const newWeight = isMetric
+    ? Math.round(weight * 2.20462) // kg → lbs
+    : Math.round(weight / 2.20462); // lbs → kg
+
+  // Apply updates in one synchronous batch
+  setTimeout(() => {
+    setWeight(newWeight);            // update local state immediately for WeightPicker
+    updateField('weight', newWeight); // update global onboarding state
+    toggleUnitSystem(newWeight);      // update unit system in context
+    setLoading(false);                // hide loader
+  }, 50);
+};
+
+
+// const handleUnitToggle = () => {
+//   let newWeight;
+
+//   if (isMetric) {
+//     // Convert from kg → lbs
+//     newWeight = Math.round(weight * 2.20462); 
+//   } else {
+//     // Convert from lbs → kg
+//     newWeight = Math.round(weight / 2.20462);
+//   }
+
+//   setWeight(newWeight);
+//   updateField("weight", newWeight);
+
+//   toggleUnitSystem();
+// };
+
+
+
   const hideAlert = () => {
     setAlert({ show: false, type: '', message: '' });
   };
@@ -74,17 +114,17 @@ function NewWeightPage() {
     }
 
     // Validate reasonable weight range (matching component ranges)
-    if (isMetric) {
-      if (weight < 30 || weight > 300) {
-        showAlert('warning', 'Please select a weight between 30-300 kg.');
-        return;
-      }
-    } else {
-      if (weight < 60 || weight > 600) {
-        showAlert('warning', 'Please select a weight between 60-600 lbs.');
-        return;
-      }
-    }
+    // if (isMetric) {
+    //   if (weight < 30 || weight > 300) {
+    //     showAlert('warning', 'Please select a weight between 30-300 kg.');
+    //     return;
+    //   }
+    // } else {
+    //   if (weight < 60 || weight > 600) {
+    //     showAlert('warning', 'Please select a weight between 60-600 lbs.');
+    //     return;
+    //   }
+    // }
 
     if (isStepValid(7)) {
       updateStep(8);
@@ -103,7 +143,12 @@ function NewWeightPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-
+{loading && (
+  <div className="fullscreen-loader">
+    <div className="spinner"></div>
+    <p>Updating...</p>
+  </div>
+)}
               <Alert
                 type={alert.type}
                 message={alert.message}
@@ -116,6 +161,19 @@ function NewWeightPage() {
                 <h3 className="mb-2">What is your current weight?</h3>
                 <p className="mb-2">You can update it later if needed</p>
                 
+    <div className="weight-switch mb-3">
+                  <span>Imperial</span>
+                  <label className="switch">
+                    <input 
+                      type="checkbox" 
+                      className="d-none" 
+                      checked={isMetric}
+                      onChange={handleUnitToggle}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                  <span>Metric</span>
+                </div>
 
                 <div className="trm-wgt-picker">
                   <WeightPicker 

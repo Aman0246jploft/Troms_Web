@@ -9,8 +9,8 @@ const WeightPicker = ({
   maxWeight = null 
 }) => {
   // Use provided min/max or default based on unit
-  const defaultMinWeight = isMetric ? 30 : 60;
-  const defaultMaxWeight = isMetric ? 300 : 600;
+  const defaultMinWeight = isMetric ? 35 : 77;
+  const defaultMaxWeight = isMetric ? 317 : 699;
   
   const min = minWeight || defaultMinWeight;
   const max = maxWeight || defaultMaxWeight;
