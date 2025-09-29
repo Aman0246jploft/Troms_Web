@@ -33,7 +33,7 @@ function NewHeightPage() {
   }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, router]);
 
   useEffect(() => {
-    updateStep(7);
+    updateStep(8);
     
     // Initialize height in global state if not already set
     if (!state.height && height > 0) {
@@ -74,9 +74,9 @@ function NewHeightPage() {
       return;
     }
 
-    if (isStepValid(7)) {
-      updateStep(8);
-      router.push('/new-weight');
+    if (isStepValid(8)) {
+      updateStep(9);
+      router.push('/weight-goal');
     }
   };
 

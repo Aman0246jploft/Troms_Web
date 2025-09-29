@@ -16,7 +16,7 @@ function WeightGoalPage() {
     if (state.isAuthChecked && state.isAuthenticated === false) {
       router.push("/register");
     } else if (!state.weight || state.weight <= 0) {
-      router.push("/new-weight");
+      router.push("/new-height");
     }
   }, [state.isAuthenticated, state.weight, router]);
 

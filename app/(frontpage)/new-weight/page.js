@@ -41,7 +41,7 @@ function NewWeightPage() {
   }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, state.height, router]);
 
   useEffect(() => {
-    updateStep(8);
+    updateStep(7);
     
     // Initialize weight if not set
     if (!state.weight) {
@@ -86,9 +86,9 @@ function NewWeightPage() {
       }
     }
 
-    if (isStepValid(8)) {
-      updateStep(9);
-      router.push('/weight-goal');
+    if (isStepValid(7)) {
+      updateStep(8);
+      router.push('/new-height'); // next page
     }
   };
 

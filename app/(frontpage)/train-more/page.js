@@ -8,7 +8,7 @@ import { useOnboarding } from "../../../context/OnboardingContext";
 function TrainMorePage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [isMoreThanOnce, setIsMoreThanOnce] = useState(false);
+  const [isMoreThanOnce, setIsMoreThanOnce] = useState(true);
   const [selectedDays, setSelectedDays] = useState([]);
   const [currentMonthDays, setCurrentMonthDays] = useState([]);
 
@@ -59,60 +59,93 @@ function TrainMorePage() {
     }
   }, [state.trainMoreThanOnce, state.trainingDays]);
 
-  const generateCurrentMonthDays = () => {
-    // Get the selected training days from the previous page
-    const selectedTrainingDays = state.trainingDays || [];
+  // const generateCurrentMonthDays = () => {
+  //   // Get the selected training days from the previous page
+  //   const selectedTrainingDays = state.trainingDays || [];
     
-    if (selectedTrainingDays.length === 0) {
-      setCurrentMonthDays([]);
-      return;
-    }
+  //   if (selectedTrainingDays.length === 0) {
+  //     setCurrentMonthDays([]);
+  //     return;
+  //   }
     
-    const now = new Date();
+  //   const now = new Date();
     
-    // Find the start of the current week (Sunday)
-    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - currentDay);
+  //   // Find the start of the current week (Sunday)
+  //   const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  //   const startOfWeek = new Date(now);
+  //   startOfWeek.setDate(now.getDate() - currentDay);
     
-    // Day mapping for correct indexing
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const dayMapping = {
-      "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, 
-      "THU": 4, "FRI": 5, "SAT": 6
-    };
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  //   // Day mapping for correct indexing
+  //   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  //   const dayMapping = {
+  //     "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, 
+  //     "THU": 4, "FRI": 5, "SAT": 6
+  //   };
+  //   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+  //                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    const days = [];
+  //   const days = [];
     
-    // Only generate days that were selected in training-days page
-    selectedTrainingDays.forEach(selectedDay => {
-      const dayIndex = dayMapping[selectedDay];
-      if (dayIndex !== undefined) {
-        const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + dayIndex);
+  //   // Only generate days that were selected in training-days page
+  //   selectedTrainingDays.forEach(selectedDay => {
+  //     const dayIndex = dayMapping[selectedDay];
+  //     if (dayIndex !== undefined) {
+  //       const date = new Date(startOfWeek);
+  //       date.setDate(startOfWeek.getDate() + dayIndex);
         
-        const dayName = dayNames[dayIndex];
-        const dayValue = selectedDay; // Use the selected day value (MON, TUE, etc.)
+  //       const dayName = dayNames[dayIndex];
+  //       const dayValue = selectedDay; // Use the selected day value (MON, TUE, etc.)
         
-        days.push({
-          date: date.getDate(),
-          month: monthNames[date.getMonth()],
-          dayName: dayName,
-          dayValue: dayValue,
-          id: dayValue.toLowerCase()
-        });
-      }
-    });
+  //       days.push({
+  //         date: date.getDate(),
+  //         month: monthNames[date.getMonth()],
+  //         dayName: dayName,
+  //         dayValue: dayValue,
+  //         id: dayValue.toLowerCase()
+  //       });
+  //     }
+  //   });
     
-    // Sort days by their original week order
-    days.sort((a, b) => dayMapping[a.dayValue] - dayMapping[b.dayValue]);
+  //   // Sort days by their original week order
+  //   days.sort((a, b) => dayMapping[a.dayValue] - dayMapping[b.dayValue]);
     
-    console.log("Generated days based on selected training days:", days); // Debug log
-    console.log("Selected training days:", selectedTrainingDays); // Debug log
-    setCurrentMonthDays(days);
+  //   console.log("Generated days based on selected training days:", days); // Debug log
+  //   console.log("Selected training days:", selectedTrainingDays); // Debug log
+  //   setCurrentMonthDays(days);
+  // };
+
+
+const generateCurrentMonthDays = () => {
+  const selectedTrainingDays = state.trainingDays || [];
+
+  if (selectedTrainingDays.length === 0) {
+    setCurrentMonthDays([]);
+    return;
+  }
+
+  const dayMapping = {
+    "SUN": 0, "MON": 1, "TUE": 2, "WED": 3,
+    "THU": 4, "FRI": 5, "SAT": 6
   };
+
+  const days = [];
+
+  selectedTrainingDays
+    .sort((a, b) => dayMapping[a] - dayMapping[b])
+    .forEach((selectedDay, index) => {
+      days.push({
+        dayValue: selectedDay,
+        month: `Day`,            // 👈 Always "Day"
+        date: `${index + 1}`,    // 👈 Numbered Day 1, Day 2...
+        dayName: selectedDay,    // Keep same as before
+        id: selectedDay.toLowerCase()
+      });
+    });
+
+  console.log("Generated numbered days:", days);
+  setCurrentMonthDays(days);
+};
+
 
   const handleTrainMoreChange = (value) => {
     setIsMoreThanOnce(value);

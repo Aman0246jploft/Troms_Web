@@ -212,7 +212,7 @@ useEffect(() => {
     // Only validate on onboarding pages
     const onboardingPaths = [
       "/select-gender", "/borndate", "/training-days", "/train-more", "/feedback",
-      "/new-height", "/new-weight", "/weight-goal", "/new-desired-weight",
+       "/new-weight", "/new-height","/weight-goal", "/new-desired-weight",
       "/workout-location", "/equipment", "/sports-exercises", "/goal-reach", "/realistic-target",
       "/achieve-goal", "/preferred-diet", "/favorite-food", "/cooking",
       "/accomplish", "/health-conditions", "/choose-country", "/budget",
