@@ -58,6 +58,7 @@ function RegisterPage() {
 
       console.log("Calling social login API with:", payload);
       const response = await apiService.socialLogin(payload);
+      console.log("responseresponse",response)
 
       if (response.success) {
         // Check if user information is required (new user) or user is already registered
