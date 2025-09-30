@@ -261,7 +261,7 @@ const fetchEquipments = (location, data = allEquipments) => {
                   What equipment do you <br /> have access to?
                 </h3>
                 <form onSubmit={handleContinue}>
-                  {/* <div className="gender-cards mb-4">
+                  <div className="gender-cards mb-4">
                     <div>
                       <input
                         type="radio"
@@ -276,10 +276,10 @@ const fetchEquipments = (location, data = allEquipments) => {
                         htmlFor="home"
                         className={workoutLocation === "home" ? "selected" : ""}
                       >
-                        <div className="gender-img">
+                        {/* <div className="gender-img">
                           <img src="/images/location-01.png" alt="Home" />
-                        </div>
-                        Home
+                        </div> */}
+                        🏠 Home
                       </label>
                     </div>
                     <div>
@@ -296,10 +296,10 @@ const fetchEquipments = (location, data = allEquipments) => {
                         htmlFor="gym"
                         className={workoutLocation === "gym" ? "selected" : ""}
                       >
-                        <div className="gender-img">
+                        {/* <div className="gender-img">
                           <img src="/images/location-02.png" alt="Gym" />
-                        </div>
-                        Gym
+                        </div> */}
+                        💪 Gym
                       </label>
                     </div>
                     <div>
@@ -318,13 +318,16 @@ const fetchEquipments = (location, data = allEquipments) => {
                           workoutLocation === "outdoors" ? "selected" : ""
                         }
                       >
-                        <div className="gender-img">
+                        {/* <div className="gender-img">
                           <img src="/images/location-03.png" alt="Outdoors" />
-                        </div>
-                        Outdoors
+                        </div> */}
+                        🌳 Outdoors
                       </label>
                     </div>
-                  </div> */}
+                  </div>
+
+
+
 
                   {workoutLocation && (
                     <>
