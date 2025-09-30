@@ -11,7 +11,7 @@ function trainingDayPage() {
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedDays, setSelectedDays] = useState(state.trainingDays || []);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-  const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const WEEKDAYS = ["SUN","MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   // Redirects based on previous steps
   useEffect(() => {

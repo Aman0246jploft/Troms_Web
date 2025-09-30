@@ -107,29 +107,6 @@ function AccomplishPage() {
                 </h3>
                 <div className="px-135">
                   <form onSubmit={handleContinue}>
-                    {/* {accomplishmentOptions.map((option) => (
-                      <div key={option.id} className="custom-check">
-                        <input
-                          type="radio"
-                          id={option.id}
-                          name="Accomplish"
-                          className="d-none"
-                          value={option.id}
-                          checked={selectedGoal === option.id}
-                          onChange={() => handleGoalChange(option.id)}
-                        />
-                        <label
-                          htmlFor={option.id}
-                          className={
-                            selectedGoal === option.id ? "selected" : ""
-                          }
-                        >
-                          {option.label}
-                        </label>
-                      </div>
-                    ))} */}
-
-
                     {accomplishmentOptions.map((option) => (
                       <div key={option.id} className="custom-check">
                         <input
