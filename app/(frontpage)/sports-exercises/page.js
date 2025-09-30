@@ -107,13 +107,13 @@ function SportsExercisesContent() {
       finalExercises.push(customExercise.trim());
     }
 
-    if (finalExercises.length === 0) {
-      showAlert(
-        "warning",
-        "Please select at least one sport or exercise you're interested in."
-      );
-      return;
-    }
+    // if (finalExercises.length === 0) {
+    //   // showAlert(
+    //   //   "warning",
+    //   //   "Please select at least one sport or exercise you're interested in."
+    //   // );
+    //   return;
+    // }
 
     // Update the onboarding context
     updateField("sportExercises", finalExercises);

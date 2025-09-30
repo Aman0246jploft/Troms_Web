@@ -2101,9 +2101,11 @@ input[type="number"]::-webkit-outer-spin-button {
 .days-list {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 30px 0;
+  gap: 8px;
+  margin: 10px 0;
   justify-content: center;
+   flex-wrap: wrap;
+
 }
 .days-list-item label {
   -webkit-backdrop-filter: blur(7.5px);
