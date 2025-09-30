@@ -257,11 +257,11 @@ const fetchEquipments = (location, data = allEquipments) => {
 
               <div className="auth-cards equipment location">
                 <p className="text-uppercase mb-2">Equipments</p>
-                <h3 className="mb-2">
+                <h3 className="mb-3">
                   What equipment do you <br /> have access to?
                 </h3>
                 <form onSubmit={handleContinue}>
-                  <div className="gender-cards mb-4">
+                  {/* <div className="gender-cards mb-4">
                     <div>
                       <input
                         type="radio"
@@ -324,7 +324,7 @@ const fetchEquipments = (location, data = allEquipments) => {
                         Outdoors
                       </label>
                     </div>
-                  </div>
+                  </div> */}
 
                   {workoutLocation && (
                     <>
