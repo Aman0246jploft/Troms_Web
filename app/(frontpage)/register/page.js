@@ -121,7 +121,7 @@ function RegisterPage() {
     if (window.google && window.google.accounts) {
       const client = window.google.accounts.oauth2.initTokenClient({
         client_id:
-          "266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com",
+          process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         scope: "email profile openid",
         callback: (response) => {
           if (response && response.access_token) {
@@ -170,7 +170,7 @@ function RegisterPage() {
 
     window.google.accounts.id.initialize({
       client_id:
-        "266072853207-6bc8pqp2tvho4gq213j58tom43rfk7er.apps.googleusercontent.com",
+        process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       callback: handleGoogleCallback,
       auto_select: false,
       cancel_on_tap_outside: true,
