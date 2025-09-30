@@ -199,39 +199,59 @@ function RegisterPage() {
     }
   };
 
-  const handleAppleLogin = () => {
-    // For Apple Sign-In, you would typically use Apple's JavaScript SDK
-    // For now, using a mock implementation
-    if (typeof window !== "undefined" && window.AppleID) {
-      window.AppleID.auth
-        .signIn()
-        .then((response) => {
-          const userData = {
-            email: response.authorization.id_token
-              ? JSON.parse(atob(response.authorization.id_token.split(".")[1]))
-                  .email
-              : "user@icloud.com",
-            username: response.user?.name?.firstName || "Apple User",
-            platform: "ios",
-            userInfoId: response.user?.sub || "apple_" + Date.now(),
-          };
-          handleSocialLoginAPI(userData, 'apple');
-        })
-        .catch((error) => {
-          console.error("Apple Sign-In error:", error);
-          showAlert("error", "Apple Sign-In failed. Please try again.");
+
+
+
+
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const script = document.createElement("script");
+    script.src =
+      "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+    script.async = true;
+
+    script.onload = () => {
+      console.log("Apple Sign-In script loaded");
+      // Initialize AppleID once SDK is ready
+      if (window.AppleID) {
+        window.AppleID.auth.init({
+          clientId: "com.example.web", // replace with your real Apple clientId
+          scope: "name email",
+          redirectURI: window.location.href, // must match Apple Dev settings
+          usePopup: true,
         });
+      }
+    };
+
+    document.head.appendChild(script);
+  }, []);
+
+
+
+  const handleAppleLogin = async () => {
+    if (typeof window !== "undefined" && window.AppleID) {
+      try {
+        const response = await window.AppleID.auth.signIn();
+        const userData = {
+          email: response.authorization.id_token
+            ? JSON.parse(atob(response.authorization.id_token.split(".")[1])).email
+            : "user@icloud.com",
+          username: response.user?.name?.firstName || "Apple User",
+          platform: "ios",
+          userInfoId: response.user?.sub || "apple_" + Date.now(),
+        };
+        handleSocialLoginAPI(userData, "apple");
+      } catch (error) {
+        console.error("Apple Sign-In error:", error);
+        showAlert("error", "Apple Sign-In failed. Please try again.");
+      }
     } else {
-      // Fallback: simulate Apple login for development
-      const mockAppleUser = {
-        email: "user@icloud.com",
-        username: "appleuser",
-        platform: "ios",
-        userInfoId: "apple_" + Date.now(),
-      };
-      handleSocialLoginAPI(mockAppleUser, 'apple');
+      showAlert("error", "Apple Sign-In SDK not loaded. Please try again.");
     }
   };
+
 
   return (
     <>
