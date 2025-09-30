@@ -198,7 +198,32 @@ function StripePaymentForm({
   console.log("🧩 Elements ready:", !!elements);
 
   return (
+
     <div className="stripe-payment-form mt-3">
+      {/* Plan Summary Box */}
+      <div className="plan-summary-box mb-4" style={{
+
+        borderRadius: '16px',
+        padding: '24px',
+        color: 'white',
+        border: '1px solid #06402b', // full border
+
+      }}>
+        <h5 className="mb-2" style={{ fontWeight: '700', fontSize: '20px', color: 'black' }}>
+          {selectedPlan?.productName || `${selectedPlan?.interval === "month" ? "Monthly" : "Yearly"} Plan`}
+        </h5>
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <p className="mb-0" style={{ fontSize: '14px', opacity: '0.9' }}>3 days free trial, then</p>
+            <h3 className="mb-0" style={{ fontWeight: '700' }}>
+              {formatAmount(selectedPlan?.amount || selectedPlan?.price)}
+              <span style={{ fontSize: '18px', fontWeight: '400' }}>/{selectedPlan?.interval}</span>
+            </h3>
+          </div>
+          <div style={{ fontSize: '40px' }}>✨</div>
+        </div>
+      </div>
+
       <form onSubmit={handlePayment}>
         <div className="mb-3">
           <label className="form-label fw-semibold">Card Information</label>
@@ -239,7 +264,6 @@ function StripePaymentForm({
           style={{
             fontSize: "16px",
             fontWeight: "600",
-
             border: "none",
             borderRadius: "8px",
           }}
@@ -254,19 +278,88 @@ function StripePaymentForm({
               Processing Payment...
             </>
           ) : (
-            `Subscribe for ${formatAmount(
-              selectedPlan?.amount || selectedPlan?.price
-            )}/${selectedPlan?.interval}`
+            `Subscribe Now`
           )}
         </button>
       </form>
 
       <div className="payment-info mt-4 text-center">
         <p className="small text-muted mt-2 mb-0">
-          Your payment information is encrypted and secure
+          🔒 Your payment information is encrypted and secure
         </p>
       </div>
     </div>
+
+
+    // <div className="stripe-payment-form mt-3">
+    //   <form onSubmit={handlePayment}>
+    //     <div className="mb-3">
+    //       <label className="form-label fw-semibold">Card Information</label>
+    //       <div className="dv_card_info">
+    //         <CardElement
+    //           options={{
+    //             style: {
+    //               base: {
+    //                 fontSize: "16px",
+    //                 color: "#424770",
+    //                 "::placeholder": {
+    //                   color: "#aab7c4",
+    //                 },
+    //               },
+    //               invalid: {
+    //                 color: "#9e2146",
+    //               },
+    //             },
+    //           }}
+    //           onReady={(element) => {
+    //             console.log("✅ CardElement is ready:", element);
+    //           }}
+    //           onChange={(event) => {
+    //             console.log("💳 Card input changed:", {
+    //               complete: event.complete,
+    //               error: event.error?.message,
+    //               brand: event.brand,
+    //             });
+    //           }}
+    //         />
+    //       </div>
+    //     </div>
+
+    //     <button
+    //       type="submit"
+    //       disabled={loading || !stripe || !elements}
+    //       className="custom-btn continue-btn"
+    //       style={{
+    //         fontSize: "16px",
+    //         fontWeight: "600",
+
+    //         border: "none",
+    //         borderRadius: "8px",
+    //       }}
+    //     >
+    //       {loading ? (
+    //         <>
+    //           <span
+    //             className="spinner-border spinner-border-sm me-2"
+    //             role="status"
+    //             aria-hidden="true"
+    //           ></span>
+    //           Processing Payment...
+    //         </>
+    //       ) : (
+    //         `Subscribe for ${formatAmount(
+    //           selectedPlan?.amount || selectedPlan?.price
+    //         )}/${selectedPlan?.interval}`
+    //       )}
+    //     </button>
+    //   </form>
+
+    //   <div className="payment-info mt-4 text-center">
+    //     <p className="small text-muted mt-2 mb-0">
+    //       Your payment information is encrypted and secure
+    //     </p>
+    //   </div>
+    // </div>
   );
 }
 
@@ -302,15 +395,15 @@ function SubscriptionPage() {
   }, [state.currentStep, updateStep]);
 
   useEffect(() => {
-   
-      updateStep(32);
-    
-  }, []); 
+
+    updateStep(32);
+
+  }, []);
 
   useEffect(() => {
 
-  fetchSubscriptionPlans();
-}, []); // <- empty array, runs once
+    fetchSubscriptionPlans();
+  }, []); // <- empty array, runs once
 
 
   const fetchSubscriptionPlans = async () => {
@@ -370,7 +463,7 @@ function SubscriptionPage() {
       setError("Please accept the terms and conditions");
       return;
     }
-    
+
     // Check if userInfoId exists before proceeding to payment
     if (!userInfoId) {
       console.error("❌ User information missing - userInfoId not found");
@@ -506,13 +599,13 @@ function SubscriptionPage() {
               </div>
               <div className="auth-cards">
                 <p className="text-uppercase mb-2">Subscriptions</p>
-                <h3 className="mb-2">
+            {!showPayment&&    <h3 className="mb-2">
                   Unlock Your Personalized <br /> Fitness Plan
-                </h3>
-                <p>
+                </h3>}
+             {!showPayment&&   <p>
                   Get full access to your custom Meal and Workout <br /> Plans
                   by subscribing to Trom.
-                </p>
+                </p>}
 
                 {error && (
                   <div className="alert alert-danger" role="alert">
@@ -527,8 +620,8 @@ function SubscriptionPage() {
                 )}
 
                 <div className="choose-plan px-135">
-                  <h6 className="text-center">Choose a plan to begin:</h6>
-                  <div className="choose-plan-list">
+           {!showPayment&&       <h6 className="text-center">Choose a plan to begin:</h6>}
+                  {!showPayment && <div className="choose-plan-list">
                     {plans.length > 0 ? (
                       plans.map((plan) => (
                         <div
@@ -550,10 +643,9 @@ function SubscriptionPage() {
                             <div>
                               <strong>
                                 {plan.productName ||
-                                  `${
-                                    plan.interval === "month"
-                                      ? "Monthly"
-                                      : "Yearly"
+                                  `${plan.interval === "month"
+                                    ? "Monthly"
+                                    : "Yearly"
                                   } Plan`}
                               </strong>
                               <p>
@@ -571,38 +663,38 @@ function SubscriptionPage() {
                         </p>
                       </div>
                     )}
-                  </div>
-
-                  <div className="form-check choose-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="checkDefault"
-                      checked={termsAccepted}
-                      onChange={(e) => {
-                        console.log(
-                          "📜 Terms acceptance changed:",
-                          e.target.checked
-                        );
-                        setTermsAccepted(e.target.checked);
-                      }}
-                    />
-                    <label className="form-check-label" htmlFor="checkDefault">
-                      I agree to the app's{" "}
-                      <Link href="/privacy-policy">Privacy Policy</Link> and{" "}
-                      <Link href="/terms-and-conditions">
-                        Terms & Conditions
-                      </Link>
-                    </label>
-                  </div>
+                  </div>}
+                  {!showPayment &&
+                    <div className="form-check choose-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="checkDefault"
+                        checked={termsAccepted}
+                        onChange={(e) => {
+                          console.log(
+                            "📜 Terms acceptance changed:",
+                            e.target.checked
+                          );
+                          setTermsAccepted(e.target.checked);
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="checkDefault">
+                        I agree to the app's{" "}
+                        <Link href="/privacy-policy">Privacy Policy</Link> and{" "}
+                        <Link href="/terms-and-conditions">
+                          Terms & Conditions
+                        </Link>
+                      </label>
+                    </div>}
 
                   <div className="text-center mt-3">
                     {!showPayment ? (
                       <button
                         className="custom-btn continue-btn"
                         onClick={handlePurchase}
-                        disabled={!selectedPlan || !termsAccepted }
+                        disabled={!selectedPlan || !termsAccepted}
                         title={!userInfoId ? "User information missing - please complete registration" : ""}
                       >
                         Pay
@@ -617,7 +709,7 @@ function SubscriptionPage() {
                         }}
                       >
                         <div>
-                          {/* <button
+                          <button
                             className="btn btn-outline-secondary mb-4"
                             onClick={handleBackToPlans}
                             style={{
@@ -626,7 +718,7 @@ function SubscriptionPage() {
                             }}
                           >
                             ← Back to Plans
-                          </button> */}
+                          </button>
                           <StripePaymentForm
                             selectedPlan={selectedPlan}
                             onSuccess={handlePaymentSuccess}
@@ -646,9 +738,9 @@ function SubscriptionPage() {
             {/* <p>
               <span>25/</span> 25
             </p> */}
-  <p>
-            <span>{state.currentStep}/</span> {state.totalSteps}
-          </p>
+            <p>
+              <span>{state.currentStep}/</span> {state.totalSteps}
+            </p>
 
           </div>
         </div>
