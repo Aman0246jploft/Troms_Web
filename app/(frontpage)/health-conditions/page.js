@@ -163,12 +163,12 @@ function HealthConditionsPage() {
                         }
                       }}
                     />
-                    <label htmlFor="other-condition">
+                    {/* <label htmlFor="other-condition">
                       Other
                       <button type="button">
                         <img alt="info" src="/images/info-icon.svg" />
                       </button>
-                    </label>
+                    </label> */}
                   </div>
                 </div>
                 <div className="custom-frm-bx mt-4 px-135">
