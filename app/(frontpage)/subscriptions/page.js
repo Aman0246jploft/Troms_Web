@@ -201,32 +201,22 @@ function StripePaymentForm({
 
     <div className="stripe-payment-form mt-3">
       {/* Plan Summary Box */}
-      <div className="plan-summary-box mb-4" style={{
-
-        borderRadius: '16px',
-        padding: '24px',
-        color: 'white',
-        border: '1px solid #06402b', // full border
-
-      }}>
-        <h5 className="mb-2" style={{ fontWeight: '700', fontSize: '20px', color: 'black' }}>
+      <div className="plan-summary-box mb-4" >
+        {/* <h5 className="mb-2" style={{ fontWeight: '700', fontSize: '20px', color: 'black' }}>
           {selectedPlan?.productName || `${selectedPlan?.interval === "month" ? "Monthly" : "Yearly"} Plan`}
-        </h5>
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
+        </h5> */}
+        <div>
             <p className="mb-0" style={{ fontSize: '14px', opacity: '0.9' }}>3 days free trial, then</p>
             <h3 className="mb-0" style={{ fontWeight: '700' }}>
               {formatAmount(selectedPlan?.amount || selectedPlan?.price)}
               <span style={{ fontSize: '18px', fontWeight: '400' }}>/{selectedPlan?.interval}</span>
             </h3>
           </div>
-          <div style={{ fontSize: '40px' }}>✨</div>
-        </div>
       </div>
 
       <form onSubmit={handlePayment}>
-        <div className="mb-3">
-          <label className="form-label fw-semibold">Card Information</label>
+        <div className="mb-3 text-start">
+          <label className="form-label fw-semibold ">Card Information</label>
           <div className="dv_card_info">
             <CardElement
               options={{
@@ -281,6 +271,13 @@ function StripePaymentForm({
             `Subscribe Now`
           )}
         </button>
+        <button
+                            className="prev-link  continue-btn mt-3"
+                            // onClick={handleBackToPlans}
+                            
+                          >
+                            <span>Back to Plans</span>
+                          </button>
       </form>
 
       <div className="payment-info mt-4 text-center">
@@ -701,6 +698,7 @@ function SubscriptionPage() {
                       </button>
                     ) : (
                       <Elements
+
                         stripe={stripePromise}
                         options={{
                           appearance: {
@@ -709,16 +707,8 @@ function SubscriptionPage() {
                         }}
                       >
                         <div>
-                          <button
-                            className="btn btn-outline-secondary mb-4"
-                            onClick={handleBackToPlans}
-                            style={{
-                              borderRadius: "8px",
-                              padding: "8px 16px",
-                            }}
-                          >
-                            ← Back to Plans
-                          </button>
+                          <h3>Monthly Plan</h3>
+                          
                           <StripePaymentForm
                             selectedPlan={selectedPlan}
                             onSuccess={handlePaymentSuccess}
@@ -726,7 +716,9 @@ function SubscriptionPage() {
                             userInfoId={userInfoId || state.user?.userInfoId}
                             userInfo={state.user}
                           />
+                          
                         </div>
+                        
                       </Elements>
                     )}
                   </div>
