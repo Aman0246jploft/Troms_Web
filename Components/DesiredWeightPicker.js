@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 
 const DesiredWeightPicker = ({
   weight: externalWeight = 75,
@@ -13,8 +13,8 @@ const DesiredWeightPicker = ({
   disabled = false,
 }) => {
   // Use provided min/max or default based on unit
-  const defaultMinWeight = isMetric ? 30 : 60;
-  const defaultMaxWeight = isMetric ? 300 : 600;
+const defaultMinWeight = isMetric ? 35 : 77;  // Changed from 30 to 35 kg
+const defaultMaxWeight = isMetric ? 317 : 699; 
 
   const min = minWeight !== null && minWeight !== undefined ? minWeight : defaultMinWeight;
   const max = maxWeight !== null && maxWeight !== undefined ? maxWeight : defaultMaxWeight;
@@ -75,7 +75,7 @@ const DesiredWeightPicker = ({
   const handlePointerDown = (e) => {
     if (disabled) return; // Don't handle events when disabled
     e.preventDefault();
-   draggingRef.current = true
+    draggingRef.current = true
     moveHandle(e);
 
     // Add global listeners for smooth dragging
@@ -98,7 +98,7 @@ const DesiredWeightPicker = ({
   };
 
   const handlePointerUp = () => {
- draggingRef.current = true
+    draggingRef.current = true
 
     // Remove global listeners
     document.removeEventListener("pointermove", handlePointerMove);
@@ -166,7 +166,7 @@ const DesiredWeightPicker = ({
 
   const getWeightChangeText = () => {
     const stats = calculateWeightStats();
-    
+
     if (!stats.show) return null;
 
     const unit = isMetric ? 'Kg' : 'lbs';
@@ -205,25 +205,95 @@ const DesiredWeightPicker = ({
   };
 
   // Generate tick marks
-  const renderTicks = () => {
-    const ticks = [];
-    // 4 ticks per number: 0.25 divisions; long ticks every 1 unit
-    for (let i = 0; i <= totalTicks; i++) {
-      const tickWeight = min + i * 0.25;
-      const isLongTick = i % 4 === 0;
-      const isMediumTick = i % 2 === 0 && !isLongTick;
-      ticks.push(
-        <div
-          key={i}
-          className={`tick ${
-            isLongTick ? "long" : isMediumTick ? "medium" : "short"
-          }`}
-          style={{ left: `${(i / totalTicks) * 100}%` }}
-        />
-      );
-    }
-    return ticks;
-  };
+  // const renderTicks = () => {
+  //   const ticks = [];
+  //   // 4 ticks per number: 0.25 divisions; long ticks every 1 unit
+  //   for (let i = 0; i <= totalTicks; i++) {
+  //     const tickWeight = min + i * 0.25;
+  //     const isLongTick = i % 4 === 0;
+  //     const isMediumTick = i % 2 === 0 && !isLongTick;
+  //     ticks.push(
+  //       <div
+  //         key={i}
+  //         className={`tick ${isLongTick ? "long" : isMediumTick ? "medium" : "short"
+  //           }`}
+  //         style={{ left: `${(i / totalTicks) * 100}%` }}
+  //       />
+  //     );
+  //   }
+  //   return ticks;
+  // };
+
+
+
+
+    // Generate tick marks aligned with numbers using relative positioning - memoized for performance  
+    const renderTicks = useMemo(() => {
+      const ticks = [];
+      
+      // Generate major ticks aligned with the numbers (every whole number)
+      for (let offset = -2; offset <= 2; offset++) {
+        const tickWeight = Math.round(weight) + offset;
+        
+        // Skip if outside bounds
+        if (tickWeight < min || tickWeight > max) continue;
+        
+        // Use same relative positioning as numbers for perfect alignment
+        const position = 50 + (offset * 20);
+        
+        // Calculate opacity based on distance from current weight
+        const distanceFromCurrent = Math.abs(offset);
+        let opacity = 1;
+        if (distanceFromCurrent > 0) {
+          opacity = Math.max(0.4, 1 - distanceFromCurrent * 0.3);
+        }
+        
+        // Add major tick for whole numbers
+        ticks.push(
+          <div
+            key={`major-${tickWeight}`}
+            className="tick long"
+            style={{ 
+              left: `${position}%`,
+              opacity: opacity
+            }}
+          />
+        );
+        
+        // Add minor ticks between whole numbers (0.25, 0.5, 0.75)
+        if (offset < 2) { // Don't add after the last major tick
+          for (let subOffset = 0.25; subOffset < 1; subOffset += 0.25) {
+            const minorTickWeight = tickWeight + subOffset;
+            if (minorTickWeight > max) continue;
+            
+            // Calculate minor tick position relative to major tick
+            const minorPosition = position + (subOffset * 20); // 20% span between major ticks
+            const isHalfTick = subOffset === 0.5; // 0.5 increment
+            
+            // Calculate minor tick opacity
+            const minorDistance = Math.abs(offset + subOffset);
+            let minorOpacity = 0.6;
+            if (minorDistance > 0.5) {
+              minorOpacity = Math.max(0.2, 0.6 - (minorDistance - 0.5) * 0.4);
+            }
+            
+            ticks.push(
+              <div
+                key={`minor-${tickWeight}-${subOffset}`}
+                className={`tick ${isHalfTick ? 'medium' : 'short'}`}
+                style={{ 
+                  left: `${minorPosition}%`,
+                  opacity: minorOpacity
+                }}
+              />
+            );
+          }
+        }
+      }
+      
+      return ticks;
+    }, [weight, min, max]); // Re-calculate when weight or bounds change
+  
 
   // Render the numbers visible above the slider (two left, current, two right)
   const renderNumbers = () => {
@@ -267,14 +337,14 @@ const DesiredWeightPicker = ({
           aria-valuenow={weight}
           aria-label="Weight picker"
           aria-disabled={disabled}
-          style={{ 
+          style={{
             touchAction: "none",
             opacity: disabled ? 0.5 : 1,
             cursor: disabled ? 'not-allowed' : 'grab'
           }}
         >
           {/* Tick marks */}
-          <div className="ticks-wrapper">{renderTicks()}</div>
+          <div className="ticks-wrapper">{renderTicks}</div>
 
           {/* Middle highlight line */}
           <div className="middle-line" />

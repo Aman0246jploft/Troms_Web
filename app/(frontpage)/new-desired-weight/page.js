@@ -10,17 +10,17 @@ import Alert from "../../../Components/Alert";
 function DesiredWeightPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  
+
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
-  
+
   // Convert current weight to display unit if needed
   const getCurrentWeightInDisplayUnit = () => {
     if (!state.weight) return 0;
-    
+
     const currentWeight = state.weight;
     const currentWeightUnit = state.weightUnit;
-    
+
     let displayWeight = currentWeight;
     if (currentWeightUnit === 'kg' && !isMetric) {
       // Convert kg to lbs for display
@@ -29,49 +29,45 @@ function DesiredWeightPage() {
       // Convert lbs to kg for display
       displayWeight = Math.round(currentWeight * 0.453592 * 10) / 10;
     }
-    
+
     return displayWeight;
   };
 
   // Calculate dynamic min/max values based on weight goal
   const calculateMinMaxWeight = () => {
     const currentDisplayWeight = getCurrentWeightInDisplayUnit();
-    
+
     if (!currentDisplayWeight || !state.weightGoal) {
       // Default fallback values
       return {
-        min: isMetric ? 30 : 60,
-        max: isMetric ? 300 : 600
+        min: isMetric ? 35 : 77,  // Changed from 30 to 35 kg, 77 lbs (35kg converted)
+        max: isMetric ? 317 : 699
       };
     }
-    
+
     let minWeight, maxWeight;
-    
+
     switch (state.weightGoal) {
       case 'LOSE_WEIGHT':
         // For weight loss: min = current weight - 10, max = current weight - 1
-        minWeight = Math.max(
-          isMetric ? 30 : 60, // Absolute minimum
-          Math.round((currentDisplayWeight - 10) * 4) / 4 // Current weight minus 10, rounded to 0.25
-        );
-        maxWeight = Math.round((currentDisplayWeight - 1) * 4) / 4; // Current weight minus 1, rounded to 0.25
+        minWeight = isMetric ? 35 : 77; // Use absolute minimum
+        maxWeight = Math.round((currentDisplayWeight - 1) * 4) / 4;
         break;
-        
+        break;
+
       case 'GAIN_WEIGHT':
         // For weight gain: min = current weight + 1, max = current weight + 10
-        minWeight = Math.round((currentDisplayWeight + 1) * 4) / 4; // Current weight plus 1, rounded to 0.25
-        maxWeight = Math.min(
-          isMetric ? 300 : 600, // Absolute maximum
-          Math.round((currentDisplayWeight + 10) * 4) / 4 // Current weight plus 10, rounded to 0.25
-        );
+        minWeight = Math.round((currentDisplayWeight + 1) * 4) / 4;
+        maxWeight = isMetric ? 317 : 699; // Use absolute maximum
         break;
-        
+
+
       case 'MAINTAIN':
         // For maintenance: no weight change allowed - set min and max to current weight
         minWeight = Math.round(currentDisplayWeight * 4) / 4;
         maxWeight = Math.round(currentDisplayWeight * 4) / 4;
         break;
-        
+
       default:
         // Default fallback values
         return {
@@ -79,16 +75,16 @@ function DesiredWeightPage() {
           max: isMetric ? 300 : 600
         };
     }
-    
+
     return { min: minWeight, max: maxWeight };
   };
 
   // Calculate smart default value based on weight goal
   const calculateDefaultWeight = () => {
     if (!state.weight || !state.weightGoal) return 0;
-    
+
     const displayWeight = getCurrentWeightInDisplayUnit();
-    
+
     // Calculate default based on goal
     switch (state.weightGoal) {
       case 'MAINTAIN':
@@ -117,7 +113,7 @@ function DesiredWeightPage() {
     // Otherwise, calculate smart default
     return calculateDefaultWeight();
   });
-  
+
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
 
   // Initialize component and set defaults
@@ -127,7 +123,7 @@ function DesiredWeightPage() {
       router.push('/register');
       return;
     }
-    
+
     // If user has MAINTAIN goal, they should skip this step and go directly to workout location
     if (state.weightGoal === 'MAINTAIN') {
       router.push('/workout-location');
@@ -194,30 +190,30 @@ function DesiredWeightPage() {
     const currentDisplayWeight = getCurrentWeightInDisplayUnit();
     const goal = state.weightGoal;
 
-    if (goal === 'LOSE_WEIGHT') {
-      if (desiredWeight >= currentDisplayWeight) {
-        return 'Desired weight must be less than current weight to lose weight.';
-      }
-      if (desiredWeight < currentDisplayWeight - 10) {
-        return `Maximum weight loss allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
-      }
-    }
-    
-    if (goal === 'GAIN_WEIGHT') {
-      if (desiredWeight <= currentDisplayWeight) {
-        return 'Desired weight must be greater than current weight to gain weight.';
-      }
-      if (desiredWeight > currentDisplayWeight + 10) {
-        return `Maximum weight gain allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
-      }
-    }
-    
-    if (goal === 'MAINTAIN') {
-      // For maintenance, desired weight must be exactly the current weight
-      if (Math.abs(desiredWeight - currentDisplayWeight) > 0.1) {
-        return 'For maintenance, your desired weight should remain the same as your current weight.';
-      }
-    }
+    // if (goal === 'LOSE_WEIGHT') {
+    //   if (desiredWeight >= currentDisplayWeight) {
+    //     return 'Desired weight must be less than current weight to lose weight.';
+    //   }
+    //   if (desiredWeight < currentDisplayWeight - 10) {
+    //     return `Maximum weight loss allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
+    //   }
+    // }
+
+    // if (goal === 'GAIN_WEIGHT') {
+    //   if (desiredWeight <= currentDisplayWeight) {
+    //     return 'Desired weight must be greater than current weight to gain weight.';
+    //   }
+    //   if (desiredWeight > currentDisplayWeight + 10) {
+    //     return `Maximum weight gain allowed is 10 ${isMetric ? 'kg' : 'lbs'}.`;
+    //   }
+    // }
+
+    // if (goal === 'MAINTAIN') {
+    //   // For maintenance, desired weight must be exactly the current weight
+    //   if (Math.abs(desiredWeight - currentDisplayWeight) > 0.1) {
+    //     return 'For maintenance, your desired weight should remain the same as your current weight.';
+    //   }
+    // }
 
     return null; // No validation error
   };
@@ -236,12 +232,13 @@ function DesiredWeightPage() {
       return;
     }
 
-    if (isStepValid(10)) {
+    // if (isStepValid(10)) {
       updateStep(11);
       router.push('/workout-location');
-    } else {
-      showAlert('warning', 'Please ensure your desired weight is appropriate for your selected goal.');
-    }
+    // } 
+    // else {
+    //   showAlert('warning', 'Please ensure your desired weight is appropriate for your selected goal.');
+    // }
   };
 
   return (
@@ -267,16 +264,16 @@ function DesiredWeightPage() {
                 <p className="text-uppercase mb-2">Desired Weight</p>
                 <h3 className="mb-2">What is your desired weight?</h3>
                 <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
-                
+
                 {state.weightGoal === 'MAINTAIN' && (
                   <div className="alert alert-info mt-3 mb-4">
                     <strong>Maintain Goal:</strong> Your desired weight will remain the same as your current weight ({getCurrentWeightInDisplayUnit()} {isMetric ? 'kg' : 'lbs'}).
                   </div>
                 )}
-                
+
                 <form onSubmit={handleContinue}>
-                  
-                  <DesiredWeightPicker 
+
+                  <DesiredWeightPicker
                     weight={desiredWeight}
                     isMetric={isMetric}
                     onChange={handleWeightChange}
@@ -287,10 +284,10 @@ function DesiredWeightPage() {
                     currentWeightUnit={state.weightUnit}
                     disabled={state.weightGoal === 'MAINTAIN'}
                   />
-                  
+
                   <div className="text-center mt-2">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="custom-btn continue-btn"
                       disabled={!desiredWeight || desiredWeight <= 0}
                     >
