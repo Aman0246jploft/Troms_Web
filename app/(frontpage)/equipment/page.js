@@ -261,7 +261,7 @@ const fetchEquipments = (location, data = allEquipments) => {
                   What equipment do you <br /> have access to?
                 </h3>
                 <form onSubmit={handleContinue}>
-                  <div className="gender-cards mb-4">
+                  <div className="location-eq-list mb-4">
                     <div>
                       <input
                         type="radio"
