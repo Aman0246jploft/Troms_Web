@@ -599,10 +599,10 @@ function SubscriptionPage() {
               </div>
               <div className="auth-cards">
                 <p className="text-uppercase mb-2">Subscriptions</p>
-            {!showPayment&&    <h3 className="mb-2">
+                {!showPayment && <h3 className="mb-2">
                   Unlock Your Personalized <br /> Fitness Plan
                 </h3>}
-             {!showPayment&&   <p>
+                {!showPayment && <p>
                   Get full access to your custom Meal and Workout <br /> Plans
                   by subscribing to Trom.
                 </p>}
@@ -620,7 +620,7 @@ function SubscriptionPage() {
                 )}
 
                 <div className="choose-plan px-135">
-           {!showPayment&&       <h6 className="text-center">Choose a plan to begin:</h6>}
+                  {!showPayment && <h6 className="text-center">Choose a plan to begin:</h6>}
                   {!showPayment && <div className="choose-plan-list">
                     {plans.length > 0 ? (
                       plans.map((plan) => (
