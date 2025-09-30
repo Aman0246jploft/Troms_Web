@@ -116,7 +116,7 @@ function WeightGoalPage() {
                           selectedGoal === "LOSE_WEIGHT" ? "selected" : ""
                         }
                       >
-                        Lose Weight
+                        Lose weight
                       </label>
                     </div>
                     <div className="custom-check">
@@ -135,7 +135,7 @@ function WeightGoalPage() {
                           selectedGoal === "MAINTAIN" ? "selected" : ""
                         }
                       >
-                        Maintain
+                        Maintain my current weight
                       </label>
                     </div>
                     <div className="custom-check">
@@ -154,7 +154,7 @@ function WeightGoalPage() {
                           selectedGoal === "GAIN_WEIGHT" ? "selected" : ""
                         }
                       >
-                        Gain Weight
+                        Gain weight
                       </label>
                     </div>
 
