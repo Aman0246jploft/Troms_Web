@@ -11,6 +11,7 @@ function EquipmentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
+  const [allEquipments, setAllEquipments] = useState(null);
   const [workoutLocation, setWorkoutLocation] = useState(
     state.workoutLocation || ""
   );
@@ -27,29 +28,46 @@ function EquipmentContent() {
     }
   }, [state.isAuthenticated, router]);
 
-  useEffect(() => {
-    updateStep(12);
+useEffect(() => {
+  updateStep(12);
 
-    // Check for location parameter in URL
-    const locationParam = searchParams.get("location");
-    if (locationParam) {
-      const validLocations = ["home", "gym", "outdoors"];
-      const normalizedLocation = locationParam.toLowerCase();
-
-      if (validLocations.includes(normalizedLocation)) {
-        setWorkoutLocation(normalizedLocation);
-        updateField("workoutLocation", normalizedLocation);
-        fetchEquipments(normalizedLocation);
-        return;
-      }
+  const locationParam = searchParams.get("location");
+  if (locationParam) {
+    const normalized = locationParam.toLowerCase();
+    const validLocations = ["home", "gym", "outdoors"];
+    if (validLocations.includes(normalized)) {
+      setWorkoutLocation(normalized);
+      updateField("workoutLocation", normalized);
     }
+  }
 
-    // If no valid URL parameter, use existing location from state
-    if (workoutLocation) {
-      fetchEquipments(workoutLocation);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run only once
+  fetchAllEquipments(); // fetch once
+}, []);
+
+
+  // useEffect(() => {
+  //   updateStep(12);
+
+  //   // Check for location parameter in URL
+  //   const locationParam = searchParams.get("location");
+  //   if (locationParam) {
+  //     const validLocations = ["home", "gym", "outdoors"];
+  //     const normalizedLocation = locationParam.toLowerCase();
+
+  //     if (validLocations.includes(normalizedLocation)) {
+  //       setWorkoutLocation(normalizedLocation);
+  //       updateField("workoutLocation", normalizedLocation);
+  //       fetchEquipments(normalizedLocation);
+  //       return;
+  //     }
+  //   }
+
+  //   // If no valid URL parameter, use existing location from state
+  //   if (workoutLocation) {
+  //     fetchEquipments(workoutLocation);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []); // run only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -59,56 +77,123 @@ function EquipmentContent() {
     setAlert({ show: false, type: "", message: "" });
   };
 
-  const fetchEquipments = async (location) => {
-    setLoading(true);
-    hideAlert();
+  const filterEquipments = (location, data = allEquipments) => {
+  if (!data) return;
 
-    try {
-      const response = await apiService.getEquipments();
+  let list = [];
+  switch (location.toLowerCase()) {
+    case "gym":
+      list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
+      break;
+    case "home":
+      list = data.home_equipments || [];
+      break;
+    case "outdoors":
+      list = data.outdoor_equipments || [];
+      break;
+  }
 
-      if (response.success && response.result) {
-        let equipmentList = [];
+  setEquipments(list);
+};
 
-        // Extract equipment based on selected location
-        switch (location.toLowerCase()) {
-          case "gym":
-            // For gym, get equipment from gym_equipments array
-            if (
-              response.result.gym_equipments &&
-              response.result.gym_equipments.length > 0
-            ) {
-              equipmentList = response.result.gym_equipments[0].list_data || [];
-            }
-            break;
-          case "home":
-            // For home, use home_equipments array
-            equipmentList = response.result.home_equipments || [];
-            break;
-          case "outdoors":
-            // For outdoors, use outdoor_equipments array
-            equipmentList = response.result.outdoor_equipments || [];
-            break;
-          default:
-            equipmentList = [];
-        }
 
-        setEquipments(equipmentList);
-      } else {
-        showAlert(
-          "error",
-          "Failed to load equipment options. Please try again."
-        );
+  const fetchAllEquipments = async () => {
+  setLoading(true);
+  hideAlert();
+
+  try {
+    const response = await apiService.getEquipments();
+
+    if (response.success && response.result) {
+      setAllEquipments(response.result);
+      if (workoutLocation) {
+        filterEquipments(workoutLocation, response.result);
       }
-    } catch (error) {
-      console.error("Equipment fetch error:", error);
-      showAlert(
-        "error",
-        "Failed to load equipment options. Please check your internet connection."
-      );
-    } finally {
-      setLoading(false);
+    } else {
+      showAlert("error", "Failed to load equipment options. Please try again.");
     }
-  };
+  } catch (error) {
+    console.error("Equipment fetch error:", error);
+    showAlert(
+      "error",
+      "Failed to load equipment options. Please check your internet connection."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // const fetchEquipments = async (location) => {
+  //   setLoading(true);
+  //   hideAlert();
+
+  //   try {
+  //     const response = await apiService.getEquipments();
+
+  //     if (response.success && response.result) {
+  //       let equipmentList = [];
+
+  //       // Extract equipment based on selected location
+  //       switch (location.toLowerCase()) {
+  //         case "gym":
+  //           // For gym, get equipment from gym_equipments array
+  //           if (
+  //             response.result.gym_equipments &&
+  //             response.result.gym_equipments.length > 0
+  //           ) {
+  //             equipmentList = response.result.gym_equipments[0].list_data || [];
+  //           }
+  //           break;
+  //         case "home":
+  //           // For home, use home_equipments array
+  //           equipmentList = response.result.home_equipments || [];
+  //           break;
+  //         case "outdoors":
+  //           // For outdoors, use outdoor_equipments array
+  //           equipmentList = response.result.outdoor_equipments || [];
+  //           break;
+  //         default:
+  //           equipmentList = [];
+  //       }
+
+  //       setEquipments(equipmentList);
+  //     } else {
+  //       showAlert(
+  //         "error",
+  //         "Failed to load equipment options. Please try again."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Equipment fetch error:", error);
+  //     showAlert(
+  //       "error",
+  //       "Failed to load equipment options. Please check your internet connection."
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+const fetchEquipments = (location, data = allEquipments) => {
+  if (!data) return;
+
+  let list = [];
+  switch (location.toLowerCase()) {
+    case "gym":
+      list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
+      break;
+    case "home":
+      list = data.home_equipments || [];
+      break;
+    case "outdoors":
+      list = data.outdoor_equipments || [];
+      break;
+  }
+
+  setEquipments(list);
+};
+
 
   const handleLocationChange = (location) => {
     setWorkoutLocation(location);

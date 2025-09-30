@@ -16,10 +16,10 @@ function RealisticTargetPage() {
   
   // Convert weight loss value for display
   const getDisplayValue = (lbsValue) => {
-    if (isMetric) {
-      // Convert lbs to kg (1 lb = 0.453592 kg)
-      return (lbsValue * 0.453592).toFixed(1);
-    }
+    // if (isMetric) {
+    //   // Convert lbs to kg (1 lb = 0.453592 kg)
+    //   return (lbsValue * 0.453592).toFixed(1);
+    // }
     return lbsValue.toFixed(1);
   };
 

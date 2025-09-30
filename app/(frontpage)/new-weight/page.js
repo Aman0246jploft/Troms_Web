@@ -34,8 +34,6 @@ const [weight, setWeight] = useState(() => {
       router.push('/train-more');
     } else if (state.feedback === null) {
       router.push('/feedback');
-    } else if (!state.height) {
-      router.push('/new-height');
     }
   }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, state.height, router]);
 
@@ -126,10 +124,9 @@ const handleUnitToggle = () => {
     //   }
     // }
 
-    if (isStepValid(7)) {
       updateStep(8);
       router.push('/new-height'); // next page
-    }
+
   };
 
   return (
@@ -146,7 +143,7 @@ const handleUnitToggle = () => {
 {loading && (
   <div className="fullscreen-loader">
     <div className="spinner"></div>
-    <p>Updating...</p>
+    {/* <p>Updating...</p> */}
   </div>
 )}
               <Alert

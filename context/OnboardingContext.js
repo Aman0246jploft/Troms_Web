@@ -168,25 +168,50 @@ function validateDesiredWeight(state) {
   return false;
 }
 
+
+
+function getInitialState() {
+  if (typeof window !== "undefined") {
+    const savedState = localStorage.getItem("onboardingState");
+    if (savedState) {
+      try {
+        return { ...initialState, ...JSON.parse(savedState) };
+      } catch (err) {
+        console.error("Error parsing saved state:", err);
+      }
+    }
+  }
+  return initialState;
+}
+
+
+
+
+
 export function OnboardingProvider({ children }) {
 const isFirstLoad = useRef(true);
   const router = useRouter();
 
-  const [state, dispatch] = useReducer(onboardingReducer, initialState);
+  // const [state, dispatch] = useReducer(onboardingReducer, initialState);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedState = localStorage.getItem("onboardingState");
-      if (savedState) {
-        try {
-          const parsedState = JSON.parse(savedState);
-          dispatch({ type: "UPDATE_MULTIPLE_FIELDS", payload: parsedState });
-        } catch (error) {
-          console.error("Error loading saved state:", error);
-        }
-      }
-    }
-  }, []);
+
+  const [state, dispatch] = useReducer(onboardingReducer, undefined, getInitialState);
+
+
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const savedState = localStorage.getItem("onboardingState");
+  //     if (savedState) {
+  //       try {
+  //         const parsedState = JSON.parse(savedState);
+  //         dispatch({ type: "UPDATE_MULTIPLE_FIELDS", payload: parsedState });
+  //       } catch (error) {
+  //         console.error("Error loading saved state:", error);
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   // Save state to localStorage when it changes
 useEffect(() => {

@@ -227,15 +227,16 @@ function InjuriesPage() {
                               {selectedInjuries.includes(
                                 injury.injury_name
                               ) && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleRemoveInjury(injury.injury_name);
-                                  }}
-                                >
-                                  <img src="/images/close.svg" alt="Remove" />
-                                </button>
+                              <></>
+                                // <button
+                                //   type="button"
+                                //   onClick={(e) => {
+                                //     e.preventDefault();
+                                //     handleRemoveInjury(injury.injury_name);
+                                //   }}
+                                // >
+                                //   <img src="/images/close.svg" alt="Remove" />
+                                // </button>
                               )}
                             </label>
                           </div>

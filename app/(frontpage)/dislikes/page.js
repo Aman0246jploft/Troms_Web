@@ -241,15 +241,16 @@ const handleDislikeToggle = (dislikeName) => {
                               {selectedDislikes.includes(
                                 food.ingredients_name
                               ) && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      handleRemoveDislike(food.ingredients_name);
-                                    }}
-                                  >
-                                    <img src="/images/close.svg" alt="Remove" />
-                                  </button>
+                                <></>
+                                  // <button
+                                  //   type="button"
+                                  //   onClick={(e) => {
+                                  //     e.preventDefault();
+                                  //     handleRemoveDislike(food.ingredients_name);
+                                  //   }}
+                                  // >
+                                  //   <img src="/images/close.svg" alt="Remove" />
+                                  // </button>
                                 )}
                             </label>
                           </div>

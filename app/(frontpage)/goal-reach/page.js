@@ -18,22 +18,22 @@ function GoalRangePage() {
 
   // Convert weight loss values based on unit system
   const getDisplayValue = (lbsValue) => {
-    if (isMetric) {
-      // Convert lbs to kg (1 lb = 0.453592 kg)
-      return (lbsValue * 0.453592).toFixed(1);
-    }
+    // if (isMetric) {
+    //   // Convert lbs to kg (1 lb = 0.453592 kg)
+    //   return (lbsValue * 0.453592).toFixed(1);
+    // }
     return lbsValue.toFixed(1);
   };
 
   const getMinValue = () => (isMetric ? "0.2" : "0.5");
-  const getMaxValue = () => (isMetric ? "0.9" : "2.0");
+  const getMaxValue = () => (isMetric ? "1.5" : "3.3");
 
   // Update CSS variable for fill
   useEffect(() => {
     let percent;
     if (isMetric) {
       const metricValue = value * 0.453592;
-      percent = ((metricValue - 0.2) / (0.9 - 0.2)) * 100;
+      percent = ((metricValue - 0.2) / (1.5 - 0.2)) * 100;
     } else {
       percent = ((value - 0.5) / (2 - 0.5)) * 100;
     }
@@ -113,15 +113,15 @@ function GoalRangePage() {
                 <input
                   type="range"
                   min={isMetric ? "0.2" : "0.5"}
-                  max={isMetric ? "0.9" : "2.0"}
+                  max={isMetric ? "1.5" : "3.3"}
                   step={isMetric ? "0.05" : "0.1"}
-                  value={isMetric ? (value * 0.453592).toFixed(2) : value}
+                 value={value.toFixed(2)}
                   onChange={(e) => {
                     const inputValue = parseFloat(e.target.value);
                     // Convert back to lbs for storage if metric
-                    const storageValue = isMetric
-                      ? inputValue / 0.453592
-                      : inputValue;
+                    const storageValue = inputValue
+                      // ? inputValue / 0.453592
+                      // : inputValue;
                     handleValueChange(storageValue);
                   }}
                   className="slider"
