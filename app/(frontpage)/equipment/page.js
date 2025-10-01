@@ -255,7 +255,11 @@ function EquipmentContent() {
               />
 
               <div className="auth-cards equipment location">
-                <button type="button" className="new_back_btn">
+                    <button
+      type="button"
+      onClick={() => router.back()}
+      className="new_back_btn"
+    >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Equipments</p>

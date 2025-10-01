@@ -14,7 +14,11 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards goal">
-                <button type="button" className="new_back_btn">
+                    <button
+      type="button"
+      onClick={() => router.back()}
+      className="new_back_btn"
+    >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Goal</p>

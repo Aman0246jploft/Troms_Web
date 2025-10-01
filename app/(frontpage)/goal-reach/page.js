@@ -103,7 +103,11 @@ function GoalRangePage() {
             />
 
             <div className="auth-cards gender">
-              <button type="button" className="new_back_btn">
+                  <button
+      type="button"
+      onClick={() => router.back()}
+      className="new_back_btn"
+    >
                 Previous
               </button>
               <p className="text-uppercase mb-3">Reach your goal</p>

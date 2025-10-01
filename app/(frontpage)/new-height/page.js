@@ -110,7 +110,11 @@ function NewHeightPage() {
               />
 
               <div className="auth-cards horizontal-height">
-                <button type="button" className="new_back_btn">
+                    <button
+      type="button"
+      onClick={() => router.back()}
+      className="new_back_btn"
+    >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Your height</p>

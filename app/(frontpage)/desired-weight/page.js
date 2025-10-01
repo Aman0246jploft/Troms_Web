@@ -258,7 +258,11 @@ function DesiredWeightPage() {
               />
 
               <div className="auth-cards weight">
-                <button type="button" className="new_back_btn">
+                    <button
+      type="button"
+      onClick={() => router.back()}
+      className="new_back_btn"
+    >
                   Previous
                 </button>
                 <p className="text-uppercase mb-5">Desired Weight</p>
