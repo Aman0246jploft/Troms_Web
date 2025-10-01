@@ -9,29 +9,38 @@ import Alert from "../../../Components/Alert";
 function MoveAtwork() {
   const router = useRouter();
   const { state, updateField, updateStep } = useOnboarding();
-  const [selectedActivityLevel, setSelectedActivityLevel] = useState(state.workActivityLevel || "");
+  const [selectedActivityLevel, setSelectedActivityLevel] = useState(
+    state.workActivityLevel || ""
+  );
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-
-
 
   const activityOptions = [
     { id: "MOSTLY_SIT", label: "Mostly sit", icon: "/images/low-icon.svg" },
-    { id: "SIT_AND_STAND", label: "Sit & stand", icon: "/images/medium-icon.svg" },
-    { id: "ON_FEET_MOST_OF_THE_TIME", label: "On feet most of the time", icon: "/images/high-icon.svg" },
-    { id: "HEAVY_LIFTING", label: "Heavy lifting", icon: "/images/high-icon.svg" },
+    {
+      id: "SIT_AND_STAND",
+      label: "Sit & stand",
+      icon: "/images/medium-icon.svg",
+    },
+    {
+      id: "ON_FEET_MOST_OF_THE_TIME",
+      label: "On feet most of the time",
+      icon: "/images/high-icon.svg",
+    },
+    {
+      id: "HEAVY_LIFTING",
+      label: "Heavy lifting",
+      icon: "/images/high-icon.svg",
+    },
   ];
-
 
   useEffect(() => {
     if (state.currentStep !== 24) {
       updateStep(25);
     }
-  }, []); 
-
-
+  }, []);
 
   useEffect(() => {
-    if (!state.isAuthChecked) return; 
+    if (!state.isAuthChecked) return;
 
     if (state.isAuthenticated === false) {
       router.push("/register");
@@ -106,12 +115,18 @@ function MoveAtwork() {
               />
 
               <div className="auth-cards">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Movement</p>
                 <h3 className="mb-4">How much do you move at work?</h3>
                 <form onSubmit={handleContinue}>
                   <div className="px-135">
                     {activityOptions.map((option) => (
-                      <div key={option.id} className="custom-check budget-check">
+                      <div
+                        key={option.id}
+                        className="custom-check budget-check"
+                      >
                         <input
                           id={option.id}
                           className="d-none"
@@ -121,19 +136,26 @@ function MoveAtwork() {
                           checked={selectedActivityLevel === option.id}
                           onChange={() => handleActivityLevelChange(option.id)}
                         />
-                        <label 
-                          htmlFor={option.id} 
-                          className={selectedActivityLevel === option.id ? "selected" : ""}
+                        <label
+                          htmlFor={option.id}
+                          className={
+                            selectedActivityLevel === option.id
+                              ? "selected"
+                              : ""
+                          }
                         >
-                          <img src={option.icon} alt={`${option.label} Activity`} />{" "}
+                          <img
+                            src={option.icon}
+                            alt={`${option.label} Activity`}
+                          />{" "}
                           {option.label}
                         </label>
                       </div>
                     ))}
                   </div>
                   <div className="text-center mt-3">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="custom-btn continue-btn"
                       disabled={!selectedActivityLevel}
                     >

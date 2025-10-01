@@ -20,11 +20,13 @@ function HealthConditionsPage() {
       // Separate predefined conditions from custom "Other" conditions
       const predefinedConditions = [];
       let customCondition = "";
-      
-      state.healthyConditions.forEach(condition => {
+
+      state.healthyConditions.forEach((condition) => {
         // Check if this condition matches any of the fetched health conditions
         // If not, it's likely a custom "Other" condition
-        const isPredefined = healthConditions.some(hc => hc.title === condition);
+        const isPredefined = healthConditions.some(
+          (hc) => hc.title === condition
+        );
         if (isPredefined || healthConditions.length === 0) {
           // Include if it's predefined or if we haven't loaded conditions yet
           predefinedConditions.push(condition);
@@ -33,7 +35,7 @@ function HealthConditionsPage() {
           customCondition = condition;
         }
       });
-      
+
       setSelectedConditions(predefinedConditions);
       if (customCondition) {
         setOtherCondition(customCondition);
@@ -45,13 +47,11 @@ function HealthConditionsPage() {
     fetchHealthConditions();
   }, []);
 
-
   useEffect(() => {
     if (state.currentStep !== 20) {
       updateStep(21);
     }
   }, []);
-
 
   const fetchHealthConditions = async () => {
     try {
@@ -68,9 +68,9 @@ function HealthConditionsPage() {
   };
 
   const handleConditionToggle = (conditionTitle) => {
-    setSelectedConditions(prev => {
+    setSelectedConditions((prev) => {
       if (prev.includes(conditionTitle)) {
-        return prev.filter(item => item !== conditionTitle);
+        return prev.filter((item) => item !== conditionTitle);
       } else {
         return [...prev, conditionTitle];
       }
@@ -79,7 +79,7 @@ function HealthConditionsPage() {
 
   const handleContinue = () => {
     const finalConditions = [...selectedConditions];
-    
+
     // Add "Other" condition if specified
     if (otherCondition.trim()) {
       finalConditions.push(otherCondition.trim());
@@ -87,8 +87,8 @@ function HealthConditionsPage() {
 
     // Update the onboarding context
     updateField("healthyConditions", finalConditions);
-    
-    // Update step and navigate to next step  
+
+    // Update step and navigate to next step
     updateStep(22);
     router.push("/choose-country");
   };
@@ -119,6 +119,9 @@ function HealthConditionsPage() {
                 </Link>
               </div>
               <div className="auth-cards health-conditions">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Health Conditions</p>
                 <h3 className="mb-4">Common Health Conditions for Fitness</h3>
                 <div className="food-card">
@@ -144,7 +147,7 @@ function HealthConditionsPage() {
                       </label>
                     </div>
                   ))}
-                  
+
                   <div className="food-bx">
                     <input
                       type="checkbox"
@@ -155,7 +158,9 @@ function HealthConditionsPage() {
                         if (otherCondition.trim() === "") {
                           // Focus the text input when checking "Other"
                           setTimeout(() => {
-                            const otherInput = document.querySelector('input[placeholder="If other (please specify)"]');
+                            const otherInput = document.querySelector(
+                              'input[placeholder="If other (please specify)"]'
+                            );
                             if (otherInput) otherInput.focus();
                           }, 100);
                         } else {
@@ -181,8 +186,8 @@ function HealthConditionsPage() {
                   />
                 </div>
                 <div className="text-center mt-3">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="custom-btn continue-btn"
                     onClick={handleContinue}
                   >

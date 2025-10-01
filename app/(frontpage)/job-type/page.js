@@ -11,17 +11,18 @@ function JobTypePage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [occupations, setOccupations] = useState([]);
-  const [selectedOccupation, setSelectedOccupation] = useState(state.occupation || "");
+  const [selectedOccupation, setSelectedOccupation] = useState(
+    state.occupation || ""
+  );
   const [customOccupation, setCustomOccupation] = useState("");
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-
 
   useEffect(() => {
     if (state.currentStep !== 23) {
       updateStep(24);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -36,7 +37,6 @@ function JobTypePage() {
     }
 
     // Update step if needed
-  
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -53,7 +53,9 @@ function JobTypePage() {
   // Load existing occupation when component mounts and occupations are loaded
   useEffect(() => {
     if (state.occupation && occupations.length > 0) {
-      const predefinedOccupation = occupations.find(occ => occ.title === state.occupation);
+      const predefinedOccupation = occupations.find(
+        (occ) => occ.title === state.occupation
+      );
       if (predefinedOccupation) {
         // It's a predefined occupation
         setSelectedOccupation(state.occupation);
@@ -127,7 +129,9 @@ function JobTypePage() {
     updateField("occupation", "");
     // Focus the input field if possible
     setTimeout(() => {
-      const customInput = document.querySelector('input[placeholder="If other (please specify)"]');
+      const customInput = document.querySelector(
+        'input[placeholder="If other (please specify)"]'
+      );
       if (customInput) customInput.focus();
     }, 100);
   };
@@ -136,9 +140,12 @@ function JobTypePage() {
     e.preventDefault();
 
     const finalOccupation = customOccupation.trim() || selectedOccupation;
-    
+
     if (!finalOccupation) {
-      showAlert("warning", "Please select your occupation or enter a custom occupation.");
+      showAlert(
+        "warning",
+        "Please select your occupation or enter a custom occupation."
+      );
       return;
     }
 
@@ -171,13 +178,18 @@ function JobTypePage() {
               />
 
               <div className="auth-cards goal">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Job Type</p>
                 <h3 className="mb-4">What is your occupation?</h3>
 
                 {loading ? (
                   <div className="text-center py-4">
                     <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading occupations...</span>
+                      <span className="visually-hidden">
+                        Loading occupations...
+                      </span>
                     </div>
                     <p className="mt-2">Loading available occupations...</p>
                   </div>
@@ -192,20 +204,28 @@ function JobTypePage() {
                               className="d-none"
                               id={`occupation-${occupation.id}`}
                               name="occupation"
-                              checked={selectedOccupation === occupation.title && !customOccupation.trim()}
-                              onChange={() => handleOccupationSelect(occupation.title)}
+                              checked={
+                                selectedOccupation === occupation.title &&
+                                !customOccupation.trim()
+                              }
+                              onChange={() =>
+                                handleOccupationSelect(occupation.title)
+                              }
                             />
                             <label
                               htmlFor={`occupation-${occupation.id}`}
                               className={
-                                selectedOccupation === occupation.title && !customOccupation.trim() ? "selected" : ""
+                                selectedOccupation === occupation.title &&
+                                !customOccupation.trim()
+                                  ? "selected"
+                                  : ""
                               }
                             >
                               {occupation.title}
                             </label>
                           </div>
                         ))}
-                        
+
                         {/* Other option */}
                         <div className="food-bx">
                           <input
@@ -213,13 +233,19 @@ function JobTypePage() {
                             className="d-none"
                             id="occupation-other"
                             name="occupation"
-                            checked={selectedOccupation === "Other" || customOccupation.trim() !== ""}
+                            checked={
+                              selectedOccupation === "Other" ||
+                              customOccupation.trim() !== ""
+                            }
                             onChange={handleOtherSelect}
                           />
                           <label
                             htmlFor="occupation-other"
                             className={
-                              selectedOccupation === "Other" || customOccupation.trim() !== "" ? "selected" : ""
+                              selectedOccupation === "Other" ||
+                              customOccupation.trim() !== ""
+                                ? "selected"
+                                : ""
                             }
                           >
                             Other
@@ -251,7 +277,10 @@ function JobTypePage() {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading || (!selectedOccupation && !customOccupation.trim())}
+                    disabled={
+                      loading ||
+                      (!selectedOccupation && !customOccupation.trim())
+                    }
                   >
                     Continue
                   </button>

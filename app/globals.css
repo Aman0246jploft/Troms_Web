@@ -823,6 +823,7 @@ input[type="number"]::-webkit-outer-spin-button {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08) inset,
     0 4px 20px 0 rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(7.5px);
+  position: relative;
 }
 .auth-logo {
   margin-bottom: 50px;
@@ -2382,6 +2383,21 @@ input[type="number"]::-webkit-outer-spin-button {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
     0 4px 20px rgba(0, 0, 0, 0.08);
 }
+.new_back_btn {
+  display: inline-block;
+  padding: 6px 15px;
+  background-color: #06402b;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 50px;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.new_back_btn:hover {
+  opacity: 0.8;
+}
 
 /* responsive-css-start */
 @media (max-width: 1399px) {
@@ -3083,6 +3099,14 @@ input[type="number"]::-webkit-outer-spin-button {
   }
   .horizontal-height .pointer {
     right: 25%;
+  }
+  .new_back_btn {
+    position: static;
+    padding: 5px 15px;
+    font-size: 14px;
+  }
+  .auth-cards {
+    padding: 20px;
   }
 }
 

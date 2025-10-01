@@ -15,9 +15,20 @@ function SportsExercisesContent() {
 
   // Predefined sports/exercises options
   const exerciseOptions = [
-    "Running","Swimming" ,"Walking", "Cycling",, "Yoga", "Pilates", 
-     "Cardio", "CrossFit", "Basketball", "Football", 
-    "Tennis", "Badminton", "Boxing", 
+    "Running",
+    "Swimming",
+    "Walking",
+    "Cycling",
+    ,
+    "Yoga",
+    "Pilates",
+    "Cardio",
+    "CrossFit",
+    "Basketball",
+    "Football",
+    "Tennis",
+    "Badminton",
+    "Boxing",
   ];
 
   useEffect(() => {
@@ -36,8 +47,8 @@ function SportsExercisesContent() {
       // Separate predefined exercises from custom "Other" exercises
       const predefinedExercises = [];
       let customExerciseValue = "";
-      
-      state.sportExercises.forEach(exercise => {
+
+      state.sportExercises.forEach((exercise) => {
         // Check if this exercise matches any of the predefined exercise options
         const isPredefined = exerciseOptions.includes(exercise);
         if (isPredefined) {
@@ -47,7 +58,7 @@ function SportsExercisesContent() {
           customExerciseValue = exercise;
         }
       });
-      
+
       setSportExercises(predefinedExercises);
       if (customExerciseValue) {
         setCustomExercise(customExerciseValue);
@@ -101,7 +112,7 @@ function SportsExercisesContent() {
 
   const handleContinue = () => {
     const finalExercises = [...sportExercises];
-    
+
     // Add "Other" exercise if specified
     if (customExercise.trim()) {
       finalExercises.push(customExercise.trim());
@@ -117,7 +128,7 @@ function SportsExercisesContent() {
 
     // Update the onboarding context
     updateField("sportExercises", finalExercises);
-    
+
     // Update step and navigate to next step
     updateStep(14);
     router.push("/goal-reach");
@@ -143,9 +154,12 @@ function SportsExercisesContent() {
               />
 
               <div className="auth-cards">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Sports & Exercises</p>
                 <h3 className="mb-4">
-                Do you want to add some sports exercises?{" "}
+                  Do you want to add some sports exercises?{" "}
                 </h3>
                 <div className="food-card">
                   {exerciseOptions.map((exercise) => (
@@ -157,12 +171,10 @@ function SportsExercisesContent() {
                         checked={sportExercises.includes(exercise)}
                         onChange={() => handleExerciseToggle(exercise)}
                       />
-                      <label htmlFor={`exercise-${exercise}`}>
-                        {exercise}
-                      </label>
+                      <label htmlFor={`exercise-${exercise}`}>{exercise}</label>
                     </div>
                   ))}
-                  
+
                   {/* Other option similar to health-conditions */}
                   <div className="food-bx">
                     <input
@@ -174,7 +186,9 @@ function SportsExercisesContent() {
                         if (customExercise.trim() === "") {
                           // Focus the text input when checking "Other"
                           setTimeout(() => {
-                            const otherInput = document.querySelector('input[placeholder="If other (please specify)"]');
+                            const otherInput = document.querySelector(
+                              'input[placeholder="If other (please specify)"]'
+                            );
                             if (otherInput) otherInput.focus();
                           }, 100);
                         } else {
@@ -187,7 +201,7 @@ function SportsExercisesContent() {
                     </label> */}
                   </div>
                 </div>
-                
+
                 <div className="custom-frm-bx mt-4 px-135">
                   <input
                     className="form-control"
@@ -198,10 +212,9 @@ function SportsExercisesContent() {
                   />
                 </div>
 
-         
                 <div className="text-center mt-3">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="custom-btn continue-btn"
                     onClick={handleContinue}
                   >

@@ -52,8 +52,12 @@ function StripePaymentForm({
 
     // Check if userInfoId exists before processing payment
     if (!userInfoId) {
-      console.error("❌ User information missing - userInfoId required for payment");
-      onError("User information is missing. Please complete registration again.");
+      console.error(
+        "❌ User information missing - userInfoId required for payment"
+      );
+      onError(
+        "User information is missing. Please complete registration again."
+      );
       return;
     }
 
@@ -198,20 +202,23 @@ function StripePaymentForm({
   console.log("🧩 Elements ready:", !!elements);
 
   return (
-
     <div className="stripe-payment-form mt-3">
       {/* Plan Summary Box */}
-      <div className="plan-summary-box mb-4" >
+      <div className="plan-summary-box mb-4">
         {/* <h5 className="mb-2" style={{ fontWeight: '700', fontSize: '20px', color: 'black' }}>
           {selectedPlan?.productName || `${selectedPlan?.interval === "month" ? "Monthly" : "Yearly"} Plan`}
         </h5> */}
         <div>
-            <p className="mb-0" style={{ fontSize: '14px', opacity: '0.9' }}>3 days free trial, then</p>
-            <h3 className="mb-0" style={{ fontWeight: '700' }}>
-              {formatAmount(selectedPlan?.amount || selectedPlan?.price)}
-              <span style={{ fontSize: '18px', fontWeight: '400' }}>/{selectedPlan?.interval}</span>
-            </h3>
-          </div>
+          <p className="mb-0" style={{ fontSize: "14px", opacity: "0.9" }}>
+            3 days free trial, then
+          </p>
+          <h3 className="mb-0" style={{ fontWeight: "700" }}>
+            {formatAmount(selectedPlan?.amount || selectedPlan?.price)}
+            <span style={{ fontSize: "18px", fontWeight: "400" }}>
+              /{selectedPlan?.interval}
+            </span>
+          </h3>
+        </div>
       </div>
 
       <form onSubmit={handlePayment}>
@@ -272,12 +279,11 @@ function StripePaymentForm({
           )}
         </button>
         <button
-                            className="prev-link  continue-btn mt-3"
-                            // onClick={handleBackToPlans}
-                            
-                          >
-                            <span>Back to Plans</span>
-                          </button>
+          className="prev-link  continue-btn mt-3"
+          // onClick={handleBackToPlans}
+        >
+          <span>Back to Plans</span>
+        </button>
       </form>
 
       <div className="payment-info mt-4 text-center">
@@ -286,7 +292,6 @@ function StripePaymentForm({
         </p>
       </div>
     </div>
-
 
     // <div className="stripe-payment-form mt-3">
     //   <form onSubmit={handlePayment}>
@@ -382,26 +387,20 @@ function SubscriptionPage() {
     }
   }, []);
 
-
   useEffect(() => {
     console.log("🏁 SubscriptionPage component mounted");
     console.log("📊 Current onboarding state:", state);
-
 
     fetchSubscriptionPlans();
   }, [state.currentStep, updateStep]);
 
   useEffect(() => {
-
     updateStep(32);
-
   }, []);
 
   useEffect(() => {
-
     fetchSubscriptionPlans();
   }, []); // <- empty array, runs once
-
 
   const fetchSubscriptionPlans = async () => {
     console.log("🔄 Fetching subscription plans...");
@@ -464,7 +463,9 @@ function SubscriptionPage() {
     // Check if userInfoId exists before proceeding to payment
     if (!userInfoId) {
       console.error("❌ User information missing - userInfoId not found");
-      setError("User information is missing. Please complete registration again.");
+      setError(
+        "User information is missing. Please complete registration again."
+      );
       setTimeout(() => {
         router.push("/register");
       }, 2000);
@@ -595,14 +596,21 @@ function SubscriptionPage() {
                 </Link>
               </div>
               <div className="auth-cards">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Subscriptions</p>
-                {!showPayment && <h3 className="mb-2">
-                  Unlock Your Personalized <br /> Fitness Plan
-                </h3>}
-                {!showPayment && <p>
-                  Get full access to your custom Meal and Workout <br /> Plans
-                  by subscribing to Trom.
-                </p>}
+                {!showPayment && (
+                  <h3 className="mb-2">
+                    Unlock Your Personalized <br /> Fitness Plan
+                  </h3>
+                )}
+                {!showPayment && (
+                  <p>
+                    Get full access to your custom Meal and Workout <br /> Plans
+                    by subscribing to Trom.
+                  </p>
+                )}
 
                 {error && (
                   <div className="alert alert-danger" role="alert">
@@ -617,51 +625,56 @@ function SubscriptionPage() {
                 )}
 
                 <div className="choose-plan px-135">
-                  {!showPayment && <h6 className="text-center">Choose a plan to begin:</h6>}
-                  {!showPayment && <div className="choose-plan-list">
-                    {plans.length > 0 ? (
-                      plans.map((plan) => (
-                        <div
-                          key={plan.priceId}
-                          className="form-check choose-plan-bx"
-                        >
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="plan"
-                            id={plan.priceId}
-                            checked={selectedPlan?.priceId === plan.priceId}
-                            onChange={() => handlePlanSelect(plan)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={plan.priceId}
+                  {!showPayment && (
+                    <h6 className="text-center">Choose a plan to begin:</h6>
+                  )}
+                  {!showPayment && (
+                    <div className="choose-plan-list">
+                      {plans.length > 0 ? (
+                        plans.map((plan) => (
+                          <div
+                            key={plan.priceId}
+                            className="form-check choose-plan-bx"
                           >
-                            <div>
-                              <strong>
-                                {plan.productName ||
-                                  `${plan.interval === "month"
-                                    ? "Monthly"
-                                    : "Yearly"
-                                  } Plan`}
-                              </strong>
-                              <p>
-                                3 days free, then ${plan.amount || plan.price}/
-                                {plan.interval}
-                              </p>
-                            </div>
-                          </label>
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="plan"
+                              id={plan.priceId}
+                              checked={selectedPlan?.priceId === plan.priceId}
+                              onChange={() => handlePlanSelect(plan)}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={plan.priceId}
+                            >
+                              <div>
+                                <strong>
+                                  {plan.productName ||
+                                    `${
+                                      plan.interval === "month"
+                                        ? "Monthly"
+                                        : "Yearly"
+                                    } Plan`}
+                                </strong>
+                                <p>
+                                  3 days free, then ${plan.amount || plan.price}
+                                  /{plan.interval}
+                                </p>
+                              </div>
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4">
+                          <p className="text-muted">
+                            No subscription plans available
+                          </p>
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-4">
-                        <p className="text-muted">
-                          No subscription plans available
-                        </p>
-                      </div>
-                    )}
-                  </div>}
-                  {!showPayment &&
+                      )}
+                    </div>
+                  )}
+                  {!showPayment && (
                     <div className="form-check choose-check">
                       <input
                         className="form-check-input"
@@ -677,14 +690,18 @@ function SubscriptionPage() {
                           setTermsAccepted(e.target.checked);
                         }}
                       />
-                      <label className="form-check-label" htmlFor="checkDefault">
+                      <label
+                        className="form-check-label"
+                        htmlFor="checkDefault"
+                      >
                         I agree to the app's{" "}
                         <Link href="/privacy-policy">Privacy Policy</Link> and{" "}
                         <Link href="/terms-and-conditions">
                           Terms & Conditions
                         </Link>
                       </label>
-                    </div>}
+                    </div>
+                  )}
 
                   <div className="text-center mt-3">
                     {!showPayment ? (
@@ -692,13 +709,16 @@ function SubscriptionPage() {
                         className="custom-btn continue-btn"
                         onClick={handlePurchase}
                         disabled={!selectedPlan || !termsAccepted}
-                        title={!userInfoId ? "User information missing - please complete registration" : ""}
+                        title={
+                          !userInfoId
+                            ? "User information missing - please complete registration"
+                            : ""
+                        }
                       >
                         Pay
                       </button>
                     ) : (
                       <Elements
-
                         stripe={stripePromise}
                         options={{
                           appearance: {
@@ -708,7 +728,7 @@ function SubscriptionPage() {
                       >
                         <div>
                           <h3>Monthly Plan</h3>
-                          
+
                           <StripePaymentForm
                             selectedPlan={selectedPlan}
                             onSuccess={handlePaymentSuccess}
@@ -716,9 +736,7 @@ function SubscriptionPage() {
                             userInfoId={userInfoId || state.user?.userInfoId}
                             userInfo={state.user}
                           />
-                          
                         </div>
-                        
                       </Elements>
                     )}
                   </div>
@@ -733,7 +751,6 @@ function SubscriptionPage() {
             <p>
               <span>{state.currentStep}/</span> {state.totalSteps}
             </p>
-
           </div>
         </div>
       </section>

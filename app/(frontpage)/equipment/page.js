@@ -28,22 +28,21 @@ function EquipmentContent() {
     }
   }, [state.isAuthenticated, router]);
 
-useEffect(() => {
-  updateStep(12);
+  useEffect(() => {
+    updateStep(12);
 
-  const locationParam = searchParams.get("location");
-  if (locationParam) {
-    const normalized = locationParam.toLowerCase();
-    const validLocations = ["home", "gym", "outdoors"];
-    if (validLocations.includes(normalized)) {
-      setWorkoutLocation(normalized);
-      updateField("workoutLocation", normalized);
+    const locationParam = searchParams.get("location");
+    if (locationParam) {
+      const normalized = locationParam.toLowerCase();
+      const validLocations = ["home", "gym", "outdoors"];
+      if (validLocations.includes(normalized)) {
+        setWorkoutLocation(normalized);
+        updateField("workoutLocation", normalized);
+      }
     }
-  }
 
-  fetchAllEquipments(); // fetch once
-}, []);
-
+    fetchAllEquipments(); // fetch once
+  }, []);
 
   // useEffect(() => {
   //   updateStep(12);
@@ -78,51 +77,52 @@ useEffect(() => {
   };
 
   const filterEquipments = (location, data = allEquipments) => {
-  if (!data) return;
+    if (!data) return;
 
-  let list = [];
-  switch (location.toLowerCase()) {
-    case "gym":
-      list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
-      break;
-    case "home":
-      list = data.home_equipments || [];
-      break;
-    case "outdoors":
-      list = data.outdoor_equipments || [];
-      break;
-  }
+    let list = [];
+    switch (location.toLowerCase()) {
+      case "gym":
+        list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
+        break;
+      case "home":
+        list = data.home_equipments || [];
+        break;
+      case "outdoors":
+        list = data.outdoor_equipments || [];
+        break;
+    }
 
-  setEquipments(list);
-};
-
+    setEquipments(list);
+  };
 
   const fetchAllEquipments = async () => {
-  setLoading(true);
-  hideAlert();
+    setLoading(true);
+    hideAlert();
 
-  try {
-    const response = await apiService.getEquipments();
+    try {
+      const response = await apiService.getEquipments();
 
-    if (response.success && response.result) {
-      setAllEquipments(response.result);
-      if (workoutLocation) {
-        filterEquipments(workoutLocation, response.result);
+      if (response.success && response.result) {
+        setAllEquipments(response.result);
+        if (workoutLocation) {
+          filterEquipments(workoutLocation, response.result);
+        }
+      } else {
+        showAlert(
+          "error",
+          "Failed to load equipment options. Please try again."
+        );
       }
-    } else {
-      showAlert("error", "Failed to load equipment options. Please try again.");
+    } catch (error) {
+      console.error("Equipment fetch error:", error);
+      showAlert(
+        "error",
+        "Failed to load equipment options. Please check your internet connection."
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Equipment fetch error:", error);
-    showAlert(
-      "error",
-      "Failed to load equipment options. Please check your internet connection."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   // const fetchEquipments = async (location) => {
   //   setLoading(true);
@@ -175,25 +175,24 @@ useEffect(() => {
   //   }
   // };
 
-const fetchEquipments = (location, data = allEquipments) => {
-  if (!data) return;
+  const fetchEquipments = (location, data = allEquipments) => {
+    if (!data) return;
 
-  let list = [];
-  switch (location.toLowerCase()) {
-    case "gym":
-      list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
-      break;
-    case "home":
-      list = data.home_equipments || [];
-      break;
-    case "outdoors":
-      list = data.outdoor_equipments || [];
-      break;
-  }
+    let list = [];
+    switch (location.toLowerCase()) {
+      case "gym":
+        list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
+        break;
+      case "home":
+        list = data.home_equipments || [];
+        break;
+      case "outdoors":
+        list = data.outdoor_equipments || [];
+        break;
+    }
 
-  setEquipments(list);
-};
-
+    setEquipments(list);
+  };
 
   const handleLocationChange = (location) => {
     setWorkoutLocation(location);
@@ -256,6 +255,9 @@ const fetchEquipments = (location, data = allEquipments) => {
               />
 
               <div className="auth-cards equipment location">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Equipments</p>
                 <h3 className="mb-3">
                   What equipment do you <br /> have access to?
@@ -325,9 +327,6 @@ const fetchEquipments = (location, data = allEquipments) => {
                       </label>
                     </div>
                   </div>
-
-
-
 
                   {workoutLocation && (
                     <>

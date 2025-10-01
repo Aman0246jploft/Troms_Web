@@ -25,7 +25,7 @@ function DislikesPage() {
     if (state.currentStep !== 27) {
       updateStep(28);
     }
-  }, [state.currentStep]); 
+  }, [state.currentStep]);
 
   useEffect(() => {
     // Load previously selected dislikes from context/localStorage
@@ -33,11 +33,13 @@ function DislikesPage() {
       // Separate predefined dislikes from custom dislikes
       const predefinedDislikes = [];
       let customDislike = "";
-      
-      state.dislikedFoodItems.forEach(dislike => {
+
+      state.dislikedFoodItems.forEach((dislike) => {
         // Check if this dislike matches any of the fetched disliked foods
         // If not, it's likely a custom dislike
-        const isPredefined = dislikedFoods.some(food => food.ingredients_name === dislike);
+        const isPredefined = dislikedFoods.some(
+          (food) => food.ingredients_name === dislike
+        );
         if (isPredefined || dislikedFoods.length === 0) {
           // Include if it's predefined or if we haven't loaded foods yet
           predefinedDislikes.push(dislike);
@@ -48,16 +50,15 @@ function DislikesPage() {
         //   customDislike = dislike;
         // }
       });
-      
+
       setSelectedDislikes(predefinedDislikes);
     }
-    
+
     // Load custom dislike from the new field
     if (state.disliked_food_other_item) {
       setCustomDislike(state.disliked_food_other_item);
     }
   }, [state.dislikedFoodItems, state.disliked_food_other_item, dislikedFoods]);
-
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -71,8 +72,6 @@ function DislikesPage() {
       router.push("/allergies");
       return;
     }
-
-
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -122,17 +121,17 @@ function DislikesPage() {
     }
   };
 
-const handleDislikeToggle = (dislikeName) => {
-  setSelectedDislikes((prev) => {
-    const newSelection = prev.includes(dislikeName)
-      ? prev.filter((name) => name !== dislikeName)
-      : [...prev, dislikeName];
+  const handleDislikeToggle = (dislikeName) => {
+    setSelectedDislikes((prev) => {
+      const newSelection = prev.includes(dislikeName)
+        ? prev.filter((name) => name !== dislikeName)
+        : [...prev, dislikeName];
 
-    // update context after state change
-    updateField("dislikedFoodItems", newSelection);
-    return newSelection;
-  });
-};
+      // update context after state change
+      updateField("dislikedFoodItems", newSelection);
+      return newSelection;
+    });
+  };
 
   // Handle custom dislike input changes
   const handleCustomDislikeChange = (e) => {
@@ -166,13 +165,12 @@ const handleDislikeToggle = (dislikeName) => {
     updateField("disliked_food_other_item", customDislike.trim());
     // if(selectedDislikes)
 
-    if(selectedDislikes.length>0||customDislike.trim()){
+    if (selectedDislikes.length > 0 || customDislike.trim()) {
       router.push("/injuries");
     }
 
-    
     // Dislikes are optional, so we can continue even with no selections
-   
+
     // router.push("/injuries");
   };
 
@@ -196,7 +194,10 @@ const handleDislikeToggle = (dislikeName) => {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Dislikes</p>
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
+                <p className="text-uppercase mb-3">Dislikes</p>
                 <h3 className="mb-4">
                   Are there any ingredients <br /> you'd prefer to avoid?
                 </h3>
@@ -242,16 +243,16 @@ const handleDislikeToggle = (dislikeName) => {
                                 food.ingredients_name
                               ) && (
                                 <></>
-                                  // <button
-                                  //   type="button"
-                                  //   onClick={(e) => {
-                                  //     e.preventDefault();
-                                  //     handleRemoveDislike(food.ingredients_name);
-                                  //   }}
-                                  // >
-                                  //   <img src="/images/close.svg" alt="Remove" />
-                                  // </button>
-                                )}
+                                // <button
+                                //   type="button"
+                                //   onClick={(e) => {
+                                //     e.preventDefault();
+                                //     handleRemoveDislike(food.ingredients_name);
+                                //   }}
+                                // >
+                                //   <img src="/images/close.svg" alt="Remove" />
+                                // </button>
+                              )}
                             </label>
                           </div>
                         ))}

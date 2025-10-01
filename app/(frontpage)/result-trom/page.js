@@ -14,6 +14,9 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards gender">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Results Troms</p>
                 <h3 className="mb-2">
                   Double Your Weight Loss <br /> Results with Troms

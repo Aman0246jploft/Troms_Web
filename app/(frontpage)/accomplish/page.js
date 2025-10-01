@@ -66,7 +66,6 @@ function AccomplishPage() {
     hideAlert();
   };
 
-
   const handleContinue = (e) => {
     e.preventDefault();
 
@@ -78,7 +77,7 @@ function AccomplishPage() {
     if (isStepValid(20)) {
       updateStep(21);
       router.push("/health-conditions");
-    } 
+    }
   };
 
   return (
@@ -101,6 +100,9 @@ function AccomplishPage() {
               />
 
               <div className="auth-cards weight-goal">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-3">Accomplish</p>
                 <h3 className="mb-3">
                   What would you like <br /> to accomplish?
@@ -120,13 +122,14 @@ function AccomplishPage() {
                         />
                         <label
                           htmlFor={option.id}
-                          className={selectedGoal.includes(option.id) ? "selected" : ""}
+                          className={
+                            selectedGoal.includes(option.id) ? "selected" : ""
+                          }
                         >
                           {option.label}
                         </label>
                       </div>
                     ))}
-
 
                     <div className="text-center mt-3">
                       <button

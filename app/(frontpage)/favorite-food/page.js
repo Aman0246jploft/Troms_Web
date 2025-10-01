@@ -13,8 +13,8 @@ function FavoriteFoodPage() {
   const [cheatMeals, setCheatMeals] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(
-    state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0 
-      ? state.cheatMealFoodItems[0] 
+    state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0
+      ? state.cheatMealFoodItems[0]
       : ""
   );
   const [customFood, setCustomFood] = useState(
@@ -65,10 +65,12 @@ function FavoriteFoodPage() {
     // Then handle predefined selections
     if (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) {
       const savedFood = state.cheatMealFoodItems[0];
-      
+
       // Check if the saved food is in the predefined list
-      const isInPredefinedList = cheatMeals.some(meal => meal.name === savedFood);
-      
+      const isInPredefinedList = cheatMeals.some(
+        (meal) => meal.name === savedFood
+      );
+
       if (isInPredefinedList) {
         // If it's in the predefined list, clear the input and select from list
         setCustomFood("");
@@ -99,10 +101,10 @@ function FavoriteFoodPage() {
       if (response.success) {
         // Store the categories for displaying headings
         setCategories(response.result || []);
-        
+
         // Extract all meals from the nested structure
         const apiMeals = [];
-        
+
         // Flatten the list_data from each category
         (response.result || []).forEach((category) => {
           if (category.list_data && Array.isArray(category.list_data)) {
@@ -146,13 +148,13 @@ function FavoriteFoodPage() {
   const handleCustomFoodChange = (e) => {
     const value = e.target.value;
     setCustomFood(value);
-    
+
     // Clear predefined meal selection when typing custom food
     if (value.trim()) {
       setSelectedMeal("");
       updateField("cheatMealFoodItems", []); // Clear predefined selection
     }
-    
+
     // Store the input value in context immediately with new key
     updateField("cheat_meal_food_other_item", value);
     hideAlert();
@@ -172,15 +174,17 @@ function FavoriteFoodPage() {
     // Check if either a meal is selected from list or custom food is entered
     // Check both local state and context state to ensure we catch all cases
     const hasLocalSelection = selectedMeal || customFood.trim();
-    const hasContextSelection = (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) || state.cheat_meal_food_other_item;
+    const hasContextSelection =
+      (state.cheatMealFoodItems && state.cheatMealFoodItems.length > 0) ||
+      state.cheat_meal_food_other_item;
     const hasSelection = hasLocalSelection || hasContextSelection;
-    console.log("hiiii", hasSelection)
-    
+    console.log("hiiii", hasSelection);
+
     if (!hasSelection) {
       showAlert(
         "warning",
         "Please select your favorite food or enter a custom food."
-      );                    
+      );
       return;
     }
 
@@ -193,10 +197,8 @@ function FavoriteFoodPage() {
       updateField("cheat_meal_food_other_item", customFood.trim());
     }
 
-
-      updateStep(19);
-      router.push("/cooking");
-   
+    updateStep(19);
+    router.push("/cooking");
   };
 
   return (
@@ -219,7 +221,10 @@ function FavoriteFoodPage() {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Favourite Food</p>
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
+                <p className="text-uppercase mb-3">Favourite Food</p>
                 <h3 className="mb-4">
                   What's your favourite treat? <br /> We'll find a smart way to
                   fit it in
@@ -236,12 +241,12 @@ function FavoriteFoodPage() {
                   </div>
                 ) : (
                   <>
-                   <div className="food-list">
-                     {categories.map((category, categoryIndex) => (
-                       <div key={categoryIndex} className="category-section">
-                         {/* <h6 className="text-sm mb-3">{category.name}</h6> */}
-                         <div className="food-card">
-                                                       {(category.list_data || []).map((meal) => (
+                    <div className="food-list">
+                      {categories.map((category, categoryIndex) => (
+                        <div key={categoryIndex} className="category-section">
+                          {/* <h6 className="text-sm mb-3">{category.name}</h6> */}
+                          <div className="food-card">
+                            {(category.list_data || []).map((meal) => (
                               <div key={meal.id} className="food-bx">
                                 <input
                                   type="checkbox"
@@ -259,19 +264,17 @@ function FavoriteFoodPage() {
                                     "-"
                                   )}`}
                                   className={
-                                    selectedMeal === meal.name
-                                      ? "selected"
-                                      : ""
+                                    selectedMeal === meal.name ? "selected" : ""
                                   }
                                 >
                                   {meal.name}
                                 </label>
                               </div>
                             ))}
-                         </div>
-                       </div>
-                     ))}
-                   </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
 
                     <div className="custom-frm-bx mt-4 px-135">
                       <input
@@ -292,15 +295,21 @@ function FavoriteFoodPage() {
                   </>
                 )}
 
-                                 <div className="text-center mt-3">
-                   <button
-                     onClick={handleContinue}
-                     className="custom-btn continue-btn"
-                     disabled={(!selectedMeal && !customFood.trim() && !state.cheatMealFoodItems?.length && !state.cheat_meal_food_other_item) || loading}
-                   >
-                     Continue
-                   </button>
-                 </div>
+                <div className="text-center mt-3">
+                  <button
+                    onClick={handleContinue}
+                    className="custom-btn continue-btn"
+                    disabled={
+                      (!selectedMeal &&
+                        !customFood.trim() &&
+                        !state.cheatMealFoodItems?.length &&
+                        !state.cheat_meal_food_other_item) ||
+                      loading
+                    }
+                  >
+                    Continue
+                  </button>
+                </div>
               </div>
             </div>
           </div>

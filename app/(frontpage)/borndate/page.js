@@ -71,13 +71,20 @@ function BornDatePage() {
   };
 
   const handleDateChange = () => {
-    if (selectedMonth !== undefined && selectedDay !== undefined && selectedYear !== undefined) {
+    if (
+      selectedMonth !== undefined &&
+      selectedDay !== undefined &&
+      selectedYear !== undefined
+    ) {
       const years = generateYears();
       const year = years[selectedYear];
       const monthIndex = selectedMonth;
       const day = selectedDay + 1; // Convert back from 0-based index
 
-      const dateString = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const dateString = `${year}-${String(monthIndex + 1).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
 
       // Validate date
       const selectedDate = new Date(dateString);
@@ -124,7 +131,11 @@ function BornDatePage() {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (selectedMonth === undefined || selectedDay === undefined || selectedYear === undefined) {
+    if (
+      selectedMonth === undefined ||
+      selectedDay === undefined ||
+      selectedYear === undefined
+    ) {
       showAlert(
         "warning",
         "Please select your complete birth date to continue."
@@ -163,11 +174,14 @@ function BornDatePage() {
               />
 
               <div className="auth-cards borndate">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-3">Your born date</p>
                 <h3 className="mb-2">What's your birthday?</h3>
                 <p>This will be used to calibrate your custom plan.</p>
-                
-                <WheelPicker 
+
+                <WheelPicker
                   initialMonth={selectedMonth}
                   initialDay={selectedDay}
                   initialYear={selectedYear}
@@ -177,11 +191,11 @@ function BornDatePage() {
                 />
 
                 {/* {state.age > 0 && ( */}
-                  {/* <div className="text-center mt-2"> */}
-                    {/* <h6 className="clr fw-600">Age: {state.age} years old</h6> */}
-                  {/* </div> */}
+                {/* <div className="text-center mt-2"> */}
+                {/* <h6 className="clr fw-600">Age: {state.age} years old</h6> */}
+                {/* </div> */}
                 {/* )} */}
-                
+
                 <div className="text-center mt-4">
                   <button
                     type="submit"

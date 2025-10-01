@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -8,40 +8,45 @@ import Alert from "../../../Components/Alert";
 
 function DesiredWeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } = useOnboarding();
-  
+  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } =
+    useOnboarding();
+
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
-  
+
   // Calculate smart default value based on weight goal
   const calculateDefaultWeight = () => {
     if (!state.weight || !state.weightGoal) return 0;
-    
+
     // Get current weight in the display unit
     const currentWeight = state.weight;
     const currentWeightUnit = state.weightUnit;
-    
+
     // Convert current weight to display unit if needed
     let displayWeight = currentWeight;
-    if (currentWeightUnit === 'kg' && !isMetric) {
+    if (currentWeightUnit === "kg" && !isMetric) {
       // Convert kg to lbs for display
-      displayWeight = Math.round(currentWeight / 0.453592 * 10) / 10;
-    } else if (currentWeightUnit === 'lbs' && isMetric) {
+      displayWeight = Math.round((currentWeight / 0.453592) * 10) / 10;
+    } else if (currentWeightUnit === "lbs" && isMetric) {
       // Convert lbs to kg for display
       displayWeight = Math.round(currentWeight * 0.453592 * 10) / 10;
     }
-    
+
     // Calculate default based on goal
     switch (state.weightGoal) {
-      case 'MAINTAIN':
+      case "MAINTAIN":
         return displayWeight; // Same as current weight
-      case 'LOSE_WEIGHT':
+      case "LOSE_WEIGHT":
         // Default to 5-10% weight loss
-        const lossAmount = isMetric ? Math.max(2, displayWeight * 0.08) : Math.max(5, displayWeight * 0.08);
+        const lossAmount = isMetric
+          ? Math.max(2, displayWeight * 0.08)
+          : Math.max(5, displayWeight * 0.08);
         return Math.round((displayWeight - lossAmount) * 10) / 10;
-      case 'GAIN_WEIGHT':
+      case "GAIN_WEIGHT":
         // Default to 3-5% weight gain
-        const gainAmount = isMetric ? Math.max(2, displayWeight * 0.05) : Math.max(5, displayWeight * 0.05);
+        const gainAmount = isMetric
+          ? Math.max(2, displayWeight * 0.05)
+          : Math.max(5, displayWeight * 0.05);
         return Math.round((displayWeight + gainAmount) * 10) / 10;
       default:
         return displayWeight;
@@ -56,18 +61,18 @@ function DesiredWeightPage() {
     // Otherwise, calculate smart default
     return calculateDefaultWeight();
   });
-  
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Initialize component and set defaults
   useEffect(() => {
     // Handle redirects first
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     if (!state.weightGoal) {
-      router.push('/weight-goal');
+      router.push("/weight-goal");
       return;
     }
 
@@ -81,10 +86,15 @@ function DesiredWeightPage() {
       const defaultWeight = calculateDefaultWeight();
       if (defaultWeight > 0) {
         setDesiredWeight(defaultWeight);
-        updateField('desiredWeight', defaultWeight);
+        updateField("desiredWeight", defaultWeight);
       }
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.weightGoal, state.currentStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.weightGoal,
+    state.currentStep,
+  ]);
 
   // Handle unit changes by recalculating weight if needed
   useEffect(() => {
@@ -93,23 +103,22 @@ function DesiredWeightPage() {
       const newDefault = calculateDefaultWeight();
       if (Math.abs(newDefault - desiredWeight) > (isMetric ? 1 : 2)) {
         setDesiredWeight(newDefault);
-        updateField('desiredWeight', newDefault);
+        updateField("desiredWeight", newDefault);
       }
     }
   }, [isMetric]);
-
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleUnitToggle = () => {
     const currentIsMetric = isMetric;
-    
+
     // Toggle the global unit system
     toggleUnitSystem();
 
@@ -117,7 +126,7 @@ function DesiredWeightPage() {
 
     if (currentIsMetric) {
       // Currently metric, converting to imperial (kg to lbs)
-      convertedWeight = Math.round(desiredWeight / 0.453592 * 10) / 10;
+      convertedWeight = Math.round((desiredWeight / 0.453592) * 10) / 10;
     } else {
       // Currently imperial, converting to metric (lbs to kg)
       convertedWeight = Math.round(desiredWeight * 0.453592 * 10) / 10;
@@ -125,13 +134,13 @@ function DesiredWeightPage() {
 
     // Update both local state and context
     setDesiredWeight(convertedWeight);
-    updateField('desiredWeight', convertedWeight);
+    updateField("desiredWeight", convertedWeight);
     hideAlert();
   };
 
   const handleWeightChange = (value) => {
     setDesiredWeight(value);
-    updateField('desiredWeight', value);
+    updateField("desiredWeight", value);
     hideAlert();
   };
 
@@ -141,29 +150,37 @@ function DesiredWeightPage() {
 
     if (isMetric) {
       // Convert current weight to kg for comparison
-      const currentWeightKg = state.weightUnit === 'lbs' ? currentWeight * 0.453592 : currentWeight;
+      const currentWeightKg =
+        state.weightUnit === "lbs" ? currentWeight * 0.453592 : currentWeight;
 
-      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightKg) {
-        return 'Desired weight must be less than current weight to lose weight.';
+      if (goal === "LOSE_WEIGHT" && desiredWeight >= currentWeightKg) {
+        return "Desired weight must be less than current weight to lose weight.";
       }
-      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightKg) {
-        return 'Desired weight must be greater than current weight to gain weight.';
+      if (goal === "GAIN_WEIGHT" && desiredWeight <= currentWeightKg) {
+        return "Desired weight must be greater than current weight to gain weight.";
       }
-      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightKg) > 2) {
-        return 'For maintenance, desired weight should be close to current weight (±2 kg).';
+      if (
+        goal === "MAINTAIN" &&
+        Math.abs(desiredWeight - currentWeightKg) > 2
+      ) {
+        return "For maintenance, desired weight should be close to current weight (±2 kg).";
       }
     } else {
       // Convert current weight to lbs for comparison
-      const currentWeightLbs = state.weightUnit === 'kg' ? currentWeight / 0.453592 : currentWeight;
+      const currentWeightLbs =
+        state.weightUnit === "kg" ? currentWeight / 0.453592 : currentWeight;
 
-      if (goal === 'LOSE_WEIGHT' && desiredWeight >= currentWeightLbs) {
-        return 'Desired weight must be less than current weight to lose weight.';
+      if (goal === "LOSE_WEIGHT" && desiredWeight >= currentWeightLbs) {
+        return "Desired weight must be less than current weight to lose weight.";
       }
-      if (goal === 'GAIN_WEIGHT' && desiredWeight <= currentWeightLbs) {
-        return 'Desired weight must be greater than current weight to gain weight.';
+      if (goal === "GAIN_WEIGHT" && desiredWeight <= currentWeightLbs) {
+        return "Desired weight must be greater than current weight to gain weight.";
       }
-      if (goal === 'MAINTAIN' && Math.abs(desiredWeight - currentWeightLbs) > 5) {
-        return 'For maintenance, desired weight should be close to current weight (±5 lbs).';
+      if (
+        goal === "MAINTAIN" &&
+        Math.abs(desiredWeight - currentWeightLbs) > 5
+      ) {
+        return "For maintenance, desired weight should be close to current weight (±5 lbs).";
       }
     }
 
@@ -174,20 +191,19 @@ function DesiredWeightPage() {
     e.preventDefault();
 
     if (!desiredWeight || desiredWeight <= 0) {
-      showAlert('warning', 'Please enter your desired weight to continue.');
+      showAlert("warning", "Please enter your desired weight to continue.");
       return;
     }
 
     const validationError = validateWeight();
     if (validationError) {
-      showAlert('warning', validationError);
+      showAlert("warning", validationError);
       return;
-
     }
 
     if (isStepValid(10)) {
       updateStep(11);
-      router.push('/workout-location');
+      router.push("/workout-location");
     }
   };
 
@@ -195,23 +211,29 @@ function DesiredWeightPage() {
     const currentWeight = state.weight;
     const goal = state.weightGoal;
 
-    if (goal === 'MAINTAIN') {
+    if (goal === "MAINTAIN") {
       const tolerance = isMetric ? 2 : 5;
-      return `±${tolerance} ${isMetric ? 'kg' : 'lbs'} from current weight`;
-    } else if (goal === 'LOSE_WEIGHT') {
-      return `Less than ${isMetric ? Math.round(currentWeight * 0.453592) : currentWeight} ${isMetric ? 'kg' : 'lbs'}`;
-    } else if (goal === 'GAIN_WEIGHT') {
-      return `Greater than ${isMetric ? Math.round(currentWeight * 0.453592) : currentWeight} ${isMetric ? 'kg' : 'lbs'}`;
+      return `±${tolerance} ${isMetric ? "kg" : "lbs"} from current weight`;
+    } else if (goal === "LOSE_WEIGHT") {
+      return `Less than ${
+        isMetric ? Math.round(currentWeight * 0.453592) : currentWeight
+      } ${isMetric ? "kg" : "lbs"}`;
+    } else if (goal === "GAIN_WEIGHT") {
+      return `Greater than ${
+        isMetric ? Math.round(currentWeight * 0.453592) : currentWeight
+      } ${isMetric ? "kg" : "lbs"}`;
     }
-    return '';
+    return "";
   };
 
   const getCurrentWeightDisplay = () => {
     if (isMetric) {
-      const currentWeightKg = state.weightUnit === 'lbs' ? state.weight * 0.453592 : state.weight;
+      const currentWeightKg =
+        state.weightUnit === "lbs" ? state.weight * 0.453592 : state.weight;
       return `${Math.round(currentWeightKg * 10) / 10} kg`;
     } else {
-      const currentWeightLbs = state.weightUnit === 'kg' ? state.weight / 0.453592 : state.weight;
+      const currentWeightLbs =
+        state.weightUnit === "kg" ? state.weight / 0.453592 : state.weight;
       return `${Math.round(currentWeightLbs * 10) / 10} lbs`;
     }
   };
@@ -236,10 +258,16 @@ function DesiredWeightPage() {
               />
 
               <div className="auth-cards weight">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-5">Desired Weight</p>
                 <h3 className="mb-2">What is your desired weight?</h3>
-                <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
-                
+                <p>
+                  Set your target weight based on your goal:{" "}
+                  <strong>{state.weightGoal?.replace("_", " ")}</strong>
+                </p>
+
                 {/* {state.weightGoal && (
                   <div className="mb-3 p-2 bg-light rounded text-center">
                     <small className="text-muted">
@@ -279,14 +307,16 @@ function DesiredWeightPage() {
                             min={isMetric ? "30" : "60"}
                             max={isMetric ? "300" : "600"}
                             step="0.01"
-                            value={desiredWeight || ''}
+                            value={desiredWeight || ""}
                             onChange={(e) => {
                               const val = e.target.value;
-                              handleWeightChange(val === "" ? 0 : parseFloat(val));
+                              handleWeightChange(
+                                val === "" ? 0 : parseFloat(val)
+                              );
                             }}
                             required
                           />
-                          <span>{isMetric ? 'kg' : 'lbs'}</span>
+                          <span>{isMetric ? "kg" : "lbs"}</span>
                         </div>
                       </div>
                     </div>

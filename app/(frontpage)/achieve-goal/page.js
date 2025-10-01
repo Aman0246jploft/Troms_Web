@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,14 +9,15 @@ import Alert from "../../../Components/Alert";
 function ReachingGoalsPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedGoalReason, setSelectedGoalReason] = useState(state.reachingGoals || '');
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-
+  const [selectedGoalReason, setSelectedGoalReason] = useState(
+    state.reachingGoals || ""
+  );
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Redirects if previous steps not completed
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     }
   }, [state.isAuthenticated]);
 
@@ -31,12 +32,12 @@ function ReachingGoalsPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleGoalReasonChange = (reason) => {
     setSelectedGoalReason(reason);
-    updateField('reachingGoals', reason); // immediate update
+    updateField("reachingGoals", reason); // immediate update
     hideAlert();
   };
 
@@ -44,21 +45,21 @@ function ReachingGoalsPage() {
     e.preventDefault();
 
     if (!selectedGoalReason) {
-      showAlert('warning', 'Please select a reason to continue.');
+      showAlert("warning", "Please select a reason to continue.");
       return;
     }
 
     if (isStepValid(16)) {
       updateStep(17);
-      router.push('/preferred-diet');
+      router.push("/preferred-diet");
     }
   };
 
   const options = [
-    { id: 'Absence of regularity', label: 'Absence of regularity' },
-    { id: 'Unhealthy eating habits', label: 'Unhealthy eating habits' },
-    { id: 'Lack of motivation', label: 'Lack of motivation' },
-    { id: 'Too busy', label: 'Too busy' },
+    { id: "Absence of regularity", label: "Absence of regularity" },
+    { id: "Unhealthy eating habits", label: "Unhealthy eating habits" },
+    { id: "Lack of motivation", label: "Lack of motivation" },
+    { id: "Too busy", label: "Too busy" },
   ];
 
   return (
@@ -80,13 +81,16 @@ function ReachingGoalsPage() {
             />
 
             <div className="auth-cards weight-goal">
-              <p className="text-uppercase mb-5">Reaching your Goals</p>
+              <button type="button" className="new_back_btn">
+                Previous
+              </button>
+              <p className="text-uppercase mb-3">Reaching your Goals</p>
               <h3 className="mb-4">
                 What's preventing you from <br /> achieving your goals?
               </h3>
               <div className="px-135">
                 <form onSubmit={handleContinue}>
-                  {options.map(option => (
+                  {options.map((option) => (
                     <div className="custom-check" key={option.id}>
                       <input
                         type="radio"
@@ -99,7 +103,9 @@ function ReachingGoalsPage() {
                       />
                       <label
                         htmlFor={option.id}
-                        className={selectedGoalReason === option.id ? 'selected' : ''}
+                        className={
+                          selectedGoalReason === option.id ? "selected" : ""
+                        }
                       >
                         {option.label}
                       </label>

@@ -103,6 +103,9 @@ function GoalRangePage() {
             />
 
             <div className="auth-cards gender">
+              <button type="button" className="new_back_btn">
+                Previous
+              </button>
               <p className="text-uppercase mb-3">Reach your goal</p>
               <h3 className="mb-2">How fast do you wanna reach your goal?</h3>
               <p>Weight lose speed per week</p>
@@ -115,13 +118,13 @@ function GoalRangePage() {
                   min={isMetric ? "0.2" : "0.5"}
                   max={isMetric ? "1.5" : "3.3"}
                   step={isMetric ? "0.05" : "0.1"}
-                 value={value.toFixed(2)}
+                  value={value.toFixed(2)}
                   onChange={(e) => {
                     const inputValue = parseFloat(e.target.value);
                     // Convert back to lbs for storage if metric
-                    const storageValue = inputValue
-                      // ? inputValue / 0.453592
-                      // : inputValue;
+                    const storageValue = inputValue;
+                    // ? inputValue / 0.453592
+                    // : inputValue;
                     handleValueChange(storageValue);
                   }}
                   className="slider"

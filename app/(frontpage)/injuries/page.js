@@ -20,7 +20,7 @@ function InjuriesPage() {
     if (state.currentStep !== 28) {
       updateStep(29);
     }
-  }, [state.currentStep]); 
+  }, [state.currentStep]);
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -36,7 +36,6 @@ function InjuriesPage() {
     }
 
     // Only update step if it's not already set
-
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -52,11 +51,13 @@ function InjuriesPage() {
       // Separate predefined injuries from custom injuries
       const predefinedInjuries = [];
       let customInjury = "";
-      
-      state.injuries.forEach(injury => {
+
+      state.injuries.forEach((injury) => {
         // Check if this injury matches any of the fetched injuries
         // If not, it's likely a custom injury
-        const isPredefined = injuryList.some(inj => inj.injury_name === injury);
+        const isPredefined = injuryList.some(
+          (inj) => inj.injury_name === injury
+        );
         if (isPredefined || injuryList.length === 0) {
           // Include if it's predefined or if we haven't loaded injuries yet
           predefinedInjuries.push(injury);
@@ -67,10 +68,10 @@ function InjuriesPage() {
         //   customInjury = injury;
         // }
       });
-      
+
       setSelectedInjuries(predefinedInjuries);
     }
-    
+
     // Load custom injury from the new field
     if (state.injuries_other) {
       setCustomInjury(state.injuries_other);
@@ -147,11 +148,9 @@ function InjuriesPage() {
     updateField("injuries", selectedInjuries);
     updateField("injuries_other", customInjury.trim());
 
-
-    if(selectedInjuries.length>0||customInjury.trim()){
+    if (selectedInjuries.length > 0 || customInjury.trim()) {
       router.push("/crash-goal");
     }
-    
 
     // router.push("/crash-goal");
   };
@@ -184,6 +183,9 @@ function InjuriesPage() {
               />
 
               <div className="auth-cards food">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Injuries</p>
                 <h3 className="mb-4">
                   Do you have any past injuries <br /> or movement limitations?
@@ -227,7 +229,7 @@ function InjuriesPage() {
                               {selectedInjuries.includes(
                                 injury.injury_name
                               ) && (
-                              <></>
+                                <></>
                                 // <button
                                 //   type="button"
                                 //   onClick={(e) => {
