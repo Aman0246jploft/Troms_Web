@@ -53,7 +53,7 @@ const WeightPicker = ({
     const pickerWidth = pickerRef.current ? pickerRef.current.clientWidth : 0;
     const relativePos = Math.min(Math.max(pos, 0), pickerWidth) / pickerWidth;
     // Round to nearest 0.25
-    return Math.round((min + relativePos * (max - min)) * 4) / 4;
+    return Math.round((min + relativePos * (max - min)) );
   };
 
   const handlePointerDown = (e) => {

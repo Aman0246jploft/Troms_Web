@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { apiService } from "../../../lib/api";
 import Alert from "../../../Components/Alert";
+import { useRef } from "react";
 
 function ApproachPage() {
   const router = useRouter();
+  const hasSubmittedRef = useRef(false);
   const {
     state,
     setLoading,
@@ -100,11 +102,21 @@ function ApproachPage() {
     state.user,
   ]);
 
+  // useEffect(() => {
+  //   if (!isCompleted && !isSubmitting) {
+  //     handleSubmitUserInfo();
+  //   }
+  // }, [state.currentStep, isCompleted, isSubmitting]);
+
+
+
   useEffect(() => {
-    if (!isCompleted && !isSubmitting) {
-      handleSubmitUserInfo();
-    }
-  }, [state.currentStep, isCompleted, isSubmitting]);
+  if (!isCompleted && !isSubmitting && !hasSubmittedRef.current) {
+    hasSubmittedRef.current = true; // ensure it runs only once
+    handleSubmitUserInfo();
+  }
+}, [state.currentStep, isCompleted, isSubmitting]);
+
 
   // Auto-click continue button when no errors are present
   useEffect(() => {
@@ -165,6 +177,7 @@ function ApproachPage() {
   };
 
   const handleSubmitUserInfo = async () => {
+      if (isSubmitting || isCompleted) return;
     setIsSubmitting(true);
     setLoading(true);
     hideAlert();
