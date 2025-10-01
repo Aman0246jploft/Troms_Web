@@ -2,7 +2,7 @@
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 
 export default function Home() {
@@ -26,6 +26,49 @@ export default function Home() {
       [name]: value,
     }));
   };
+
+
+useEffect(() => {
+    const fetchLocationData = async (latitude, longitude) => {
+      try {
+        const apiKey = process.env.NEXT_LOCATION_API_KEY; // replace with your LocationIQ key
+        const response = await fetch(
+          `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
+        );
+        const data = await response.json();
+        if (data && data.address) {
+          const { country, state } = data.address;
+          // Store in localStorage
+          localStorage.setItem("country", country || "");
+          localStorage.setItem("state", state || "");
+          console.log("Location stored:", country, state);
+        }
+      } catch (error) {
+        console.error("Error fetching location data:", error);
+      }
+    };
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // Store raw coordinates
+          localStorage.setItem("latitude", latitude);
+          localStorage.setItem("longitude", longitude);
+
+          // Call reverse geocoding API in background
+          fetchLocationData(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      console.error("Geolocation not supported by this browser");
+    }
+  }, []);
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
