@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
+import Alert from "../../../Components/Alert";
 
 function trainingDayPage() {
   const router = useRouter();
@@ -26,13 +27,10 @@ function trainingDayPage() {
   useEffect(() => {
     updateStep(4);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // run only once
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
-    setTimeout(() => {
-      hideAlert();
-    }, 3000);
   };
 
   const hideAlert = () => {
@@ -43,11 +41,11 @@ function trainingDayPage() {
     let updatedDays;
 
     if (selectedDays.includes(day)) {
+      // Deselect the day
       updatedDays = selectedDays.filter(d => d !== day);
     } else {
       if (selectedDays.length >= 6) {
-        showAlert('warning', 'You can select a maximum of 6 days per week.');
-        return;
+        return; // Prevent adding more than 6
       }
       updatedDays = [...selectedDays, day];
     }
@@ -84,86 +82,12 @@ function trainingDayPage() {
                 </Link>
               </div>
 
-              {/* Modern Floating Alert */}
-              {alert.show && (
-                <div 
-                  className="modern-alert-container"
-                  style={{
-                    position: 'fixed',
-                    top: '20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 9999,
-                    animation: 'slideDown 0.3s ease-out'
-                  }}
-                >
-                  <div 
-                    className="modern-alert"
-                    style={{
-                      background: 'linear-gradient(135deg, #06402b 0%, #06402b 100%)',
-                      color: 'white',
-                      padding: '16px 24px',
-                      borderRadius: '12px',
-                      // boxShadow: '0 8px 24px #06402b',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      minWidth: '300px',
-                      maxWidth: '90vw',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)'
-                    }}
-                  >
-                    <div 
-                      className="alert-icon"
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.3)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                        flexShrink: 0
-                      }}
-                    >
-                      ⚠
-                    </div>
-                    <span style={{ 
-                      fontSize: '15px', 
-                      fontWeight: '500',
-                      flex: 1 
-                    }}>
-                      {alert.message}
-                    </span>
-                    <button
-                      onClick={hideAlert}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        border: 'none',
-                        color: 'white',
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '18px',
-                        lineHeight: '1',
-                        flexShrink: 0,
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.3)'}
-                      onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
+              <Alert
+                type={alert.type}
+                message={alert.message}
+                show={alert.show}
+                onClose={hideAlert}
+              />
 
               <div className="auth-cards training">
                 <p className="text-uppercase mb-5">Work Out</p>
@@ -199,6 +123,17 @@ function trainingDayPage() {
                         );
                       })}
                     </ul>
+                    {/* Counter Display */}
+                    <div className="text-center mt-3">
+                      <p className="text-muted mb-0">
+                        <span style={{ fontSize: '16px', fontWeight: '500' }}>
+                          {selectedDays.length}/6
+                        </span>
+                        <span style={{ fontSize: '14px', marginLeft: '8px' }}>
+                          days selected
+                        </span>
+                      </p>
+                    </div>
                   </div>
 
                   <div className="text-center mt-5">
@@ -221,19 +156,6 @@ function trainingDayPage() {
           </p>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-      `}</style>
     </>
   );
 }
