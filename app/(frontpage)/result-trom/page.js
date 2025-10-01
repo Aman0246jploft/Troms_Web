@@ -1,7 +1,10 @@
+"use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 function page() {
+    const router = useRouter();
   return (
     <>
       <section className="auth-section">
@@ -14,11 +17,11 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards gender">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Results Troms</p>

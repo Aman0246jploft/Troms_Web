@@ -67,13 +67,21 @@ function HealthConditionsPage() {
     }
   };
 
+  const HEALTHY_OPTION = "Healthy";
+
   const handleConditionToggle = (conditionTitle) => {
     setSelectedConditions((prev) => {
-      if (prev.includes(conditionTitle)) {
-        return prev.filter((item) => item !== conditionTitle);
-      } else {
-        return [...prev, conditionTitle];
+      // If user selects "Healthy", deselect all others
+      if (conditionTitle === HEALTHY_OPTION) {
+        return prev.includes(HEALTHY_OPTION) ? [] : [HEALTHY_OPTION];
       }
+
+      // If "Healthy" was selected and user selects another condition, remove "Healthy"
+      let updated = prev.includes(conditionTitle)
+        ? prev.filter((item) => item !== conditionTitle)
+        : [...prev.filter((item) => item !== HEALTHY_OPTION), conditionTitle];
+
+      return updated;
     });
   };
 
@@ -119,16 +127,19 @@ function HealthConditionsPage() {
                 </Link>
               </div>
               <div className="auth-cards health-conditions">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Health Conditions</p>
                 <h3 className="mb-4">Common Health Conditions for Fitness</h3>
                 <div className="food-card">
+
+
+
                   {healthConditions.map((condition) => (
                     <div key={condition.id} className="food-bx">
                       <input
@@ -151,6 +162,26 @@ function HealthConditionsPage() {
                       </label>
                     </div>
                   ))}
+                  <div className="food-bx">
+                    <input
+                      type="checkbox"
+                      id="condition-healthy"
+                      className="d-none"
+                      checked={selectedConditions.includes(HEALTHY_OPTION)}
+                      onChange={() => handleConditionToggle(HEALTHY_OPTION)}
+                    />
+                    <label htmlFor="condition-healthy">
+                      {HEALTHY_OPTION}
+                      <button type="button" className="tooltip-btn">
+                        <img alt="info" src="/images/info-icon.svg" />
+                        <span className="tooltip-text">
+                          This option indicates that you are in good health and do not have any specific conditions.
+                        </span>
+                      </button>
+                    </label>
+                  </div>
+
+
 
                   <div className="food-bx">
                     <input

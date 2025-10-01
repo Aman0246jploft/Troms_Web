@@ -296,13 +296,13 @@ function ApproachPage() {
               />
 
               <div className="auth-cards food">
-                    <button
+                    {/* <button
       type="button"
       onClick={() => router.back()}
       className="new_back_btn"
     >
                   Previous
-                </button>
+                </button> */}
                 <p className="text-uppercase mb-5">Approach</p>
 
                 <div className="text-center mt-3 mb-3">
