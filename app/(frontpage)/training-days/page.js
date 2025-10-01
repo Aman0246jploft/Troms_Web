@@ -36,18 +36,42 @@ function trainingDayPage() {
     setAlert({ show: false, type: '', message: '' });
   };
 
-  const handleDaysChange = (day) => {
-    let updatedDays;
-    if (selectedDays.includes(day)) {
-      updatedDays = selectedDays.filter(d => d !== day);
-    } else {
-      updatedDays = [...selectedDays, day];
+  // const handleDaysChange = (day) => {
+  //   let updatedDays;
+  //   if (selectedDays.includes(day)) {
+  //     updatedDays = selectedDays.filter(d => d !== day);
+  //   } else {
+  //     updatedDays = [...selectedDays, day];
+  //   }
+  //   setSelectedDays(updatedDays);
+  //   updateField('trainingDays', updatedDays);
+  //   updateField('trainingDay', updatedDays.length);
+  //   hideAlert();
+  // };
+
+const handleDaysChange = (day) => {
+  let updatedDays;
+
+  if (selectedDays.includes(day)) {
+    // Deselect the day
+    updatedDays = selectedDays.filter(d => d !== day);
+  } else {
+    if (selectedDays.length >= 6) {
+      window.alert('You can select a maximum of 6 days per week.')
+      // showAlert('warning', 'You can select a maximum of 6 days per week.');
+      return; // Prevent adding more than 6
     }
-    setSelectedDays(updatedDays);
-    updateField('trainingDays', updatedDays);
-    updateField('trainingDay', updatedDays.length);
-    hideAlert();
-  };
+    updatedDays = [...selectedDays, day];
+  }
+
+  setSelectedDays(updatedDays);
+  updateField('trainingDays', updatedDays);
+  updateField('trainingDay', updatedDays.length);
+  hideAlert();
+};
+
+
+
 
   const handleContinue = (e) => {
     e.preventDefault();
