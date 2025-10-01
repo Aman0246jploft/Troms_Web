@@ -1,3 +1,6 @@
+"use client";
+
+
 import { useState, useEffect, useRef } from "react";
 
 function CityPicker({ cities, onCitySelect, selectedCity, disabled, loading: externalLoading, isOpen, onToggle }) {
@@ -36,11 +39,32 @@ function CityPicker({ cities, onCitySelect, selectedCity, disabled, loading: ext
   }, [open]);
 
   // Auto-select first city if none is selected and cities are available
+  // useEffect(() => {
+  //   if (!selectedCity && cities.length > 0 && onCitySelect && !disabled) {
+  //     onCitySelect(cities[0]);
+  //   }
+  // }, [cities, selectedCity, onCitySelect, disabled]);
+  
   useEffect(() => {
     if (!selectedCity && cities.length > 0 && onCitySelect && !disabled) {
-      onCitySelect(cities[0]);
+      const storedCity = window.localStorage.getItem("city"); // get stored city
+    let matchedCity = null;
+
+    if (storedCity) {
+      let a = cities.findIndex(c => c === storedCity); // match by cityName
+      matchedCity = cities[a]
+
     }
-  }, [cities, selectedCity, onCitySelect, disabled]);
+
+    // fallback to first city if no match
+    if (!matchedCity) {
+      matchedCity = cities[0];
+    }
+
+    onCitySelect(matchedCity);
+  }
+}, [cities, selectedCity, onCitySelect, disabled]);
+
 
   const handleSelect = (city) => {
     setOpen(false);

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
-import Alert from "../../../Components/Alert";
+// import Alert from "../../../Components/Alert";
 
 function AccomplishPage() {
   const router = useRouter();
@@ -93,12 +93,12 @@ function AccomplishPage() {
                 </Link>
               </div>
 
-              <Alert
+              {/* <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
                 onClose={hideAlert}
-              />
+              /> */}
 
               <div className="auth-cards weight-goal">
                 <p className="text-uppercase mb-3">Accomplish</p>

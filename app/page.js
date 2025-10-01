@@ -31,16 +31,18 @@ export default function Home() {
 useEffect(() => {
     const fetchLocationData = async (latitude, longitude) => {
       try {
-        const apiKey = process.env.NEXT_LOCATION_API_KEY; // replace with your LocationIQ key
+        const apiKey = process.env.NEXT_PUBLIC_LOCATION_API_KEY; // replace with your LocationIQ key
+
         const response = await fetch(
           `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
         );
         const data = await response.json();
         if (data && data.address) {
-          const { country, state } = data.address;
+          const { country, state,city } = data.address;
           // Store in localStorage
           localStorage.setItem("country", country || "");
           localStorage.setItem("state", state || "");
+          localStorage.setItem("city", city || "");
           console.log("Location stored:", country, state);
         }
       } catch (error) {

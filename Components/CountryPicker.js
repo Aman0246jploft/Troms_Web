@@ -44,11 +44,44 @@ function CountryPicker({ onCountrySelect, selectedCountry, loading: externalLoad
   }, [open]);
 
   // Auto-select first country if none is selected and countries are available
-  useEffect(() => {
-    if (!selectedCountry && countries.length > 0 && onCountrySelect) {
-      onCountrySelect(countries[0]);
+  // useEffect(() => {
+  //   if (!selectedCountry && countries.length > 0 && onCountrySelect) {
+  //     onCountrySelect(countries[0]);
+  //   }
+  // }, [countries, selectedCountry, onCountrySelect]);
+
+
+
+
+
+useEffect(() => {
+  if (!selectedCountry && countries.length > 0 && onCountrySelect) {
+    const storedCountry = window.localStorage.getItem("country"); // get stored country
+
+    let matchedCountry = null;
+
+    if (storedCountry) {
+      // find the index of the stored country
+      const index = countries.findIndex(c => c.countryName === storedCountry);
+      if (index !== -1) {
+        matchedCountry = countries[index];
+      }
     }
-  }, [countries, selectedCountry, onCountrySelect]);
+
+    // fallback to first country if no match
+    if (!matchedCountry) {
+      matchedCountry = countries[0];
+    }
+
+    // setSelectedCountry(matchedCountry);
+    onCountrySelect(matchedCountry);
+  }
+}, [countries, selectedCountry, onCountrySelect]);
+
+
+
+
+
 
   const fetchCountries = async () => {
     try {
