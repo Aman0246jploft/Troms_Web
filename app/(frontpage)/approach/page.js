@@ -107,15 +107,34 @@ function ApproachPage() {
   //     handleSubmitUserInfo();
   //   }
   // }, [state.currentStep, isCompleted, isSubmitting]);
+useEffect(() => {
+  if (hasSubmittedRef.current) return; // already submitted
 
+  // Check if all required fields are filled
+  const requiredFields = [
+    "gender",
+    "dateOfBirth",
+    "age",
+    "trainingDay",
+    "weight",
+    "weightGoal",
+    "workoutLocation",
+    "selectedEquipments",
+    "reachingGoals",
+  ];
 
+  const missingFields = requiredFields.filter((field) => {
+    const value = state[field];
+    if (Array.isArray(value)) return value.length === 0;
+    return !value || value === "";
+  });
 
-  useEffect(() => {
-  if (!isCompleted && !isSubmitting && !hasSubmittedRef.current) {
-    hasSubmittedRef.current = true; // ensure it runs only once
+  // If no missing fields, submit
+  if (missingFields.length === 0 && !isSubmitting && !isCompleted) {
+    hasSubmittedRef.current = true; // mark as submitted
     handleSubmitUserInfo();
   }
-}, [state.currentStep, isCompleted, isSubmitting]);
+}, [state, isSubmitting, isCompleted]);
 
 
   // Auto-click continue button when no errors are present
