@@ -122,6 +122,9 @@ function MoveAtwork() {
     >
                   Previous
                 </button>
+                <button type="button" className="new_skips_btn">
+                  Skip
+                </button>
                 <p className="text-uppercase mb-2">Movement</p>
                 <h3 className="mb-4">How much do you move at work?</h3>
                 <form onSubmit={handleContinue}>

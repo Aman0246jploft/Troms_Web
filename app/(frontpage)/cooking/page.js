@@ -108,6 +108,9 @@ function CookingPage() {
     >
                   Previous
                 </button>
+                <button type="button" className="new_skips_btn">
+                  Skip
+                </button>
                 <p className="text-uppercase mb-3">Cooking</p>
                 <h3 className="mb-5">How good are you at cooking?</h3>
                 <div className="px-135">

@@ -161,6 +161,9 @@ function SportsExercisesContent() {
     >
                   Previous
                 </button>
+                <button type="button" className="new_skips_btn">
+                  Skip
+                </button>
                 <p className="text-uppercase mb-2">Sports & Exercises</p>
                 <h3 className="mb-4">
                   Do you want to add some sports exercises?{" "}
