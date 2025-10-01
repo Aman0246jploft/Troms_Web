@@ -217,9 +217,9 @@ function RegisterPage() {
       // Initialize AppleID once SDK is ready
       if (window.AppleID) {
         window.AppleID.auth.init({
-          clientId: "com.example.web", // replace with your real Apple clientId
+          clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID, // replace with your real Apple clientId
           scope: "name email",
-          redirectURI: window.location.href, // must match Apple Dev settings
+          redirectURI: process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI, // must match Apple Dev settings
           usePopup: true,
         });
       }
