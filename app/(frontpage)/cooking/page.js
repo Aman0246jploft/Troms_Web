@@ -68,6 +68,17 @@ function CookingPage() {
     }
   };
 
+
+const handleSkip = () => {
+  // Optionally, you can clear the cookingLevel if skipped
+  updateField("cookingLevel", ""); 
+
+  // Move to the next step
+  updateStep(20);
+  router.push("/accomplish");
+};
+
+
   const getLevelDescription = (level) => {
     switch (level) {
       case "Beginner":
@@ -108,7 +119,7 @@ function CookingPage() {
     >
                   Previous
                 </button>
-                <button type="button" className="new_skips_btn">
+                <button type="button" className="new_skips_btn"  onClick={handleSkip}>
                   Skip
                 </button>
                 <p className="text-uppercase mb-3">Cooking</p>

@@ -14,34 +14,61 @@ function HealthConditionsPage() {
   const [otherCondition, setOtherCondition] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Load previously selected conditions from context/localStorage
-    if (state.healthyConditions && state.healthyConditions.length > 0) {
-      // Separate predefined conditions from custom "Other" conditions
-      const predefinedConditions = [];
-      let customCondition = "";
+  // useEffect(() => {
+  //   // Load previously selected conditions from context/localStorage
+  //   if (state.healthyConditions && state.healthyConditions.length > 0) {
+  //     // Separate predefined conditions from custom "Other" conditions
+  //     const predefinedConditions = [];
+  //     let customCondition = "";
 
-      state.healthyConditions.forEach((condition) => {
-        // Check if this condition matches any of the fetched health conditions
-        // If not, it's likely a custom "Other" condition
-        const isPredefined = healthConditions.some(
-          (hc) => hc.title === condition
-        );
-        if (isPredefined || healthConditions.length === 0) {
-          // Include if it's predefined or if we haven't loaded conditions yet
-          predefinedConditions.push(condition);
-        } else {
-          // This is likely a custom condition
-          customCondition = condition;
-        }
-      });
+  //     state.healthyConditions.forEach((condition) => {
+  //       // Check if this condition matches any of the fetched health conditions
+  //       // If not, it's likely a custom "Other" condition
+  //       const isPredefined = healthConditions.some(
+  //         (hc) => hc.title === condition
+  //       );
+  //       if (isPredefined || healthConditions.length === 0) {
+  //         // Include if it's predefined or if we haven't loaded conditions yet
+  //         predefinedConditions.push(condition);
+  //       } else {
+  //         // This is likely a custom condition
+  //         customCondition = condition;
+  //       }
+  //     });
 
-      setSelectedConditions(predefinedConditions);
-      if (customCondition) {
-        setOtherCondition(customCondition);
+  //     setSelectedConditions(predefinedConditions);
+  //     if (customCondition) {
+  //       setOtherCondition(customCondition);
+  //     }
+  //   }
+  // }, [state.healthyConditions, healthConditions]);
+
+
+
+useEffect(() => {
+  if (state.healthyConditions && state.healthyConditions.length > 0) {
+    const predefinedConditions = [];
+    let customCondition = "";
+
+    state.healthyConditions.forEach((condition) => {
+      // Check if this condition exists in fetched healthConditions
+      const isPredefined = healthConditions.some(
+        (hc) => hc.title === condition
+      ) || condition === HEALTHY_OPTION; // include "Healthy" as predefined
+
+      if (isPredefined) {
+        predefinedConditions.push(condition);
+      } else {
+        // Custom condition goes to Other field
+        customCondition = condition;
       }
-    }
-  }, [state.healthyConditions, healthConditions]);
+    });
+
+    setSelectedConditions(predefinedConditions);
+    setOtherCondition(customCondition);
+  }
+}, [state.healthyConditions, healthConditions]);
+
 
   useEffect(() => {
     fetchHealthConditions();
@@ -69,21 +96,39 @@ function HealthConditionsPage() {
 
   const HEALTHY_OPTION = "Healthy";
 
-  const handleConditionToggle = (conditionTitle) => {
-    setSelectedConditions((prev) => {
-      // If user selects "Healthy", deselect all others
-      if (conditionTitle === HEALTHY_OPTION) {
-        return prev.includes(HEALTHY_OPTION) ? [] : [HEALTHY_OPTION];
-      }
+  // const handleConditionToggle = (conditionTitle) => {
+  //   setSelectedConditions((prev) => {
+  //     // If user selects "Healthy", deselect all others
+  //     if (conditionTitle === HEALTHY_OPTION) {
+  //       return prev.includes(HEALTHY_OPTION) ? [] : [HEALTHY_OPTION];
+  //     }
 
-      // If "Healthy" was selected and user selects another condition, remove "Healthy"
-      let updated = prev.includes(conditionTitle)
-        ? prev.filter((item) => item !== conditionTitle)
-        : [...prev.filter((item) => item !== HEALTHY_OPTION), conditionTitle];
+  //     // If "Healthy" was selected and user selects another condition, remove "Healthy"
+  //     let updated = prev.includes(conditionTitle)
+  //       ? prev.filter((item) => item !== conditionTitle)
+  //       : [...prev.filter((item) => item !== HEALTHY_OPTION), conditionTitle];
 
-      return updated;
-    });
-  };
+  //     return updated;
+  //   });
+  // };
+
+const handleConditionToggle = (conditionTitle) => {
+  setSelectedConditions((prev) => {
+    if (conditionTitle === HEALTHY_OPTION) {
+      // Selecting Healthy deselects all others including Other
+      setOtherCondition(""); // Clear Other input
+      return prev.includes(HEALTHY_OPTION) ? [] : [HEALTHY_OPTION];
+    }
+
+    // Selecting another condition deselects Healthy if it was selected
+    let updated = prev.includes(conditionTitle)
+      ? prev.filter((item) => item !== conditionTitle)
+      : [...prev.filter((item) => item !== HEALTHY_OPTION), conditionTitle];
+
+    return updated;
+  });
+};
+
 
   const handleContinue = () => {
     const finalConditions = [...selectedConditions];
@@ -211,7 +256,7 @@ function HealthConditionsPage() {
                     </label> */}
                   </div>
                 </div>
-                <div className="custom-frm-bx mt-4 px-135">
+                {/* <div className="custom-frm-bx mt-4 px-135">
                   <input
                     className="form-control"
                     placeholder="If other (please specify)"
@@ -219,7 +264,29 @@ function HealthConditionsPage() {
                     value={otherCondition}
                     onChange={(e) => setOtherCondition(e.target.value)}
                   />
-                </div>
+                </div> */}
+
+<div className="custom-frm-bx mt-4 px-135">
+  <input
+    className="form-control"
+    placeholder="If other (please specify)"
+    type="text"
+    value={otherCondition}
+    onChange={(e) => {
+      const value = e.target.value;
+      setOtherCondition(value);
+
+      // Deselect Healthy if user starts typing
+      if (value.trim() !== "" && selectedConditions.includes(HEALTHY_OPTION)) {
+        setSelectedConditions((prev) =>
+          prev.filter((c) => c !== HEALTHY_OPTION)
+        );
+      }
+    }}
+  />
+</div>
+
+                
                 <div className="text-center mt-3">
                   <button
                     type="button"

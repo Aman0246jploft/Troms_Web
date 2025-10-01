@@ -38,9 +38,9 @@ function page() {
     >
                   Previous
                 </button>
-                <button type="button" className="new_skips_btn">
+                {/* <button type="button" className="new_skips_btn">
                   Skip
-                </button>
+                </button> */}
                 <p className="text-uppercase mb-2">Crash your goal</p>
                 <h3 className="mb-4">
                   You have Great Potential <br /> to crush your goal

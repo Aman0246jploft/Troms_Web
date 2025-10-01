@@ -83,6 +83,16 @@ function MoveAtwork() {
     hideAlert();
   };
 
+  const handleSkip = () => {
+  // Optional: clear the workActivityLevel if skipped
+  updateField("workActivityLevel", ""); 
+
+  // Move to the next step
+  updateStep(25);
+  router.push("/shift");
+};
+
+
   const handleContinue = (e) => {
     e.preventDefault();
 
@@ -122,9 +132,10 @@ function MoveAtwork() {
     >
                   Previous
                 </button>
-                <button type="button" className="new_skips_btn">
-                  Skip
-                </button>
+           <button type="button" className="new_skips_btn" onClick={handleSkip}>
+  Skip
+</button>
+
                 <p className="text-uppercase mb-2">Movement</p>
                 <h3 className="mb-4">How much do you move at work?</h3>
                 <form onSubmit={handleContinue}>

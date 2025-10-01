@@ -74,6 +74,17 @@ function BudgetPage() {
     router.push("/job-type");
   };
 
+const handleSkip = () => {
+  // Optionally clear budget if skipped
+  updateField("budget", "");
+
+  // Move to the next step
+  updateStep(24);
+  router.push("/job-type");
+};
+
+
+
   return (
     <>
       <section className="auth-section">
@@ -101,9 +112,14 @@ function BudgetPage() {
     >
                   Previous
                 </button>
-                <button type="button" className="new_skips_btn">
-                  Skip
-                </button>
+         <button
+  type="button"
+  className="new_skips_btn"
+  onClick={handleSkip}
+>
+  Skip
+</button>
+
                 <p className="text-uppercase mb-2">Budget</p>
                 <h3 className="mb-4">Select your preferred budget.</h3>
                 <form onSubmit={handleContinue}>

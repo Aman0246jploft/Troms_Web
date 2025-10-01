@@ -134,6 +134,18 @@ function SportsExercisesContent() {
     router.push("/goal-reach");
   };
 
+
+const handleSkip = () => {
+  // Clear exercises if skipped (optional)
+  updateField("sportExercises", []);
+
+  // Move to the next step
+  updateStep(14);
+  router.push("/goal-reach");
+};
+
+
+
   return (
     <>
       <section className="auth-section">
@@ -161,9 +173,14 @@ function SportsExercisesContent() {
     >
                   Previous
                 </button>
-                <button type="button" className="new_skips_btn">
-                  Skip
-                </button>
+           <button
+  type="button"
+  className="new_skips_btn"
+  onClick={handleSkip}
+>
+  Skip
+</button>
+
                 <p className="text-uppercase mb-2">Sports & Exercises</p>
                 <h3 className="mb-4">
                   Do you want to add some sports exercises?{" "}
