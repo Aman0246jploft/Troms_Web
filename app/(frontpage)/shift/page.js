@@ -15,7 +15,11 @@ function ShiftPage() {
   const shiftOptions = [
     { id: "DAY", label: "Day", icon: "/images/low-icon.svg" },
     { id: "NIGHT", label: "Night", icon: "/images/medium-icon.svg" },
-    { id: "ROTATING_SHIFTS", label: "Rotating shifts", icon: "/images/high-icon.svg" },
+    {
+      id: "ROTATING_SHIFTS",
+      label: "Rotating shifts",
+      icon: "/images/high-icon.svg",
+    },
     { id: "VARIES", label: "Varies", icon: "/images/high-icon.svg" },
   ];
 
@@ -23,7 +27,7 @@ function ShiftPage() {
     if (state.currentStep !== 25) {
       updateStep(26);
     }
-  }, [state.currentStep]); 
+  }, [state.currentStep]);
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -44,8 +48,6 @@ function ShiftPage() {
       router.push("/moveAtwork");
       return;
     }
-
-
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -102,12 +104,18 @@ function ShiftPage() {
               />
 
               <div className="auth-cards">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Shift</p>
                 <h3 className="mb-4">When do you work?</h3>
                 <form onSubmit={handleContinue}>
                   <div className="px-135">
                     {shiftOptions.map((option) => (
-                      <div key={option.id} className="custom-check budget-check">
+                      <div
+                        key={option.id}
+                        className="custom-check budget-check"
+                      >
                         <input
                           id={option.id}
                           className="d-none"
@@ -117,19 +125,24 @@ function ShiftPage() {
                           checked={selectedShift === option.id}
                           onChange={() => handleShiftChange(option.id)}
                         />
-                        <label 
-                          htmlFor={option.id} 
-                          className={selectedShift === option.id ? "selected" : ""}
+                        <label
+                          htmlFor={option.id}
+                          className={
+                            selectedShift === option.id ? "selected" : ""
+                          }
                         >
-                          <img src={option.icon} alt={`${option.label} Shift`} />{" "}
+                          <img
+                            src={option.icon}
+                            alt={`${option.label} Shift`}
+                          />{" "}
                           {option.label}
                         </label>
                       </div>
                     ))}
                   </div>
                   <div className="text-center mt-3">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="custom-btn continue-btn"
                       disabled={!selectedShift}
                     >

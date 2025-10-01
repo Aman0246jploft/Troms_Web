@@ -9,40 +9,51 @@ import { flushSync } from "react-dom";
 
 function NewWeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid,toggleUnitSystem } = useOnboarding();
+  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } =
+    useOnboarding();
 
   const [loading, setLoading] = useState(false);
-const [weight, setWeight] = useState(() => {
-  if (state.weight) return state.weight;
-  return state.unitSystem === 'metric' ? 75 : 165;
-});
+  const [weight, setWeight] = useState(() => {
+    if (state.weight) return state.weight;
+    return state.unitSystem === "metric" ? 75 : 165;
+  });
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Redirects based on previous steps
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     } else if (!state.gender) {
-      router.push('/select-gender');
+      router.push("/select-gender");
     } else if (!state.dateOfBirth || state.age < 13) {
-      router.push('/borndate');
+      router.push("/borndate");
     } else if (!state.trainingDay) {
-      router.push('/training-days');
+      router.push("/training-days");
     } else if (state.trainMoreThanOnce === undefined) {
-      router.push('/train-more');
+      router.push("/train-more");
     } else if (state.feedback === null) {
-      router.push('/feedback');
+      router.push("/feedback");
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, state.height, router]);
+  }, [
+    state.isAuthenticated,
+    state.gender,
+    state.dateOfBirth,
+    state.age,
+    state.trainingDay,
+    state.trainMoreThanOnce,
+    state.feedback,
+    state.height,
+    router,
+  ]);
 
   useEffect(() => {
     updateStep(7);
-    
+
     // Initialize weight if not set
     if (!state.weight) {
-      updateField('weight', weight);
+      updateField("weight", weight);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
@@ -51,63 +62,58 @@ const [weight, setWeight] = useState(() => {
     setAlert({ show: true, type, message });
   };
 
-//  const handleUnitToggle = () => {
-//     toggleUnitSystem();
-//   };
+  //  const handleUnitToggle = () => {
+  //     toggleUnitSystem();
+  //   };
 
+  const handleUnitToggle = () => {
+    setLoading(true); // show full-screen loader
 
-const handleUnitToggle = () => {
-  setLoading(true); // show full-screen loader
+    const newWeight = isMetric
+      ? Math.round(weight * 2.20462) // kg → lbs
+      : Math.round(weight / 2.20462); // lbs → kg
 
-  const newWeight = isMetric
-    ? Math.round(weight * 2.20462) // kg → lbs
-    : Math.round(weight / 2.20462); // lbs → kg
+    // Apply updates in one synchronous batch
+    setTimeout(() => {
+      setWeight(newWeight); // update local state immediately for WeightPicker
+      updateField("weight", newWeight); // update global onboarding state
+      toggleUnitSystem(newWeight); // update unit system in context
+      setLoading(false); // hide loader
+    }, 50);
+  };
 
-  // Apply updates in one synchronous batch
-  setTimeout(() => {
-    setWeight(newWeight);            // update local state immediately for WeightPicker
-    updateField('weight', newWeight); // update global onboarding state
-    toggleUnitSystem(newWeight);      // update unit system in context
-    setLoading(false);                // hide loader
-  }, 50);
-};
+  // const handleUnitToggle = () => {
+  //   let newWeight;
 
+  //   if (isMetric) {
+  //     // Convert from kg → lbs
+  //     newWeight = Math.round(weight * 2.20462);
+  //   } else {
+  //     // Convert from lbs → kg
+  //     newWeight = Math.round(weight / 2.20462);
+  //   }
 
-// const handleUnitToggle = () => {
-//   let newWeight;
+  //   setWeight(newWeight);
+  //   updateField("weight", newWeight);
 
-//   if (isMetric) {
-//     // Convert from kg → lbs
-//     newWeight = Math.round(weight * 2.20462); 
-//   } else {
-//     // Convert from lbs → kg
-//     newWeight = Math.round(weight / 2.20462);
-//   }
-
-//   setWeight(newWeight);
-//   updateField("weight", newWeight);
-
-//   toggleUnitSystem();
-// };
-
-
+  //   toggleUnitSystem();
+  // };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleWeightChange = (newWeight) => {
     setWeight(newWeight);
-    updateField('weight', newWeight);
+    updateField("weight", newWeight);
     hideAlert();
   };
-
 
   const handleContinue = (e) => {
     e.preventDefault();
 
     if (!weight || weight <= 0) {
-      showAlert('warning', 'Please select a valid weight.');
+      showAlert("warning", "Please select a valid weight.");
       return;
     }
 
@@ -124,9 +130,8 @@ const handleUnitToggle = () => {
     //   }
     // }
 
-      updateStep(8);
-      router.push('/new-height'); // next page
-
+    updateStep(8);
+    router.push("/new-height"); // next page
   };
 
   return (
@@ -140,12 +145,12 @@ const handleUnitToggle = () => {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-{loading && (
-  <div className="fullscreen-loader">
-    <div className="spinner"></div>
-    {/* <p>Updating...</p> */}
-  </div>
-)}
+              {loading && (
+                <div className="fullscreen-loader">
+                  <div className="spinner"></div>
+                  {/* <p>Updating...</p> */}
+                </div>
+              )}
               <Alert
                 type={alert.type}
                 message={alert.message}
@@ -154,16 +159,19 @@ const handleUnitToggle = () => {
               />
 
               <div className="auth-cards weight-goal">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Your Weight</p>
                 <h3 className="mb-2">What is your current weight?</h3>
                 <p className="mb-2">You can update it later if needed</p>
-                
-    <div className="weight-switch mb-3">
+
+                <div className="weight-switch mb-3">
                   <span>Imperial</span>
                   <label className="switch">
-                    <input 
-                      type="checkbox" 
-                      className="d-none" 
+                    <input
+                      type="checkbox"
+                      className="d-none"
                       checked={isMetric}
                       onChange={handleUnitToggle}
                     />
@@ -173,15 +181,15 @@ const handleUnitToggle = () => {
                 </div>
 
                 <div className="trm-wgt-picker">
-                  <WeightPicker 
+                  <WeightPicker
                     weight={weight}
                     isMetric={isMetric}
                     onChange={handleWeightChange}
                   />
                 </div>
                 <div className="text-center mt-5">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="custom-btn continue-btn"
                     onClick={handleContinue}
                     disabled={!weight || weight <= 0}

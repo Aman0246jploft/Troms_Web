@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -10,17 +10,17 @@ function trainingDayPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [selectedDays, setSelectedDays] = useState(state.trainingDays || []);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-  const WEEKDAYS = ["SUN","MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   // Redirects based on previous steps
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     } else if (!state.gender) {
-      router.push('/select-gender');
+      router.push("/select-gender");
     } else if (!state.dateOfBirth || state.age < 13) {
-      router.push('/borndate');
+      router.push("/borndate");
     }
   }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, router]);
   
@@ -34,15 +34,14 @@ function trainingDayPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleDaysChange = (day) => {
     let updatedDays;
 
     if (selectedDays.includes(day)) {
-      // Deselect the day
-      updatedDays = selectedDays.filter(d => d !== day);
+      updatedDays = selectedDays.filter((d) => d !== day);
     } else {
       if (selectedDays.length >= 6) {
         return; // Prevent adding more than 6
@@ -51,8 +50,8 @@ function trainingDayPage() {
     }
 
     setSelectedDays(updatedDays);
-    updateField('trainingDays', updatedDays);
-    updateField('trainingDay', updatedDays.length);
+    updateField("trainingDays", updatedDays);
+    updateField("trainingDay", updatedDays.length);
     hideAlert();
   };
 
@@ -60,13 +59,16 @@ function trainingDayPage() {
     e.preventDefault();
 
     if (!selectedDays || selectedDays.length < 1) {
-      showAlert('warning', 'Please select at least one day per week you can train.');
+      showAlert(
+        "warning",
+        "Please select at least one day per week you can train."
+      );
       return;
     }
 
     if (isStepValid(4)) {
       updateStep(5);
-      router.push('/train-more');
+      router.push("/train-more");
     }
   };
 
@@ -90,6 +92,9 @@ function trainingDayPage() {
               />
 
               <div className="auth-cards training">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-5">Work Out</p>
                 <h3 className="mb-2">
                   How often do you work <br /> out each week?
@@ -104,7 +109,9 @@ function trainingDayPage() {
                         return (
                           <li
                             key={day}
-                            className={`days-list-items ${isSelected ? "active" : ""}`}
+                            className={`days-list-items ${
+                              isSelected ? "active" : ""
+                            }`}
                             style={{ transitionDelay: `${index * 50}ms` }}
                           >
                             <input

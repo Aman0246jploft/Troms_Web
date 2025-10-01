@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -9,18 +9,18 @@ import Alert from "../../../Components/Alert";
 function CookingPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
-  const [selectedLevel, setSelectedLevel] = useState(state.cookingLevel || '');
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [selectedLevel, setSelectedLevel] = useState(state.cookingLevel || "");
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
 
     if (state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
     if (!state.cheatMealFoodItems || state.cheatMealFoodItems.length === 0) {
-      router.push('/favorite-food');
+      router.push("/favorite-food");
       return;
     }
 
@@ -28,46 +28,56 @@ function CookingPage() {
     if (state.currentStep !== 17) {
       updateStep(19);
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.cheatMealFoodItems, state.currentStep, router, updateStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.cheatMealFoodItems,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleLevelChange = (level) => {
     setSelectedLevel(level);
-    updateField('cookingLevel', level);
+    updateField("cookingLevel", level);
     hideAlert();
   };
 
   const handleContinue = (e) => {
     e.preventDefault();
-    
+
     if (!selectedLevel) {
-      showAlert('warning', 'Please select your cooking skill level to continue.');
+      showAlert(
+        "warning",
+        "Please select your cooking skill level to continue."
+      );
       return;
     }
 
     if (isStepValid(19)) {
       updateStep(20);
-      router.push('/accomplish');
+      router.push("/accomplish");
     }
   };
 
   const getLevelDescription = (level) => {
     switch (level) {
-      case 'Beginner':
-        return 'Basic cooking skills - simple recipes and easy-to-follow instructions';
-      case 'Intermediate':
-        return 'Comfortable with various cooking techniques and moderate complexity recipes';
-      case 'Advanced':
-        return 'Skilled in complex cooking methods and can handle challenging recipes';
+      case "Beginner":
+        return "Basic cooking skills - simple recipes and easy-to-follow instructions";
+      case "Intermediate":
+        return "Comfortable with various cooking techniques and moderate complexity recipes";
+      case "Advanced":
+        return "Skilled in complex cooking methods and can handle challenging recipes";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -82,8 +92,8 @@ function CookingPage() {
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
               </div>
-              
-              <Alert 
+
+              <Alert
                 type={alert.type}
                 message={alert.message}
                 show={alert.show}
@@ -91,7 +101,10 @@ function CookingPage() {
               />
 
               <div className="auth-cards weight-goal">
-                <p className="text-uppercase mb-5">Cooking</p>
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
+                <p className="text-uppercase mb-3">Cooking</p>
                 <h3 className="mb-5">How good are you at cooking?</h3>
                 <div className="px-135">
                   <form onSubmit={handleContinue}>
@@ -102,12 +115,14 @@ function CookingPage() {
                         name="cooking-skill"
                         className="d-none"
                         value="Beginner"
-                        checked={selectedLevel === 'Beginner'}
-                        onChange={() => handleLevelChange('Beginner')}
+                        checked={selectedLevel === "Beginner"}
+                        onChange={() => handleLevelChange("Beginner")}
                       />
-                      <label 
+                      <label
                         htmlFor="Beginner"
-                        className={selectedLevel === 'Beginner' ? 'selected' : ''}
+                        className={
+                          selectedLevel === "Beginner" ? "selected" : ""
+                        }
                       >
                         Beginner
                       </label>
@@ -119,12 +134,14 @@ function CookingPage() {
                         name="cooking-skill"
                         className="d-none"
                         value="Intermediate"
-                        checked={selectedLevel === 'Intermediate'}
-                        onChange={() => handleLevelChange('Intermediate')}
+                        checked={selectedLevel === "Intermediate"}
+                        onChange={() => handleLevelChange("Intermediate")}
                       />
-                      <label 
+                      <label
                         htmlFor="Intermediate"
-                        className={selectedLevel === 'Intermediate' ? 'selected' : ''}
+                        className={
+                          selectedLevel === "Intermediate" ? "selected" : ""
+                        }
                       >
                         Intermediate
                       </label>
@@ -136,17 +153,19 @@ function CookingPage() {
                         name="cooking-skill"
                         className="d-none"
                         value="Advanced"
-                        checked={selectedLevel === 'Advanced'}
-                        onChange={() => handleLevelChange('Advanced')}
+                        checked={selectedLevel === "Advanced"}
+                        onChange={() => handleLevelChange("Advanced")}
                       />
-                      <label 
+                      <label
                         htmlFor="Advanced"
-                        className={selectedLevel === 'Advanced' ? 'selected' : ''}
+                        className={
+                          selectedLevel === "Advanced" ? "selected" : ""
+                        }
                       >
                         Advanced
                       </label>
                     </div>
-{/* 
+                    {/* 
                     {selectedLevel && (
                       <div className="mt-4 p-3 bg-light rounded">
                         <p className="mb-0 text-center">

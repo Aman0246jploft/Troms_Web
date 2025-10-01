@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import DesiredWeightPicker from "../../../Components/DesiredWeightPicker";
 import Link from "next/link";
@@ -22,10 +22,10 @@ function DesiredWeightPage() {
     const currentWeightUnit = state.weightUnit;
 
     let displayWeight = currentWeight;
-    if (currentWeightUnit === 'kg' && !isMetric) {
+    if (currentWeightUnit === "kg" && !isMetric) {
       // Convert kg to lbs for display
-      displayWeight = Math.round(currentWeight / 0.453592 * 10) / 10;
-    } else if (currentWeightUnit === 'lbs' && isMetric) {
+      displayWeight = Math.round((currentWeight / 0.453592) * 10) / 10;
+    } else if (currentWeightUnit === "lbs" && isMetric) {
       // Convert lbs to kg for display
       displayWeight = Math.round(currentWeight * 0.453592 * 10) / 10;
     }
@@ -40,29 +40,28 @@ function DesiredWeightPage() {
     if (!currentDisplayWeight || !state.weightGoal) {
       // Default fallback values
       return {
-        min: isMetric ? 35 : 77,  // Changed from 30 to 35 kg, 77 lbs (35kg converted)
-        max: isMetric ? 317 : 699
+        min: isMetric ? 35 : 77, // Changed from 30 to 35 kg, 77 lbs (35kg converted)
+        max: isMetric ? 317 : 699,
       };
     }
 
     let minWeight, maxWeight;
 
     switch (state.weightGoal) {
-      case 'LOSE_WEIGHT':
+      case "LOSE_WEIGHT":
         // For weight loss: min = current weight - 10, max = current weight - 1
         minWeight = isMetric ? 35 : 77; // Use absolute minimum
         maxWeight = Math.round((currentDisplayWeight - 1) * 4) / 4;
         break;
         break;
 
-      case 'GAIN_WEIGHT':
+      case "GAIN_WEIGHT":
         // For weight gain: min = current weight + 1, max = current weight + 10
         minWeight = Math.round((currentDisplayWeight + 1) * 4) / 4;
         maxWeight = isMetric ? 317 : 699; // Use absolute maximum
         break;
 
-
-      case 'MAINTAIN':
+      case "MAINTAIN":
         // For maintenance: no weight change allowed - set min and max to current weight
         minWeight = Math.round(currentDisplayWeight * 4) / 4;
         maxWeight = Math.round(currentDisplayWeight * 4) / 4;
@@ -72,7 +71,7 @@ function DesiredWeightPage() {
         // Default fallback values
         return {
           min: isMetric ? 30 : 60,
-          max: isMetric ? 300 : 600
+          max: isMetric ? 300 : 600,
         };
     }
 
@@ -87,12 +86,12 @@ function DesiredWeightPage() {
 
     // Calculate default based on goal
     switch (state.weightGoal) {
-      case 'MAINTAIN':
+      case "MAINTAIN":
         return displayWeight; // Same as current weight
-      case 'LOSE_WEIGHT':
+      case "LOSE_WEIGHT":
         // Default to middle of the range (current weight - 5)
         return Math.round((displayWeight - 5) * 4) / 4;
-      case 'GAIN_WEIGHT':
+      case "GAIN_WEIGHT":
         // Default to middle of the range (current weight + 5)
         return Math.round((displayWeight + 5) * 4) / 4;
       default:
@@ -114,23 +113,23 @@ function DesiredWeightPage() {
     return calculateDefaultWeight();
   });
 
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Initialize component and set defaults
   useEffect(() => {
     // Handle redirects first
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
       return;
     }
 
     // If user has MAINTAIN goal, they should skip this step and go directly to workout location
-    if (state.weightGoal === 'MAINTAIN') {
-      router.push('/workout-location');
+    if (state.weightGoal === "MAINTAIN") {
+      router.push("/workout-location");
       return;
     }
     if (!state.weightGoal) {
-      router.push('/weight-goal');
+      router.push("/weight-goal");
       return;
     }
 
@@ -144,10 +143,15 @@ function DesiredWeightPage() {
       const defaultWeight = calculateDefaultWeight();
       if (defaultWeight > 0) {
         setDesiredWeight(defaultWeight);
-        updateField('desiredWeight', defaultWeight);
+        updateField("desiredWeight", defaultWeight);
       }
     }
-  }, [state.isAuthChecked, state.isAuthenticated, state.weightGoal, state.currentStep]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.weightGoal,
+    state.currentStep,
+  ]);
 
   // Handle unit changes and weight goal changes by recalculating weight if needed
   useEffect(() => {
@@ -156,18 +160,24 @@ function DesiredWeightPage() {
       const newDefault = calculateDefaultWeight();
       if (Math.abs(newDefault - desiredWeight) > (isMetric ? 1 : 2)) {
         setDesiredWeight(newDefault);
-        updateField('desiredWeight', newDefault);
+        updateField("desiredWeight", newDefault);
       }
     }
   }, [isMetric, state.weightGoal]);
 
   // Ensure desired weight is within new min/max bounds when they change
   useEffect(() => {
-    if (desiredWeight > 0 && (desiredWeight < minWeight || desiredWeight > maxWeight)) {
+    if (
+      desiredWeight > 0 &&
+      (desiredWeight < minWeight || desiredWeight > maxWeight)
+    ) {
       // Clamp the desired weight to the new bounds
-      const clampedWeight = Math.max(minWeight, Math.min(maxWeight, desiredWeight));
+      const clampedWeight = Math.max(
+        minWeight,
+        Math.min(maxWeight, desiredWeight)
+      );
       setDesiredWeight(clampedWeight);
-      updateField('desiredWeight', clampedWeight);
+      updateField("desiredWeight", clampedWeight);
     }
   }, [minWeight, maxWeight, desiredWeight]);
 
@@ -176,13 +186,12 @@ function DesiredWeightPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
-
 
   const handleWeightChange = (value) => {
     setDesiredWeight(value);
-    updateField('desiredWeight', value);
+    updateField("desiredWeight", value);
     hideAlert();
   };
 
@@ -222,20 +231,20 @@ function DesiredWeightPage() {
     e.preventDefault();
 
     if (!desiredWeight || desiredWeight <= 0) {
-      showAlert('warning', 'Please enter your desired weight to continue.');
+      showAlert("warning", "Please enter your desired weight to continue.");
       return;
     }
 
     const validationError = validateWeight();
     if (validationError) {
-      showAlert('warning', validationError);
+      showAlert("warning", validationError);
       return;
     }
 
     // if (isStepValid(10)) {
-      updateStep(11);
-      router.push('/workout-location');
-    // } 
+    updateStep(11);
+    router.push("/workout-location");
+    // }
     // else {
     //   showAlert('warning', 'Please ensure your desired weight is appropriate for your selected goal.');
     // }
@@ -261,18 +270,26 @@ function DesiredWeightPage() {
               />
 
               <div className="auth-cards new-desired-weight">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Desired Weight</p>
                 <h3 className="mb-2">What is your desired weight?</h3>
-                <p>Set your target weight based on your goal: <strong>{state.weightGoal?.replace('_', ' ')}</strong></p>
+                <p>
+                  Set your target weight based on your goal:{" "}
+                  <strong>{state.weightGoal?.replace("_", " ")}</strong>
+                </p>
 
-                {state.weightGoal === 'MAINTAIN' && (
+                {state.weightGoal === "MAINTAIN" && (
                   <div className="alert alert-info mt-3 mb-4">
-                    <strong>Maintain Goal:</strong> Your desired weight will remain the same as your current weight ({getCurrentWeightInDisplayUnit()} {isMetric ? 'kg' : 'lbs'}).
+                    <strong>Maintain Goal:</strong> Your desired weight will
+                    remain the same as your current weight (
+                    {getCurrentWeightInDisplayUnit()} {isMetric ? "kg" : "lbs"}
+                    ).
                   </div>
                 )}
 
                 <form onSubmit={handleContinue}>
-
                   <DesiredWeightPicker
                     weight={desiredWeight}
                     isMetric={isMetric}
@@ -282,7 +299,7 @@ function DesiredWeightPage() {
                     currentWeight={state.weight}
                     weightGoal={state.weightGoal}
                     currentWeightUnit={state.weightUnit}
-                    disabled={state.weightGoal === 'MAINTAIN'}
+                    disabled={state.weightGoal === "MAINTAIN"}
                   />
 
                   <div className="text-center mt-2">
@@ -310,4 +327,3 @@ function DesiredWeightPage() {
 }
 
 export default DesiredWeightPage;
-

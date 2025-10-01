@@ -1,24 +1,22 @@
-'use client'
+"use client";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import { useRouter } from "next/navigation";
 
 function page() {
-  
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const router = useRouter();
   useEffect(() => {
     if (state.currentStep !== 29) {
       updateStep(30);
     }
-  }, [state.currentStep ]); 
+  }, [state.currentStep]);
 
   const handleContinue = (e) => {
     e.preventDefault();
 
-      router.push("/approach");
-   
+    router.push("/approach");
   };
 
   return (
@@ -33,6 +31,9 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards food">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Crash your goal</p>
                 <h3 className="mb-4">
                   You have Great Potential <br /> to crush your goal
@@ -41,7 +42,10 @@ function page() {
                   <img src="/images/chart.svg" alt="Crash your goal" />
                 </div>
                 <div className="text-center mt-3">
-                  <button onClick={handleContinue} className="custom-btn continue-btn">
+                  <button
+                    onClick={handleContinue}
+                    className="custom-btn continue-btn"
+                  >
                     Continue
                   </button>
                 </div>
@@ -53,7 +57,7 @@ function page() {
           {/* <p>
             <span>22/</span> 25
           </p> */}
-            <p>
+          <p>
             <span>{state.currentStep}/</span> {state.totalSteps}
           </p>
         </div>

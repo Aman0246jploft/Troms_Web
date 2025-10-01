@@ -8,36 +8,46 @@ import Alert from "../../../Components/Alert";
 
 function NewHeightPage() {
   const router = useRouter();
-  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } = useOnboarding();
+  const { state, updateField, updateStep, isStepValid, toggleUnitSystem } =
+    useOnboarding();
   const [height, setHeight] = useState(state.height || 165);
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-  
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
 
   // Redirects based on previous steps
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     } else if (!state.gender) {
-      router.push('/select-gender');
+      router.push("/select-gender");
     } else if (!state.dateOfBirth || state.age < 13) {
-      router.push('/borndate');
+      router.push("/borndate");
     } else if (!state.trainingDay) {
-      router.push('/training-days');
+      router.push("/training-days");
     } else if (state.trainMoreThanOnce === undefined) {
-      router.push('/train-more');
+      router.push("/train-more");
     } else if (state.feedback === null) {
-      router.push('/feedback');
+      router.push("/feedback");
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, state.feedback, router]);
+  }, [
+    state.isAuthenticated,
+    state.gender,
+    state.dateOfBirth,
+    state.age,
+    state.trainingDay,
+    state.trainMoreThanOnce,
+    state.feedback,
+    router,
+  ]);
 
   useEffect(() => {
     updateStep(8);
-    
+
     // Initialize height in global state if not already set
     if (!state.height && height > 0) {
-      updateField('height', height);
+      updateField("height", height);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
@@ -47,12 +57,12 @@ function NewHeightPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleHeightChange = (newHeight) => {
     setHeight(newHeight);
-    updateField('height', newHeight);
+    updateField("height", newHeight);
     hideAlert();
   };
 
@@ -64,19 +74,19 @@ function NewHeightPage() {
     e.preventDefault();
 
     if (!height || height <= 0) {
-      showAlert('warning', 'Please select a valid height.');
+      showAlert("warning", "Please select a valid height.");
       return;
     }
 
     // Validate reasonable height range (120-250 cm to match component range)
     if (height < 120 || height > 250) {
-      showAlert('warning', 'Please select a height between 120-250 cm.');
+      showAlert("warning", "Please select a height between 120-250 cm.");
       return;
     }
 
     if (isStepValid(8)) {
       updateStep(9);
-      router.push('/weight-goal');
+      router.push("/weight-goal");
     }
   };
 
@@ -100,10 +110,13 @@ function NewHeightPage() {
               />
 
               <div className="auth-cards horizontal-height">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Your height</p>
                 <h3 className="mb-2">What is your current height?</h3>
                 <p className="mb-3">You can update it later if needed</p>
-                
+
                 {/* <div className="weight-switch mb-3">
                   <span>Imperial</span>
                   <label className="switch">
@@ -117,15 +130,15 @@ function NewHeightPage() {
                   </label>
                   <span>Metric</span>
                 </div> */}
-                
-                <HeightPicker 
+
+                <HeightPicker
                   defaultValueCm={height}
                   onChange={handleHeightChange}
                   unit={isMetric ? "metric" : "imperial"}
                 />
                 <div className="text-center mt-3">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="custom-btn continue-btn"
                     onClick={handleContinue}
                     disabled={!height || height <= 0}

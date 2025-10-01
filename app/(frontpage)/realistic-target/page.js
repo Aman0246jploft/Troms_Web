@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -9,11 +9,11 @@ function RealisticTargetPage() {
   const router = useRouter();
   const { state, updateStep } = useOnboarding();
   const [targetWeightLoss, setTargetWeightLoss] = useState(0);
-  
+
   // Use global unit system
   const isMetric = state.unitSystem === "metric";
   const weightUnit = isMetric ? "kg" : "lbs";
-  
+
   // Convert weight loss value for display
   const getDisplayValue = (lbsValue) => {
     // if (isMetric) {
@@ -34,7 +34,7 @@ function RealisticTargetPage() {
   }, []); // run only once
 
   const handleContinue = () => {
-    router.push('/result-trom');
+    router.push("/result-trom");
   };
 
   return (
@@ -48,10 +48,17 @@ function RealisticTargetPage() {
               </Link>
             </div>
             <div className="auth-cards gender">
-              <p className="text-uppercase mb-5">Realistic target</p>
+              <button type="button" className="new_back_btn">
+                Previous
+              </button>
+              <p className="text-uppercase mb-3">Realistic target</p>
               <h3 className="mb-3">
-                Loosing <span>{getDisplayValue(targetWeightLoss)}{weightUnit}</span> Is Achievable - <br /> And Easier
-                Than You Think!
+                Loosing{" "}
+                <span>
+                  {getDisplayValue(targetWeightLoss)}
+                  {weightUnit}
+                </span>{" "}
+                Is Achievable - <br /> And Easier Than You Think!
               </h3>
               <p className="mb-5">
                 90% of users notice a clear change with <br /> Troms, and it's
@@ -59,8 +66,8 @@ function RealisticTargetPage() {
               </p>
 
               <div className="text-center mt-5">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="custom-btn continue-btn"
                   onClick={handleContinue}
                 >

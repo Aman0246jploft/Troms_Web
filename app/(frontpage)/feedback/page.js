@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -10,23 +10,30 @@ function FeedbackPage() {
   const router = useRouter();
   const { state, updateField, updateStep, isStepValid } = useOnboarding();
   const [feedback, setFeedback] = useState(state.feedback ?? null); // true/false
-  const [alert, setAlert] = useState({ show: false, type: '', message: '' });
-
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // Redirects based on previous steps
   useEffect(() => {
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push('/register');
+      router.push("/register");
     } else if (!state.gender) {
-      router.push('/select-gender');
+      router.push("/select-gender");
     } else if (!state.dateOfBirth || state.age < 13) {
-      router.push('/borndate');
+      router.push("/borndate");
     } else if (!state.trainingDay) {
-      router.push('/training-days');
+      router.push("/training-days");
     } else if (state.trainMoreThanOnce === undefined) {
-      router.push('/train-more');
+      router.push("/train-more");
     }
-  }, [state.isAuthenticated, state.gender, state.dateOfBirth, state.age, state.trainingDay, state.trainMoreThanOnce, router]);
+  }, [
+    state.isAuthenticated,
+    state.gender,
+    state.dateOfBirth,
+    state.age,
+    state.trainingDay,
+    state.trainMoreThanOnce,
+    router,
+  ]);
 
   // Set current step
   useEffect(() => {
@@ -39,12 +46,12 @@ function FeedbackPage() {
   };
 
   const hideAlert = () => {
-    setAlert({ show: false, type: '', message: '' });
+    setAlert({ show: false, type: "", message: "" });
   };
 
   const handleFeedbackChange = (value) => {
     setFeedback(value);
-    updateField('feedback', value); // update immediately in context
+    updateField("feedback", value); // update immediately in context
     hideAlert();
   };
 
@@ -52,14 +59,14 @@ function FeedbackPage() {
     e.preventDefault();
 
     if (feedback === null) {
-      showAlert('warning', 'Please select your feedback to continue.');
+      showAlert("warning", "Please select your feedback to continue.");
       return;
     }
-    console.log("545454",isStepValid(6))
+    console.log("545454", isStepValid(6));
 
     if (isStepValid(6)) {
       updateStep(7);
-      router.push('/new-weight'); // next page
+      router.push("/new-weight"); // next page
     }
   };
 
@@ -82,7 +89,10 @@ function FeedbackPage() {
             />
 
             <div className="auth-cards feedback">
-              <p className="text-uppercase mb-5">Feedback</p>
+              <button type="button" className="new_back_btn">
+                Previous
+              </button>
+              <p className="text-uppercase mb-3">Feedback</p>
               <h3 className="mb-2">
                 Have you tracked your calories <br /> with other apps?
               </h3>

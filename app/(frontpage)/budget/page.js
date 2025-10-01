@@ -18,13 +18,12 @@ function BudgetPage() {
     { id: "HIGH", label: "High", icon: "/images/high-icon.svg" },
   ];
 
-
   // Set the step for country selection (adding as step 2 after registration)
   useEffect(() => {
     if (state.currentStep !== 22) {
       updateStep(23);
     }
-  }, []);    
+  }, []);
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -39,7 +38,6 @@ function BudgetPage() {
     }
 
     // Update step if needed
-   
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -96,12 +94,18 @@ function BudgetPage() {
               />
 
               <div className="auth-cards">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Budget</p>
                 <h3 className="mb-4">Select your preferred budget.</h3>
                 <form onSubmit={handleContinue}>
                   <div className="px-135">
                     {budgetOptions.map((option) => (
-                      <div key={option.id} className="custom-check budget-check">
+                      <div
+                        key={option.id}
+                        className="custom-check budget-check"
+                      >
                         <input
                           id={option.id}
                           className="d-none"
@@ -111,19 +115,24 @@ function BudgetPage() {
                           checked={selectedBudget === option.id}
                           onChange={() => handleBudgetChange(option.id)}
                         />
-                        <label 
-                          htmlFor={option.id} 
-                          className={selectedBudget === option.id ? "selected" : ""}
+                        <label
+                          htmlFor={option.id}
+                          className={
+                            selectedBudget === option.id ? "selected" : ""
+                          }
                         >
-                          <img src={option.icon} alt={`${option.label} Budget`} />{" "}
+                          <img
+                            src={option.icon}
+                            alt={`${option.label} Budget`}
+                          />{" "}
                           {option.label}
                         </label>
                       </div>
                     ))}
                   </div>
                   <div className="text-center mt-3">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="custom-btn continue-btn"
                       disabled={!selectedBudget}
                     >

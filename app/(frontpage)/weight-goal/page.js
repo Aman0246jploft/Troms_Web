@@ -95,7 +95,10 @@ function WeightGoalPage() {
               />
 
               <div className="auth-cards weight-goal">
-                <p className="text-uppercase mb-5">Weight Goal</p>
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
+                <p className="text-uppercase mb-3">Weight Goal</p>
                 <h3 className="mb-2">What is your goal?</h3>
                 <p>Adjusting Your Calorie Intake for Optimal Performance</p>
                 <div className="px-135">

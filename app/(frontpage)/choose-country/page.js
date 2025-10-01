@@ -21,7 +21,7 @@ function ChooseCountryPage() {
     if (state.currentStep !== 21) {
       updateStep(22);
     }
-  }, []);    
+  }, []);
 
   // Initialize cities if country is already selected
   useEffect(() => {
@@ -41,11 +41,11 @@ function ChooseCountryPage() {
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
     updateField("selectedCountry", country);
-    
+
     // Reset city selection when country changes
     setSelectedCity("");
     updateField("selectedCity", "");
-    
+
     // Update cities list
     setCities(country.cities || []);
     hideAlert();
@@ -85,6 +85,9 @@ function ChooseCountryPage() {
                 </Link>
               </div>
               <div className="auth-cards health-conditions">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Choose a country</p>
                 <h3 className="mb-4">
                   Choose a country and city to see foods that match your
@@ -93,24 +96,24 @@ function ChooseCountryPage() {
                 <div className="px-135">
                   <form onSubmit={handleContinue}>
                     <div className="custom-frm-bx">
-                      <CountryPicker 
+                      <CountryPicker
                         onCountrySelect={handleCountrySelect}
                         selectedCountry={selectedCountry}
-                        isOpen={activeDropdown === 'country'}
+                        isOpen={activeDropdown === "country"}
                         onToggle={setActiveDropdown}
                       />
                     </div>
                     <div className="custom-frm-bx">
-                      <CityPicker 
+                      <CityPicker
                         cities={cities}
                         onCitySelect={handleCitySelect}
                         selectedCity={selectedCity}
                         disabled={!selectedCountry || cities.length === 0}
-                        isOpen={activeDropdown === 'city'}
+                        isOpen={activeDropdown === "city"}
                         onToggle={setActiveDropdown}
                       />
                     </div>
-                    
+
                     {alert.show && (
                       <Alert
                         type={alert.type}
@@ -120,8 +123,8 @@ function ChooseCountryPage() {
                     )}
 
                     <div className="text-center mt-3">
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         className="custom-btn continue-btn"
                         disabled={!selectedCountry || !selectedCity}
                       >
@@ -133,7 +136,6 @@ function ChooseCountryPage() {
               </div>
             </div>
           </div>
-          
         </div>
         <div className="auth-bttm">
           <p>

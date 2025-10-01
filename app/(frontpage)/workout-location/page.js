@@ -12,7 +12,7 @@ function WorkoutLocationPage() {
   const [selectedLocation, setSelectedLocation] = useState(
     state.workoutLocation || ""
   );
-  const [alert, setAlert] = useState({ show: false, type: "", message: "" }); 
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   // useEffect(() => {
   //   if (state.isAuthChecked && state.isAuthenticated === false) {
@@ -37,46 +37,50 @@ function WorkoutLocationPage() {
   //   updateStep,
   // ]);
 
+  useEffect(() => {
+    if (state.isAuthChecked && state.isAuthenticated === false) {
+      router.push("/register");
+      return;
+    }
 
-useEffect(() => {
-  if (state.isAuthChecked && state.isAuthenticated === false) {
-    router.push("/register");
-    return;
-  }
-  
-  // Check if we have a weight goal first
-  if (!state.weightGoal) {
-    router.push("/weight-goal");
-    return;
-  }
-  
-  // For non-MAINTAIN goals, check if desired weight is set
-  // For MAINTAIN goals, desired weight should be automatically set to current weight
-  if (state.weightGoal !== "MAINTAIN" && (!state.desiredWeight || state.desiredWeight <= 0)) {
-    router.push("/new-desired-weight");
-    return;
-  }
-  
-  // For MAINTAIN goals, ensure desired weight is set to current weight if not already set
-  if (state.weightGoal === "MAINTAIN" && (!state.desiredWeight || state.desiredWeight <= 0)) {
-    router.push("/weight-goal");
-    return;
-  }
+    // Check if we have a weight goal first
+    if (!state.weightGoal) {
+      router.push("/weight-goal");
+      return;
+    }
 
-  // Only update step if it's less than 11
-  if (state.currentStep < 11) {
-    updateStep(11);
-  }
-}, [
-  state.isAuthChecked,
-  state.isAuthenticated,
-  state.weightGoal,
-  state.desiredWeight,
-  state.currentStep,
-  router,
-  updateStep,
-]);
+    // For non-MAINTAIN goals, check if desired weight is set
+    // For MAINTAIN goals, desired weight should be automatically set to current weight
+    if (
+      state.weightGoal !== "MAINTAIN" &&
+      (!state.desiredWeight || state.desiredWeight <= 0)
+    ) {
+      router.push("/new-desired-weight");
+      return;
+    }
 
+    // For MAINTAIN goals, ensure desired weight is set to current weight if not already set
+    if (
+      state.weightGoal === "MAINTAIN" &&
+      (!state.desiredWeight || state.desiredWeight <= 0)
+    ) {
+      router.push("/weight-goal");
+      return;
+    }
+
+    // Only update step if it's less than 11
+    if (state.currentStep < 11) {
+      updateStep(11);
+    }
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.weightGoal,
+    state.desiredWeight,
+    state.currentStep,
+    router,
+    updateStep,
+  ]);
 
   const showAlert = (type, message) => {
     setAlert({ show: true, type, message });
@@ -127,6 +131,9 @@ useEffect(() => {
               />
 
               <div className="auth-cards gender location">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-3">Workout Location</p>
                 <h3 className="mb-4">Choose your workout location</h3>
                 <form onSubmit={handleContinue}>

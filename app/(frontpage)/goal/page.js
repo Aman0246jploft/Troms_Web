@@ -14,6 +14,9 @@ function page() {
                 </Link>
               </div>
               <div className="auth-cards goal">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Goal</p>
                 <h3 className="mb-4">What is your goal?</h3>
                 <div className="px-135">

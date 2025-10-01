@@ -24,7 +24,7 @@ function ApproachPage() {
     if (state.currentStep !== 30) {
       updateStep(31);
     }
-  }, [state.currentStep]); 
+  }, [state.currentStep]);
 
   useEffect(() => {
     // Check for user data from localStorage if state is empty
@@ -50,16 +50,13 @@ function ApproachPage() {
     // Check if user email and username are present (from state or localStorage)
     const currentUser = state.user || {};
     const localStorageUser = checkUserData();
-    
+
     const userEmail = currentUser.email || localStorageUser.email;
     const userUsername = currentUser.username || localStorageUser.username;
 
     if (!userEmail || !userUsername) {
       console.log("Missing user credentials - redirecting to register");
-      showAlert(
-        "error",
-        "User information is missing. Please register again."
-      );
+      showAlert("error", "User information is missing. Please register again.");
       setTimeout(() => {
         router.push("/register");
       }, 2000);
@@ -96,8 +93,12 @@ function ApproachPage() {
       // }, 2000);
       return;
     }
-
-  }, [state.isAuthChecked, state.isAuthenticated, state.currentStep, state.user]);
+  }, [
+    state.isAuthChecked,
+    state.isAuthenticated,
+    state.currentStep,
+    state.user,
+  ]);
 
   useEffect(() => {
     if (!isCompleted && !isSubmitting) {
@@ -108,11 +109,11 @@ function ApproachPage() {
   // Auto-click continue button when no errors are present
   useEffect(() => {
     // Only auto-click if we're on the approach page and not already processing
-    if ( !isSubmitting && !isCompleted && !alert.show) {
+    if (!isSubmitting && !isCompleted && !alert.show) {
       // Check if all required fields are filled (same validation as in the main useEffect)
       const requiredFields = [
         // "gender",
-        // "dateOfBirth", 
+        // "dateOfBirth",
         // "age",
         // "trainingDay",
         // "weight",
@@ -128,15 +129,15 @@ function ApproachPage() {
         // "allergicFoodItems",
         // "dislikedFoodItems",
         // "injuries",
-              "gender",
-      "dateOfBirth",
-      "age",
-      "trainingDay",
-      "weight",
-      "weightGoal",
-      "workoutLocation",
-      "selectedEquipments",
-      "reachingGoals",
+        "gender",
+        "dateOfBirth",
+        "age",
+        "trainingDay",
+        "weight",
+        "weightGoal",
+        "workoutLocation",
+        "selectedEquipments",
+        "reachingGoals",
       ];
 
       const missingFields = requiredFields.filter((field) => {
@@ -183,9 +184,15 @@ function ApproachPage() {
       }
 
       let payload = getFinalPayload();
-      payload={...payload,trainMoreThanOnce:payload?.trainMoreThanOnce?.isMoreThanOnce,specificDays:payload?.trainMoreThanOnce?.specificDays,country:payload?.selectedCountry?.countryName,city:payload?.selectedCity}
-      delete payload.selectedCountry
-      delete payload.selectedCity
+      payload = {
+        ...payload,
+        trainMoreThanOnce: payload?.trainMoreThanOnce?.isMoreThanOnce,
+        specificDays: payload?.trainMoreThanOnce?.specificDays,
+        country: payload?.selectedCountry?.countryName,
+        city: payload?.selectedCity,
+      };
+      delete payload.selectedCountry;
+      delete payload.selectedCity;
 
       console.log("Submitting user data:", payload);
 
@@ -208,14 +215,14 @@ function ApproachPage() {
         }, 2000);
       } else {
         // Check if error indicates authentication issues
-        const errorMessage = response.message || "Failed to create profile. Please try again.";
-        if (errorMessage.toLowerCase().includes("auth") || 
-            errorMessage.toLowerCase().includes("user") || 
-            errorMessage.toLowerCase().includes("credential")) {
-          showAlert(
-            "error",
-            "Authentication failed. Please register again."
-          );
+        const errorMessage =
+          response.message || "Failed to create profile. Please try again.";
+        if (
+          errorMessage.toLowerCase().includes("auth") ||
+          errorMessage.toLowerCase().includes("user") ||
+          errorMessage.toLowerCase().includes("credential")
+        ) {
+          showAlert("error", "Authentication failed. Please register again.");
           setTimeout(() => {
             router.push("/register");
           }, 2000);
@@ -225,13 +232,13 @@ function ApproachPage() {
       }
     } catch (error) {
       console.error("User info submission error:", error);
-      
+
       // Check if it's a network error or authentication error
-      if (error.message && (error.message.includes("401") || error.message.includes("403"))) {
-        showAlert(
-          "error",
-          "Authentication failed. Please register again."
-        );
+      if (
+        error.message &&
+        (error.message.includes("401") || error.message.includes("403"))
+      ) {
+        showAlert("error", "Authentication failed. Please register again.");
         setTimeout(() => {
           router.push("/register");
         }, 2000);
@@ -289,15 +296,20 @@ function ApproachPage() {
               />
 
               <div className="auth-cards food">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-5">Approach</p>
 
                 <div className="text-center mt-3 mb-3">
                   {isCompleted ? (
                     <img src="/images/check-mark.svg" alt="Success" />
                   ) : (
-                    <img src="/images/loader.svg" className="bmr-img" alt="BMR Graph" />
-
-          
+                    <img
+                      src="/images/loader.svg"
+                      className="bmr-img"
+                      alt="BMR Graph"
+                    />
                   )}
                 </div>
 

@@ -24,7 +24,7 @@ function AllergiesPage() {
     if (state.currentStep !== 26) {
       updateStep(27);
     }
-  }, [state.currentStep]); 
+  }, [state.currentStep]);
 
   useEffect(() => {
     // Load previously selected allergies from context/localStorage
@@ -32,11 +32,13 @@ function AllergiesPage() {
       // Separate predefined allergies from custom allergies
       const predefinedAllergies = [];
       let customAllergy = "";
-      
-      state.allergicFoodItems.forEach(allergy => {
+
+      state.allergicFoodItems.forEach((allergy) => {
         // Check if this allergy matches any of the fetched allergic foods
         // If not, it's likely a custom allergy
-        const isPredefined = allergicFoods.some(food => food.ingredients_name === allergy);
+        const isPredefined = allergicFoods.some(
+          (food) => food.ingredients_name === allergy
+        );
         if (isPredefined || allergicFoods.length === 0) {
           // Include if it's predefined or if we haven't loaded foods yet
           predefinedAllergies.push(allergy);
@@ -47,16 +49,15 @@ function AllergiesPage() {
         //   customAllergy = allergy;
         // }
       });
-      
+
       setSelectedAllergies(predefinedAllergies);
     }
-    
+
     // Load custom allergy from the new field
     if (state.allergic_food_other_item) {
       setCustomAllergy(state.allergic_food_other_item);
     }
   }, [state.allergicFoodItems, state.allergic_food_other_item, allergicFoods]);
-
 
   useEffect(() => {
     if (!state.isAuthChecked) return; // wait for auth check
@@ -69,8 +70,6 @@ function AllergiesPage() {
       router.push("/accomplish");
       return;
     }
-
-
   }, [
     state.isAuthChecked,
     state.isAuthenticated,
@@ -132,20 +131,17 @@ function AllergiesPage() {
   //   hideAlert();
   // };
 
+  const handleAllergyToggle = (allergyName) => {
+    setSelectedAllergies((prev) => {
+      const newSelection = prev.includes(allergyName)
+        ? prev.filter((name) => name !== allergyName)
+        : [...prev, allergyName];
 
-const handleAllergyToggle = (allergyName) => {
-  setSelectedAllergies((prev) => {
-    const newSelection = prev.includes(allergyName)
-      ? prev.filter((name) => name !== allergyName)
-      : [...prev, allergyName];
-
-    // Only update context after state is set
-    updateField("allergicFoodItems", newSelection);
-    return newSelection;
-  });
-};
-
-
+      // Only update context after state is set
+      updateField("allergicFoodItems", newSelection);
+      return newSelection;
+    });
+  };
 
   // Handle custom allergy input changes
   const handleCustomAllergyChange = (e) => {
@@ -168,10 +164,13 @@ const handleAllergyToggle = (allergyName) => {
 
     // Check if either predefined allergies are selected or custom allergy is entered
     // Check both local state and context state to ensure we catch all cases
-    const hasLocalSelection = selectedAllergies.length > 0 || customAllergy.trim();
-    const hasContextSelection = (state.allergicFoodItems && state.allergicFoodItems.length > 0) || state.allergic_food_other_item;
+    const hasLocalSelection =
+      selectedAllergies.length > 0 || customAllergy.trim();
+    const hasContextSelection =
+      (state.allergicFoodItems && state.allergicFoodItems.length > 0) ||
+      state.allergic_food_other_item;
     const hasSelection = hasLocalSelection || hasContextSelection;
-    
+
     if (!hasSelection) {
       showAlert(
         "warning",
@@ -215,7 +214,10 @@ const handleAllergyToggle = (allergyName) => {
               />
 
               <div className="auth-cards food">
-                <p className="text-uppercase mb-5">Allergies</p>
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
+                <p className="text-uppercase mb-3">Allergies</p>
                 <h3 className="mb-4">
                   Do you have any food allergies <br /> we should be aware of?
                 </h3>
@@ -263,16 +265,16 @@ const handleAllergyToggle = (allergyName) => {
                                 food.ingredients_name
                               ) && (
                                 <></>
-                                  // <button
-                                  //   type="button"
-                                  //   onClick={(e) => {
-                                  //     e.preventDefault();
-                                  //     handleRemoveAllergy(food.ingredients_name);
-                                  //   }}
-                                  // >
-                                  //   <img src="/images/close.svg" alt="Remove" />
-                                  // </button>
-                                )}
+                                // <button
+                                //   type="button"
+                                //   onClick={(e) => {
+                                //     e.preventDefault();
+                                //     handleRemoveAllergy(food.ingredients_name);
+                                //   }}
+                                // >
+                                //   <img src="/images/close.svg" alt="Remove" />
+                                // </button>
+                              )}
                             </label>
                           </div>
                         ))}
@@ -302,7 +304,13 @@ const handleAllergyToggle = (allergyName) => {
                   <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
-                    disabled={loading || (selectedAllergies.length === 0 && !customAllergy.trim() && !state.allergicFoodItems?.length && !state.allergic_food_other_item)}
+                    disabled={
+                      loading ||
+                      (selectedAllergies.length === 0 &&
+                        !customAllergy.trim() &&
+                        !state.allergicFoodItems?.length &&
+                        !state.allergic_food_other_item)
+                    }
                   >
                     Continue
                   </button>

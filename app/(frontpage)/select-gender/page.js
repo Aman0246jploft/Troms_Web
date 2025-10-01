@@ -45,7 +45,7 @@ function SelectGenderPage() {
 
   const handleContinue = (e) => {
     e.preventDefault();
-    console.log(selectedGender,isStepValid(2));
+    console.log(selectedGender, isStepValid(2));
 
     if (!selectedGender) {
       showAlert("warning", "Please select your gender to continue.");
@@ -78,6 +78,9 @@ function SelectGenderPage() {
               />
 
               <div className="auth-cards gender">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">Your Gender</p>
                 <h3 className="mb-2">Share a bit about who you are</h3>
                 <p>To enhance your experience, please share your gender.</p>

@@ -51,7 +51,7 @@ function TrainMorePage() {
   useEffect(() => {
     // Generate current month days
     generateCurrentMonthDays();
-    
+
     // Load saved state
     if (state.trainMoreThanOnce) {
       setIsMoreThanOnce(state.trainMoreThanOnce.isMoreThanOnce);
@@ -62,40 +62,40 @@ function TrainMorePage() {
   // const generateCurrentMonthDays = () => {
   //   // Get the selected training days from the previous page
   //   const selectedTrainingDays = state.trainingDays || [];
-    
+
   //   if (selectedTrainingDays.length === 0) {
   //     setCurrentMonthDays([]);
   //     return;
   //   }
-    
+
   //   const now = new Date();
-    
+
   //   // Find the start of the current week (Sunday)
   //   const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
   //   const startOfWeek = new Date(now);
   //   startOfWeek.setDate(now.getDate() - currentDay);
-    
+
   //   // Day mapping for correct indexing
   //   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   //   const dayMapping = {
-  //     "SUN": 0, "MON": 1, "TUE": 2, "WED": 3, 
+  //     "SUN": 0, "MON": 1, "TUE": 2, "WED": 3,
   //     "THU": 4, "FRI": 5, "SAT": 6
   //   };
-  //   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+  //   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   //                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
+
   //   const days = [];
-    
+
   //   // Only generate days that were selected in training-days page
   //   selectedTrainingDays.forEach(selectedDay => {
   //     const dayIndex = dayMapping[selectedDay];
   //     if (dayIndex !== undefined) {
   //       const date = new Date(startOfWeek);
   //       date.setDate(startOfWeek.getDate() + dayIndex);
-        
+
   //       const dayName = dayNames[dayIndex];
   //       const dayValue = selectedDay; // Use the selected day value (MON, TUE, etc.)
-        
+
   //       days.push({
   //         date: date.getDate(),
   //         month: monthNames[date.getMonth()],
@@ -105,80 +105,83 @@ function TrainMorePage() {
   //       });
   //     }
   //   });
-    
+
   //   // Sort days by their original week order
   //   days.sort((a, b) => dayMapping[a.dayValue] - dayMapping[b.dayValue]);
-    
+
   //   console.log("Generated days based on selected training days:", days); // Debug log
   //   console.log("Selected training days:", selectedTrainingDays); // Debug log
   //   setCurrentMonthDays(days);
   // };
 
+  const generateCurrentMonthDays = () => {
+    const selectedTrainingDays = state.trainingDays || [];
 
-const generateCurrentMonthDays = () => {
-  const selectedTrainingDays = state.trainingDays || [];
+    if (selectedTrainingDays.length === 0) {
+      setCurrentMonthDays([]);
+      return;
+    }
 
-  if (selectedTrainingDays.length === 0) {
-    setCurrentMonthDays([]);
-    return;
-  }
+    const dayMapping = {
+      SUN: 0,
+      MON: 1,
+      TUE: 2,
+      WED: 3,
+      THU: 4,
+      FRI: 5,
+      SAT: 6,
+    };
 
-  const dayMapping = {
-    "SUN": 0, "MON": 1, "TUE": 2, "WED": 3,
-    "THU": 4, "FRI": 5, "SAT": 6
-  };
+    const days = [];
 
-  const days = [];
-
-  selectedTrainingDays
-    .sort((a, b) => dayMapping[a] - dayMapping[b])
-    .forEach((selectedDay, index) => {
-      days.push({
-        dayValue: selectedDay,
-        month: `Day`,            // 👈 Always "Day"
-        date: `${index + 1}`,    // 👈 Numbered Day 1, Day 2...
-        dayName: selectedDay,    // Keep same as before
-        id: selectedDay.toLowerCase()
+    selectedTrainingDays
+      .sort((a, b) => dayMapping[a] - dayMapping[b])
+      .forEach((selectedDay, index) => {
+        days.push({
+          dayValue: selectedDay,
+          month: `Day`, // 👈 Always "Day"
+          date: `${index + 1}`, // 👈 Numbered Day 1, Day 2...
+          dayName: selectedDay, // Keep same as before
+          id: selectedDay.toLowerCase(),
+        });
       });
-    });
 
-  console.log("Generated numbered days:", days);
-  setCurrentMonthDays(days);
-};
-
+    console.log("Generated numbered days:", days);
+    setCurrentMonthDays(days);
+  };
 
   const handleTrainMoreChange = (value) => {
     setIsMoreThanOnce(value);
-    
+
     // If "No" is selected, clear specific days
     const newSelectedDays = value ? selectedDays : [];
     if (!value) {
       setSelectedDays([]);
     }
-    
+
     // Immediately update the context and localStorage
     updateField("trainMoreThanOnce", {
       isMoreThanOnce: value,
-      specificDays: newSelectedDays
+      specificDays: newSelectedDays,
     });
   };
 
   const handleDayToggle = (dayValue) => {
     console.log("Day toggle clicked:", dayValue); // Debug log
-    setSelectedDays(prev => {
+    setSelectedDays((prev) => {
       console.log("Previous selected days:", prev); // Debug log
-      const newSelectedDays = prev.includes(dayValue) 
-        ? prev.filter(day => day !== dayValue)
+      const newSelectedDays = prev.includes(dayValue)
+        ? prev.filter((day) => day !== dayValue)
         : [...prev, dayValue];
-      
+
       console.log("New selected days:", newSelectedDays); // Debug log
-      
+
       // Immediately update the context and localStorage
       updateField("trainMoreThanOnce", {
         isMoreThanOnce,
-        specificDays: newSelectedDays
+        specificDays: newSelectedDays,
       });
-      
+
       return newSelectedDays;
     });
   };
@@ -186,16 +189,18 @@ const generateCurrentMonthDays = () => {
   const handleContinue = () => {
     // Validate: if isMoreThanOnce is true, specificDays should not be empty
     if (isMoreThanOnce && selectedDays.length === 0) {
-      alert("Please select at least one specific day when training more than once a day.");
+      alert(
+        "Please select at least one specific day when training more than once a day."
+      );
       return;
     }
 
     // Update the onboarding context
     updateField("trainMoreThanOnce", {
       isMoreThanOnce,
-      specificDays: isMoreThanOnce ? selectedDays : []
+      specificDays: isMoreThanOnce ? selectedDays : [],
     });
-    
+
     if (isStepValid(5)) {
       updateStep(6);
       router.push("/feedback");
@@ -214,6 +219,9 @@ const generateCurrentMonthDays = () => {
                 </Link>
               </div>
               <div className="auth-cards goal">
+                <button type="button" className="new_back_btn">
+                  Previous
+                </button>
                 <p className="text-uppercase mb-2">train more than</p>
                 <h3 className="mb-4">Do you train more than once a day? </h3>
                 <form>
@@ -248,23 +256,35 @@ const generateCurrentMonthDays = () => {
                       </h5>
                       <ul className="days-list">
                         {currentMonthDays.map((day) => {
-                          const isSelected = selectedDays.includes(day.dayValue);
-                          console.log(`Day ${day.dayValue} - Selected: ${isSelected}, Selected Days:`, selectedDays); // Debug log
+                          const isSelected = selectedDays.includes(
+                            day.dayValue
+                          );
+                          console.log(
+                            `Day ${day.dayValue} - Selected: ${isSelected}, Selected Days:`,
+                            selectedDays
+                          ); // Debug log
                           return (
-                          <li key={day.id} className={`days-list-item ${isSelected ? "active" : ""}`}>
-                            <input
-                              type="checkbox"
-                              name="select-days"
-                              id={day.id}
-                              className="d-none"
-                              checked={isSelected}
-                              onChange={() => handleDayToggle(day.dayValue)}
-                            />
-                            <label htmlFor={day.id}>
-                              <span>{day.month} {day.date} </span>
-                              {day.dayName}
-                            </label>
-                          </li>
+                            <li
+                              key={day.id}
+                              className={`days-list-item ${
+                                isSelected ? "active" : ""
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                name="select-days"
+                                id={day.id}
+                                className="d-none"
+                                checked={isSelected}
+                                onChange={() => handleDayToggle(day.dayValue)}
+                              />
+                              <label htmlFor={day.id}>
+                                <span>
+                                  {day.month} {day.date}{" "}
+                                </span>
+                                {day.dayName}
+                              </label>
+                            </li>
                           );
                         })}
                       </ul>
@@ -272,8 +292,8 @@ const generateCurrentMonthDays = () => {
                   )}
                 </form>
                 <div className="text-center mt-3">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="custom-btn continue-btn"
                     onClick={handleContinue}
                   >
