@@ -1479,7 +1479,7 @@ input[type="number"]::-webkit-outer-spin-button {
   text-decoration: underline !important;
 }
 .food-list {
-    max-height: 195px;
+  max-height: 195px;
   overflow-y: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -1876,8 +1876,8 @@ input[type="number"]::-webkit-outer-spin-button {
   position: absolute;
   content: "";
   background-image: url(/images/tringle.svg);
-  width: 23px;
-  height: 17px;
+  width: 30px;
+  height: 30px;
   top: 2px;
   left: 0%;
   background-repeat: no-repeat;
@@ -1886,7 +1886,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .weight-picker-container .selected-weight {
   text-align: center;
-  margin-top: 25px;
+  margin-top: 35px;
 }
 .weight-picker-container .selected-weight .weight-number {
   font-size: 40px;
@@ -2076,10 +2076,10 @@ input[type="number"]::-webkit-outer-spin-button {
   content: "";
   background-image: url(/images/tringle.svg);
   background-repeat: no-repeat;
-  width: 23px;
-  height: 17px;
+  width: 30px;
+  height: 30px;
   position: absolute;
-  bottom: -17px;
+  bottom: -22px;
   left: 50%;
   transform: rotate(180deg);
 }
@@ -2330,6 +2330,38 @@ input[type="number"]::-webkit-outer-spin-button {
 .budget-check.custom-check label img {
   width: 30px;
   height: 30px;
+}
+.location-eq-list {
+  justify-content: space-between;
+  gap: 10px;
+  display: flex;
+  -webkit-backdrop-filter: blur(7.5px);
+  backdrop-filter: blur(7.5px);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
+    0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 50px;
+  width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.location-eq-list label {
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  -webkit-backdrop-filter: blur(7.5px);
+  backdrop-filter: blur(7.5px);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  cursor: pointer;
+}
+.location-eq-list input[type="radio"]:checked + label {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08),
+    0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* responsive-css-start */
@@ -3014,6 +3046,14 @@ input[type="number"]::-webkit-outer-spin-button {
     padding-left: 0;
     border: 0;
   }
+  .location-eq-list {
+    width: auto;
+    padding: 2px;
+  }
+  .location-eq-list label {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 420px) {
@@ -3135,36 +3175,4 @@ input[type="number"]::-webkit-outer-spin-button {
   .height-input input {
     width: 45px;
   }
-}
-
-.location-eq-list{
-     justify-content: space-between;
-    gap: 10px;
-    display: flex;
-    -webkit-backdrop-filter: blur(7.5px);
-    backdrop-filter: blur(7.5px);
-    background: rgba(255, 255, 255, .2);
-    border: 1px solid rgba(255, 255, 255);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .08), 0 4px 20px rgba(0, 0, 0, .15);
-    border-radius: 50px;
-    width: 450px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.location-eq-list label{
-  padding: 12px 15px;
-    font-size: 16px;
-    font-weight: 500;
-    -webkit-backdrop-filter: blur(7.5px);
-    backdrop-filter: blur(7.5px);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 50px;
-    cursor: pointer;
-}
-.location-eq-list  input[type="radio"]:checked + label{
-  border-color: rgba(255, 255, 255, .4);
-  background: rgba(255, 255, 255, .2);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .08), 0 4px 20px rgba(0, 0, 0, .08);
-
 }
