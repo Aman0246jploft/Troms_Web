@@ -168,17 +168,16 @@ a {
   position: relative;
   z-index: 1;
   /* background: linear-gradient(329deg, #06402b -33.39%, #e2f163 141.93%); */
-  background: #06402b;
-  padding: 1;
+  border: 1px solid #06402b;
+  padding: 14px 40px;
 }
 
 .prev-link span {
   display: block;
   background: #d3e1bd;
   color: #06402b;
-  padding: 14px 40px;
-  border-radius: 50px;
   font-weight: 500;
+  border-radius: 50px;
 }
 
 .thm-btn span {
@@ -1257,13 +1256,14 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 20px;
   border: 1px solid #000;
   border-radius: 25px;
+  display: none;
 }
-.custom-check input[type="radio"]:checked + label:before {
+/* .custom-check input[type="radio"]:checked + label:before {
   display: none;
 }
 .custom-check input[type="radio"]:checked + label::after {
   display: block;
-}
+} */
 
 .custom-check input[type="radio"]:checked + label {
   /* background: linear-gradient(285deg, #06402b -10.42%, #e2f163 144.6%); */
@@ -1272,12 +1272,12 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #fff;
 }
 
-.custom-check input[type="checkbox"]:checked + label::after {
+/* .custom-check input[type="checkbox"]:checked + label::after {
   display: block;
-}
-.custom-check input[type="checkbox"]:checked + label::before {
+} */
+/* .custom-check input[type="checkbox"]:checked + label::before {
   display: none;
-}
+} */
 
 .custom-check input[type="checkbox"]:checked + label {
   border: 0;
@@ -1957,7 +1957,8 @@ input[type="number"]::-webkit-outer-spin-button {
   position: relative;
   width: 70px;
   height: 280px;
-  overflow: hidden;
+  /* overflow: hidden; */
+  overflow-y: hidden;
   cursor: grab;
   touch-action: none;
   border-radius: 15px;
@@ -2025,7 +2026,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 /* Triangle pointer on the right */
-.horizontal-height .pointer {
+/* .horizontal-height .pointer {
   position: absolute;
   top: 55%;
   left: 0px;
@@ -2037,6 +2038,24 @@ input[type="number"]::-webkit-outer-spin-button {
   border-left: 10px solid #f0e44f;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
   pointer-events: none;
+} */
+.horizontal-height .pointer {
+  position: absolute;
+  top: 61%;
+  right: 35%;
+  /* left: 0px; */
+  transform: translateY(-50%);
+  /* width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid #f0e44f;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2)); */
+  background-image: url(/images/tringle-02.svg);
+  width: 30px;
+  height: 30px;
+  background-repeat: no-repeat;
+  /* pointer-events: none; */
 }
 
 .height-switch {
@@ -2400,6 +2419,11 @@ input[type="number"]::-webkit-outer-spin-button {
   .food-card label {
     padding: 6px 12px;
     font-size: 14px;
+  }
+  .login-btn a,
+  .login-btn button {
+    padding: 12px 40px;
+    gap: 5px;
   }
 }
 @media (max-width: 1199px) {
@@ -2962,6 +2986,9 @@ input[type="number"]::-webkit-outer-spin-button {
   .dowload-lft p br {
     display: none;
   }
+  .horizontal-height .pointer {
+    right: 30%;
+  }
 }
 
 @media (max-width: 575px) {
@@ -3053,6 +3080,9 @@ input[type="number"]::-webkit-outer-spin-button {
   .location-eq-list label {
     padding: 8px 10px;
     font-size: 14px;
+  }
+  .horizontal-height .pointer {
+    right: 25%;
   }
 }
 
@@ -3174,5 +3204,8 @@ input[type="number"]::-webkit-outer-spin-button {
   }
   .height-input input {
     width: 45px;
+  }
+  .horizontal-height .pointer {
+    right: 19%;
   }
 }
