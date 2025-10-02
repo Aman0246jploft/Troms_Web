@@ -32,17 +32,17 @@ function page() {
                 </h4>
                 <div className="dowload-rgt-btn">
                   <Link
-                    href="https://www.apple.com/in/app-store/"
+                    href="https://apps.apple.com/ae/app/troms/id6747479780/"
                     target="_blank"
                   >
                     <img src="/images/app-store.svg" />
                   </Link>
-                  <Link
+                  {/* <Link
                     href="https://play.google.com/store/games?hl=en_IN&pli=1"
                     target="_blank"
                   >
                     <img src="/images/play-store.svg" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>

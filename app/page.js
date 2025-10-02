@@ -321,12 +321,12 @@ useEffect(() => {
                 </p>
                 <div className="download-btn">
                   <h6>Download our app</h6>
-                  <Link href="#" className="">
+                  <Link href="https://apps.apple.com/ae/app/troms/id6747479780" className="">
                     <img src="/images/app-store.svg" alt="App Store" />
                   </Link>
-                  <Link href="#" className="">
+                  {/* <Link href="#" className="">
                     <img src="/images/play-store.svg" alt="Play Store" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>

@@ -20,10 +20,10 @@ function SelectGenderPage() {
     }
 
     // Redirect if onboarding is not needed
-    if (!state.needsOnboarding) {
-      router.push("/bmr");
-      return;
-    }
+    // if (!state.needsOnboarding) {
+    //   router.push("/bmr");
+    //   return;
+    // }
 
     // Update step once on mount
     updateStep(2);

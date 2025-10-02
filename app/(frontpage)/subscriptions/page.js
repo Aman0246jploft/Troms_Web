@@ -537,7 +537,7 @@ function SubscriptionPage() {
       console.log("🔄 Redirecting to home page...");
       setSuccess(""); // Clear success message
       router.push("/download-app"); // Redirect to home page
-    }, 1000);
+    }, 0);
   };
 
   const handlePaymentError = (errorMessage) => {

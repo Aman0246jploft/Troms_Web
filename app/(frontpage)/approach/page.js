@@ -107,34 +107,34 @@ function ApproachPage() {
   //     handleSubmitUserInfo();
   //   }
   // }, [state.currentStep, isCompleted, isSubmitting]);
-useEffect(() => {
-  if (hasSubmittedRef.current) return; // already submitted
+  useEffect(() => {
+    if (hasSubmittedRef.current) return; // already submitted
 
-  // Check if all required fields are filled
-  const requiredFields = [
-    "gender",
-    "dateOfBirth",
-    "age",
-    "trainingDay",
-    "weight",
-    "weightGoal",
-    "workoutLocation",
-    "selectedEquipments",
-    "reachingGoals",
-  ];
+    // Check if all required fields are filled
+    const requiredFields = [
+      "gender",
+      "dateOfBirth",
+      "age",
+      "trainingDay",
+      "weight",
+      "weightGoal",
+      "workoutLocation",
+      "selectedEquipments",
+      "reachingGoals",
+    ];
 
-  const missingFields = requiredFields.filter((field) => {
-    const value = state[field];
-    if (Array.isArray(value)) return value.length === 0;
-    return !value || value === "";
-  });
+    const missingFields = requiredFields.filter((field) => {
+      const value = state[field];
+      if (Array.isArray(value)) return value.length === 0;
+      return !value || value === "";
+    });
 
-  // If no missing fields, submit
-  if (missingFields.length === 0 && !isSubmitting && !isCompleted) {
-    hasSubmittedRef.current = true; // mark as submitted
-    handleSubmitUserInfo();
-  }
-}, [state, isSubmitting, isCompleted]);
+    // If no missing fields, submit
+    if (missingFields.length === 0 && !isSubmitting && !isCompleted) {
+      hasSubmittedRef.current = true; // mark as submitted
+      handleSubmitUserInfo();
+    }
+  }, []);
 
 
   // Auto-click continue button when no errors are present
@@ -196,7 +196,7 @@ useEffect(() => {
   };
 
   const handleSubmitUserInfo = async () => {
-      if (isSubmitting || isCompleted) return;
+    if (isSubmitting || isCompleted) return;
     setIsSubmitting(true);
     setLoading(true);
     hideAlert();
@@ -243,7 +243,7 @@ useEffect(() => {
 
         // Auto-redirect after success
         setTimeout(() => {
-          router.push("/bmr");
+          router.push("/subscriptions");
         }, 2000);
       } else {
         // Check if error indicates authentication issues
@@ -300,12 +300,6 @@ useEffect(() => {
       return;
     }
 
-    if (isCompleted) {
-      updateStep(32);
-      router.push("/bmr");
-    } else {
-      handleSubmitUserInfo();
-    }
   };
 
   return (
@@ -328,7 +322,7 @@ useEffect(() => {
               />
 
               <div className="auth-cards food">
-                    {/* <button
+                {/* <button
       type="button"
       onClick={() => router.back()}
       className="new_back_btn"

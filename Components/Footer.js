@@ -34,12 +34,12 @@ function Footer() {
               <div className="col-lg-4 col-md-4 col-sm-6">
                 <h4 className="ftr-title">Download our app</h4>
                 <div className="ftr-download">
-                  <Link href="#" target="_blank">
+                  <Link href="https://apps.apple.com/ae/app/troms/id6747479780" target="_blank">
                     <img src="/images/app-store.svg" alt="App Store" />
                   </Link>
-                  <Link href="#" target="_blank">
+                  {/* <Link href="#" target="_blank">
                     <img src="/images/play-store.svg" alt="Google Play" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
               <div className="col-lg-4 col-md-4 col-sm-12">
