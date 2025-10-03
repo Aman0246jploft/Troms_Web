@@ -378,6 +378,16 @@ function SubscriptionPage() {
   const [success, setSuccess] = useState("");
   const userInfoId = storedUser?.user?.userInfoId;
 
+useEffect(() => {
+  if (error) {
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    return () => clearTimeout(timer); // cleanup on unmount or error change
+  }
+}, [error]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const user = JSON.parse(
