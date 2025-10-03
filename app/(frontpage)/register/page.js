@@ -60,7 +60,7 @@ function RegisterPage() {
       const response = await apiService.socialLogin(payload);
       console.log("responseresponse",response)
 
-      if (!response.success) {
+      if (response.success) {
         // Check if user information is required (new user) or user is already registered
         const needsOnboarding =
           response.message === "User information is required";

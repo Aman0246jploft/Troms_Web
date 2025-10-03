@@ -15,7 +15,7 @@ function Footer() {
                     Track your daily routines, stay consistent, <br /> and turn
                     goals into Trom — all in one <br /> beautiful app.
                   </p>
-                  <div className="follow">
+                  {/* <div className="follow">
                     <Link href="#" target="_blank">
                       <img src="/images/white-facebook.svg" alt="Facebook" />
                     </Link>
@@ -28,7 +28,7 @@ function Footer() {
                     <Link href="#" target="_blank">
                       <img src="/images/white-youtube.svg" alt="YouTube" />
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="col-lg-4 col-md-4 col-sm-6">

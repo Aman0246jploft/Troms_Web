@@ -356,19 +356,19 @@ useEffect(() => {
                       <Link href="tel:+31 20 123 4567">+31 20 123 4567</Link>
                     </div> */}
                   </div>
-                  <div className="col-lg-6 col-md-6">
+                  {/* <div className="col-lg-6 col-md-6">
                     <div className="cta-cards">
                       <h4>Event Location</h4>
                       <p>Horizon Convention Center Amsterdam, Netherlands</p>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-lg-6 col-md-6">
                     <div className="cta-cards">
                       <h4>email</h4>
                       <Link href="mailto:nazim@bratesai.com">nazim@bratesai.com</Link>
                     </div>
                   </div>
-                  <div className="col-lg-6 col-md-6">
+                  {/* <div className="col-lg-6 col-md-6">
                     <div className="cta-cards ">
                       <h4>Follow Us</h4>
                       <div className="follow">
@@ -386,7 +386,7 @@ useEffect(() => {
                         </Link>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
