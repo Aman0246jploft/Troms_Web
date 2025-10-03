@@ -351,10 +351,10 @@ useEffect(() => {
                 </p>
                 <div className="row">
                   <div className="col-lg-6 col-md-6">
-                    <div className="cta-cards">
+                    {/* <div className="cta-cards">
                       <h4>Contact Us</h4>
                       <Link href="tel:+31 20 123 4567">+31 20 123 4567</Link>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="col-lg-6 col-md-6">
                     <div className="cta-cards">
@@ -365,7 +365,7 @@ useEffect(() => {
                   <div className="col-lg-6 col-md-6">
                     <div className="cta-cards">
                       <h4>email</h4>
-                      <Link href="mailto:info@troms.com">info@troms.com</Link>
+                      <Link href="mailto:nazim@bratesai.com">nazim@bratesai.com</Link>
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6">

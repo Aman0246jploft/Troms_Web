@@ -142,9 +142,12 @@ const handleConditionToggle = (conditionTitle) => {
     updateField("healthyConditions", finalConditions);
 
     // Update step and navigate to next step
-    updateStep(22);
-    router.push("/choose-country");
+    // updateStep(22);
+    // router.push("/choose-country");
+     updateStep(23);
+    router.push("/budget");
   };
+  // 
 
   if (loading) {
     return (
