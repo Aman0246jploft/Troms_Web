@@ -47,7 +47,7 @@ function StripePaymentForm({
     // Check if Apple Pay / Google Pay is available
     pr.canMakePayment().then(result => {
       if (result) {
-        console.log("✅ Apple Pay / Google Pay is available");
+        console.log("✅ Apple Pay / Google Pay is available", result);
         setPaymentRequest(pr);
       } else {
         console.log("❌ Apple Pay / Google Pay is not available");
@@ -57,8 +57,15 @@ function StripePaymentForm({
     // Handle payment method creation from Apple Pay / Google Pay
     pr.on('paymentmethod', async (e) => {
       console.log("🍎 Apple Pay / Google Pay payment method received");
+      setLoading(true);
       await processPayment(e.paymentMethod.id, e);
+      setLoading(false);
     });
+
+    return () => {
+      // Cleanup
+      pr.off('paymentmethod');
+    };
 
   }, [stripe, selectedPlan]);
 
@@ -306,6 +313,7 @@ function StripePaymentForm({
           type="button"
           className="prev-link continue-btn mt-3"
           onClick={() => window.history.back()}
+          disabled={loading}
         >
           <span>Back to Plans</span>
         </button>
