@@ -21,12 +21,24 @@ function Header() {
     // cleanup on unmount
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrollToSection = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
+
+const [expanded, setExpanded] = useState(false);
+
+
+
   return (
     <>
       <header
         className={`theme-header fixed-top ${scrolled ? "sticky-header" : ""}`}
       >
-        <Navbar expand="lg" className="custom-nav">
+        <Navbar expand="lg" expanded={expanded} className="custom-nav">
           <Navbar.Brand href="#home">
             <img src="/images/dark-logo.svg" alt="logo" />
           </Navbar.Brand>
@@ -37,10 +49,11 @@ function Header() {
           </Navbar.Toggle>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#link"> Features</Nav.Link>
-              <Nav.Link href="#link"> How it works</Nav.Link>
-              <Nav.Link href="#link"> About Us</Nav.Link>
+              <Nav.Link onClick={() => scrollToSection("home")}>Home</Nav.Link>
+              <Nav.Link onClick={() => scrollToSection("features")}>Features</Nav.Link>
+              <Nav.Link onClick={() => scrollToSection("how-it-works")}>How it works</Nav.Link>
+              <Nav.Link onClick={() => scrollToSection("about-us")}>About Us</Nav.Link>
+
             </Nav>
           </Navbar.Collapse>
         </Navbar>
