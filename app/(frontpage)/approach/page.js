@@ -222,6 +222,8 @@ function ApproachPage() {
         specificDays: payload?.trainMoreThanOnce?.specificDays,
         country: payload?.selectedCountry?.countryName,
         city: payload?.selectedCity,
+        budget: payload?.budget || "MEDIUM",
+        workActivityLevel: payload?.workActivityLevel || "SIT_AND_STAND",
       };
       delete payload.selectedCountry;
       delete payload.selectedCity;

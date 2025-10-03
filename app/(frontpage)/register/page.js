@@ -165,41 +165,22 @@ function RegisterPage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (!window.google || !window.google.accounts) return;
-
-  //   window.google.accounts.id.initialize({
-  //     client_id:
-  //       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  //     callback: handleGoogleCallback,
-  //     auto_select: false,
-  //     cancel_on_tap_outside: true,
-  //   });
-
-  //   // window.google.accounts.id.renderButton(
-  //   //   document.getElementById('google-signin-button'),
-  //   //   { theme: 'outline', size: 'large', width: '100%' }
-  //   // );
-  // }, [window.google]);
-
   useEffect(() => {
-  // Make sure this runs only in the browser
-  if (typeof window === "undefined") return;
-  if (!window.google || !window.google.accounts) return;
+    if (!window.google || !window.google.accounts) return;
 
-  window.google.accounts.id.initialize({
-    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    callback: handleGoogleCallback,
-    auto_select: false,
-    cancel_on_tap_outside: true,
-  });
+    window.google.accounts.id.initialize({
+      client_id:
+        process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      callback: handleGoogleCallback,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
 
-  // Render button if needed
-  // window.google.accounts.id.renderButton(
-  //   document.getElementById('google-signin-button'),
-  //   { theme: 'outline', size: 'large', width: '100%' }
-  // );
-}, []); // Empty dependency array, no window.google here
+    // window.google.accounts.id.renderButton(
+    //   document.getElementById('google-signin-button'),
+    //   { theme: 'outline', size: 'large', width: '100%' }
+    // );
+  }, []);
 
   const handleGoogleCallback = (response) => {
     try {
@@ -239,7 +220,7 @@ function RegisterPage() {
           clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID, // replace with your real Apple clientId
           scope: "name email",
           redirectURI: process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI, // must match Apple Dev settings
-          usePopup: true,
+          usePopup: false,
         });
       }
     };
