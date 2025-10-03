@@ -38,7 +38,7 @@ const [expanded, setExpanded] = useState(false);
       <header
         className={`theme-header fixed-top ${scrolled ? "sticky-header" : ""}`}
       >
-        <Navbar expand="lg" expanded={expanded} className="custom-nav">
+        <Navbar expand="lg" className="custom-nav">
           <Navbar.Brand href="#home">
             <img src="/images/dark-logo.svg" alt="logo" />
           </Navbar.Brand>
