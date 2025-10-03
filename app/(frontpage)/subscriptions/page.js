@@ -71,7 +71,7 @@ function StripePaymentForm({
 
   const processPayment = async (paymentMethodId, event = null) => {
     console.log("🚀 Processing payment with method:", paymentMethodId);
-    
+
     try {
       // Call backend to create subscription
       console.log("🔄 Calling backend to create subscription...");
@@ -234,7 +234,7 @@ function StripePaymentForm({
       {/* Apple Pay / Google Pay Button */}
       {paymentRequest && (
         <div className="mb-3">
-          <PaymentRequestButtonElement 
+          <PaymentRequestButtonElement
             options={{
               paymentRequest,
               style: {
@@ -312,7 +312,9 @@ function StripePaymentForm({
         <button
           type="button"
           className="prev-link continue-btn mt-3"
-          onClick={() => window.history.back()}
+          // onClick={() => window.history.back()}
+          onClick={() => setShowPayment(false)}
+
           disabled={loading}
         >
           <span>Back to Plans</span>
