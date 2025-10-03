@@ -280,7 +280,7 @@ function StripePaymentForm({
         </button>
         <button
           className="prev-link  continue-btn mt-3"
-          // onClick={handleBackToPlans}
+        // onClick={handleBackToPlans}
         >
           <span>Back to Plans</span>
         </button>
@@ -378,15 +378,15 @@ function SubscriptionPage() {
   const [success, setSuccess] = useState("");
   const userInfoId = storedUser?.user?.userInfoId;
 
-useEffect(() => {
-  if (error) {
-    const timer = setTimeout(() => {
-      setError("");
-    }, 2000);
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 2000);
 
-    return () => clearTimeout(timer); // cleanup on unmount or error change
-  }
-}, [error]);
+      return () => clearTimeout(timer); // cleanup on unmount or error change
+    }
+  }, [error]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -606,13 +606,27 @@ useEffect(() => {
                 </Link>
               </div>
               <div className="auth-cards">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                {!showPayment && <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
-                </button>
+                </button>}
+
+                {showPayment && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPayment(false)} // hide payment form
+                    className="new_back_btn"
+                  >
+                    Previous
+                  </button>
+                )}
+
+
+
+
                 <p className="text-uppercase mb-2">Subscriptions</p>
                 {!showPayment && (
                   <h3 className="mb-2">
@@ -665,10 +679,9 @@ useEffect(() => {
                               <div>
                                 <strong>
                                   {plan.productName ||
-                                    `${
-                                      plan.interval === "month"
-                                        ? "Monthly"
-                                        : "Yearly"
+                                    `${plan.interval === "month"
+                                      ? "Monthly"
+                                      : "Yearly"
                                     } Plan`}
                                 </strong>
                                 <p>
