@@ -491,10 +491,7 @@ useEffect(() => {
               <Accordion.Header>How does Fitness AI work? </Accordion.Header>
               <Accordion.Body>
                 <p>
-                  It is shown by default, until the collapse plugin adds the
-                  appropriate classes that we use to style each element. These
-                  classes control the overall appearance, as well as the showing
-                  and hiding
+                 You enter your goal, the food you like, and if you have equipment. TROMS then builds a plan for you with workouts and meals to follow step by step.
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -504,10 +501,7 @@ useEffect(() => {
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-                  It is shown by default, until the collapse plugin adds the
-                  appropriate classes that we use to style each element. These
-                  classes control the overall appearance, as well as the showing
-                  and hiding
+               Yes. Just choose “no equipment” when you set it up. TROMS will give you easy bodyweight exercises you can do at home. 
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -517,10 +511,7 @@ useEffect(() => {
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-                  It is shown by default, until the collapse plugin adds the
-                  appropriate classes that we use to style each element. These
-                  classes control the overall appearance, as well as the showing
-                  and hiding
+You put in things like your weight, age, goal, and food choices. TROMS uses that to make a plan just for you. 
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -530,10 +521,7 @@ useEffect(() => {
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-                  It is shown by default, until the collapse plugin adds the
-                  appropriate classes that we use to style each element. These
-                  classes control the overall appearance, as well as the showing
-                  and hiding
+              Yes. When you log your workouts or meals, TROMS updates your plan. You can also change exercises or meals anytime with one tap.
                 </p>
               </Accordion.Body>
             </Accordion.Item>
