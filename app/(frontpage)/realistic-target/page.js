@@ -60,7 +60,7 @@ function RealisticTargetPage() {
                 Loosing{" "}
                 <span>
                   {getDisplayValue(targetWeightLoss)}
-                  {weightUnit}
+                  {weightUnit} per week
                 </span>{" "}
                 Is Achievable - <br /> And Easier Than You Think!
               </h3>

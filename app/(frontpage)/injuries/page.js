@@ -155,6 +155,15 @@ function InjuriesPage() {
     // router.push("/crash-goal");
   };
 
+  const handleSkip = () => {
+  // Clear injuries if needed
+  updateField("injuries", []);
+  updateField("injuries_other", "");
+
+  router.push("/crash-goal");
+};
+
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -189,6 +198,10 @@ function InjuriesPage() {
       className="new_back_btn"
     >
                   Previous
+                </button>
+
+                   <button type="button" className="new_skips_btn"  onClick={handleSkip}>
+                  Skip
                 </button>
                 <p className="text-uppercase mb-2">Injuries</p>
                 <h3 className="mb-4">

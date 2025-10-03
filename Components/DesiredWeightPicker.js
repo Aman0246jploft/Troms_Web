@@ -177,11 +177,11 @@ const defaultMaxWeight = isMetric ? 317 : 699;
       actionText = 'lose';
       // Determine difficulty based on percentage
       if (stats.percentage >= 15) {
-        difficultyText = 'Very hard to';
+        difficultyText = 'Easy to';
       } else if (stats.percentage >= 10) {
-        difficultyText = 'Hard to';
+        difficultyText = 'Easy to';
       } else if (stats.percentage >= 5) {
-        difficultyText = 'Moderate to';
+        difficultyText = 'Easy to';
       } else {
         difficultyText = 'Easy to';
       }
@@ -189,9 +189,9 @@ const defaultMaxWeight = isMetric ? 317 : 699;
       actionText = 'gain';
       // Determine difficulty for weight gain
       if (stats.percentage >= 10) {
-        difficultyText = 'Challenging to';
+        difficultyText = 'Easy to';
       } else if (stats.percentage >= 5) {
-        difficultyText = 'Moderate to';
+        difficultyText = 'Easy to';
       } else {
         difficultyText = 'Easy to';
       }
