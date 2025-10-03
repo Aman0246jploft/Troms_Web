@@ -42,7 +42,7 @@ export default function AppleCallbackPage() {
             email: response.data?.userInfo?.email || "",
             username: response.data?.userInfo?.username || "",
             platform: response.data?.userInfo?.platform || "ios",
-            userInfoId: response.data?.userInfo?.userInfoId || response.data?.userInfo?.id,
+            // userInfoId: "",
           };
 
           setUser({
