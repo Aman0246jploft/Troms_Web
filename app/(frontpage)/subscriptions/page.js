@@ -8,6 +8,7 @@ import {
   CardElement,
   useStripe,
   useElements,
+  PaymentRequestButtonElement,
 } from "@stripe/react-stripe-js";
 import { apiService } from "../../../lib/api";
 import { useOnboarding } from "../../../context/OnboardingContext";
@@ -24,6 +25,33 @@ function StripePaymentForm({
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
+  const [paymentRequest, setPaymentRequest] = useState(null);
+
+  useEffect(() => {
+    if (stripe && selectedPlan) {
+      const pr = stripe.paymentRequest({
+        country: "US", // change if needed
+        currency: "usd", // must match plan currency
+        total: {
+          label: selectedPlan.productName || "Subscription",
+          amount: (selectedPlan.amount || selectedPlan.price) * 100, // cents
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+
+      pr.canMakePayment().then((result) => {
+        if (result) {
+          console.log("✅ PaymentRequest available:", result);
+          setPaymentRequest(pr);
+        } else {
+          console.log("❌ PaymentRequest not available on this device");
+        }
+      });
+    }
+  }, [stripe, selectedPlan]);
+
+
 
   const handlePayment = async (event) => {
     event.preventDefault();
@@ -200,6 +228,8 @@ function StripePaymentForm({
   console.log("🎨 Rendering StripePaymentForm");
   console.log("⚡ Stripe ready:", !!stripe);
   console.log("🧩 Elements ready:", !!elements);
+  console.log("🧩 paymentRequestpaymentRequest:", paymentRequest);
+
 
   return (
     <div className="stripe-payment-form mt-3">
@@ -220,6 +250,29 @@ function StripePaymentForm({
           </h3>
         </div>
       </div>
+
+
+
+
+      {/* Apple Pay / Google Pay Button */}
+      {paymentRequest && (
+        <div className="mb-3">
+          <PaymentRequestButtonElement
+            options={{
+              paymentRequest,
+              style: {
+                paymentRequestButton: {
+                  theme: "dark", // 'light', 'light-outline'
+                  height: "48px",
+                },
+              },
+            }}
+          />
+          <p className="small text-muted text-center mt-2">
+            Or pay with card below
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handlePayment}>
         <div className="mb-3 text-start">
@@ -280,7 +333,7 @@ function StripePaymentForm({
         </button>
         <button
           className="prev-link  continue-btn mt-3"
-          // onClick={handleBackToPlans}
+        // onClick={handleBackToPlans}
         >
           <span>Back to Plans</span>
         </button>
@@ -292,76 +345,6 @@ function StripePaymentForm({
         </p>
       </div>
     </div>
-
-    // <div className="stripe-payment-form mt-3">
-    //   <form onSubmit={handlePayment}>
-    //     <div className="mb-3">
-    //       <label className="form-label fw-semibold">Card Information</label>
-    //       <div className="dv_card_info">
-    //         <CardElement
-    //           options={{
-    //             style: {
-    //               base: {
-    //                 fontSize: "16px",
-    //                 color: "#424770",
-    //                 "::placeholder": {
-    //                   color: "#aab7c4",
-    //                 },
-    //               },
-    //               invalid: {
-    //                 color: "#9e2146",
-    //               },
-    //             },
-    //           }}
-    //           onReady={(element) => {
-    //             console.log("✅ CardElement is ready:", element);
-    //           }}
-    //           onChange={(event) => {
-    //             console.log("💳 Card input changed:", {
-    //               complete: event.complete,
-    //               error: event.error?.message,
-    //               brand: event.brand,
-    //             });
-    //           }}
-    //         />
-    //       </div>
-    //     </div>
-
-    //     <button
-    //       type="submit"
-    //       disabled={loading || !stripe || !elements}
-    //       className="custom-btn continue-btn"
-    //       style={{
-    //         fontSize: "16px",
-    //         fontWeight: "600",
-
-    //         border: "none",
-    //         borderRadius: "8px",
-    //       }}
-    //     >
-    //       {loading ? (
-    //         <>
-    //           <span
-    //             className="spinner-border spinner-border-sm me-2"
-    //             role="status"
-    //             aria-hidden="true"
-    //           ></span>
-    //           Processing Payment...
-    //         </>
-    //       ) : (
-    //         `Subscribe for ${formatAmount(
-    //           selectedPlan?.amount || selectedPlan?.price
-    //         )}/${selectedPlan?.interval}`
-    //       )}
-    //     </button>
-    //   </form>
-
-    //   <div className="payment-info mt-4 text-center">
-    //     <p className="small text-muted mt-2 mb-0">
-    //       Your payment information is encrypted and secure
-    //     </p>
-    //   </div>
-    // </div>
   );
 }
 
@@ -378,15 +361,15 @@ function SubscriptionPage() {
   const [success, setSuccess] = useState("");
   const userInfoId = storedUser?.user?.userInfoId;
 
-useEffect(() => {
-  if (error) {
-    const timer = setTimeout(() => {
-      setError("");
-    }, 2000);
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 2000);
 
-    return () => clearTimeout(timer); // cleanup on unmount or error change
-  }
-}, [error]);
+      return () => clearTimeout(timer); // cleanup on unmount or error change
+    }
+  }, [error]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -606,11 +589,11 @@ useEffect(() => {
                 </Link>
               </div>
               <div className="auth-cards">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Subscriptions</p>
@@ -665,10 +648,9 @@ useEffect(() => {
                               <div>
                                 <strong>
                                   {plan.productName ||
-                                    `${
-                                      plan.interval === "month"
-                                        ? "Monthly"
-                                        : "Yearly"
+                                    `${plan.interval === "month"
+                                      ? "Monthly"
+                                      : "Yearly"
                                     } Plan`}
                                 </strong>
                                 <p>
