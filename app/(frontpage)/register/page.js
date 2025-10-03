@@ -53,7 +53,7 @@ function RegisterPage() {
         email: userData.email,
         username: userData.username || userData.email.split("@")[0],
         platform: userData.platform,
-        userInfoId: userData.userInfoId || "",
+        // userInfoId: userData.userInfoId || "",
       };
 
       console.log("Calling social login API with:", payload);
@@ -68,7 +68,7 @@ function RegisterPage() {
         // Update user state with userInfoId from response if available
         const finalUserData = {
           ...payload,
-          userInfoId: response.result?.userInfoId || payload.userInfoId,
+          // userInfoId: "",
         };
 
         setUser({
@@ -159,7 +159,7 @@ function RegisterPage() {
         email: "user@gmail.com",
         username: "testuser",
         platform: "android",
-        userInfoId: "google_" + Date.now(),
+        // userInfoId: "google_" + Date.now(),
       };
       handleSocialLoginAPI(mockGoogleUser, 'google');
     }
@@ -189,7 +189,7 @@ function RegisterPage() {
         email: userInfo.email,
         username: userInfo.name || userInfo.email.split("@")[0],
         platform: "android",
-        userInfoId: userInfo.sub,
+        // userInfoId: userInfo.sub,
         // userInfoId: userInfo.sub
       };
       handleSocialLoginAPI(userData, 'google');
@@ -274,7 +274,7 @@ function RegisterPage() {
           email: email,
           username: username,
           platform: "ios",
-          userInfoId: userSub || `apple_${Date.now()}`,
+          // userInfoId: userSub || `apple_${Date.now()}`,
         };
         
         console.log("Sending Apple user data:", userData); // Debug log
@@ -289,7 +289,7 @@ function RegisterPage() {
         email: "test@icloud.com",
         username: "Apple User",
         platform: "ios",
-        userInfoId: "apple_" + Date.now(),
+        // userInfoId: "apple_" + Date.now(),
       };
       handleSocialLoginAPI(mockAppleUser, "apple");
       showAlert("info", "Using mock Apple login for development");
