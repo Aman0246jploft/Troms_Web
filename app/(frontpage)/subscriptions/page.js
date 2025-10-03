@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   Elements,
   CardElement,
+  PaymentRequestButtonElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
@@ -24,12 +25,114 @@ function StripePaymentForm({
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
+  const [paymentRequest, setPaymentRequest] = useState(null);
+
+  // Setup Apple Pay / Google Pay
+  useEffect(() => {
+    if (!stripe || !selectedPlan) {
+      return;
+    }
+
+    const pr = stripe.paymentRequest({
+      country: 'US',
+      currency: 'usd',
+      total: {
+        label: selectedPlan?.productName || `${selectedPlan?.interval === "month" ? "Monthly" : "Yearly"} Plan`,
+        amount: Math.round((selectedPlan?.amount || selectedPlan?.price) * 100), // Convert to cents
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+    });
+
+    // Check if Apple Pay / Google Pay is available
+    pr.canMakePayment().then(result => {
+      if (result) {
+        console.log("✅ Apple Pay / Google Pay is available");
+        setPaymentRequest(pr);
+      } else {
+        console.log("❌ Apple Pay / Google Pay is not available");
+      }
+    });
+
+    // Handle payment method creation from Apple Pay / Google Pay
+    pr.on('paymentmethod', async (e) => {
+      console.log("🍎 Apple Pay / Google Pay payment method received");
+      await processPayment(e.paymentMethod.id, e);
+    });
+
+  }, [stripe, selectedPlan]);
+
+  const processPayment = async (paymentMethodId, event = null) => {
+    console.log("🚀 Processing payment with method:", paymentMethodId);
+    
+    try {
+      // Call backend to create subscription
+      console.log("🔄 Calling backend to create subscription...");
+      const result = await apiService.purchaseSubscription(
+        selectedPlan.priceId,
+        {
+          paymentMethodId: paymentMethodId,
+          userInfoId: userInfoId,
+        }
+      );
+
+      console.log("📨 Backend response received:", result);
+
+      if (result.success) {
+        const subscription = result.result;
+        console.log("✅ Subscription created successfully");
+
+        const paymentIntentStatus =
+          subscription.latest_invoice?.payment_intent?.status;
+
+        console.log("💳 Payment Intent Status:", paymentIntentStatus);
+
+        if (paymentIntentStatus === "requires_action") {
+          console.log("🔐 Payment requires additional authentication");
+          const clientSecret =
+            subscription.latest_invoice.payment_intent.client_secret;
+
+          const { error: confirmError } = await stripe.confirmCardPayment(
+            clientSecret
+          );
+
+          if (confirmError) {
+            console.error("❌ Authentication failed:", confirmError);
+            if (event) event.complete('fail');
+            onError(confirmError.message);
+          } else {
+            console.log("✅ Authentication successful");
+            if (event) event.complete('success');
+            onSuccess(result);
+          }
+        } else if (paymentIntentStatus === "succeeded") {
+          console.log("✅ Payment succeeded");
+          if (event) event.complete('success');
+          onSuccess(result);
+        } else if (paymentIntentStatus === "requires_payment_method") {
+          console.error("❌ Payment method was declined");
+          if (event) event.complete('fail');
+          onError("Payment method was declined. Please try a different card.");
+        } else {
+          console.error("❌ Unexpected payment status:", paymentIntentStatus);
+          if (event) event.complete('fail');
+          onError(`Payment was not successful. Status: ${paymentIntentStatus}`);
+        }
+      } else {
+        console.error("❌ Subscription creation failed:", result.message);
+        if (event) event.complete('fail');
+        onError(result.message || "Subscription creation failed");
+      }
+    } catch (err) {
+      console.error("💥 Payment error:", err);
+      if (event) event.complete('fail');
+      onError(err.message || "An unexpected error occurred during payment");
+    }
+  };
 
   const handlePayment = async (event) => {
     event.preventDefault();
     console.log("🚀 Payment process started");
-    console.log("📋 Selected Plan:", selectedPlan);
-    console.log("👤 User Info ID:", userInfoId);
 
     // Validation checks
     if (!stripe) {
@@ -50,14 +153,9 @@ function StripePaymentForm({
       return;
     }
 
-    // Check if userInfoId exists before processing payment
     if (!userInfoId) {
-      console.error(
-        "❌ User information missing - userInfoId required for payment"
-      );
-      onError(
-        "User information is missing. Please complete registration again."
-      );
+      console.error("❌ User information missing");
+      onError("User information is missing. Please complete registration again.");
       return;
     }
 
@@ -67,9 +165,6 @@ function StripePaymentForm({
       onError("Card element not found - please refresh the page");
       return;
     }
-
-    console.log("✅ All validation checks passed");
-    console.log("💳 Card element found:", cardElement);
 
     setLoading(true);
 
@@ -89,100 +184,15 @@ function StripePaymentForm({
 
       if (paymentMethodError) {
         console.error("❌ Payment method creation failed:", paymentMethodError);
-        console.error("🔍 Error details:", {
-          code: paymentMethodError.code,
-          message: paymentMethodError.message,
-          type: paymentMethodError.type,
-        });
         onError(paymentMethodError.message);
         return;
       }
 
       console.log("✅ Payment method created successfully");
-      console.log("💳 Payment Method ID:", paymentMethod.id);
-      console.log("📄 Payment Method Details:", {
-        id: paymentMethod.id,
-        type: paymentMethod.type,
-        card: paymentMethod.card,
-      });
+      await processPayment(paymentMethod.id);
 
-      // Call backend to create subscription
-      console.log("🔄 Calling backend to create subscription...");
-      console.log("📊 Subscription request data:", {
-        priceId: selectedPlan.priceId,
-        paymentMethodId: paymentMethod.id,
-        userInfoId: userInfoId,
-      });
-
-      const result = await apiService.purchaseSubscription(
-        selectedPlan.priceId,
-        {
-          paymentMethodId: paymentMethod.id,
-          userInfoId: userInfoId,
-        }
-      );
-
-      console.log("📨 Backend response received:", result);
-
-      if (result.success) {
-        const subscription = result.result;
-        console.log("✅ Subscription created successfully");
-        console.log("📋 Subscription details:", subscription);
-
-        // Check if subscription requires further action (3D Secure, etc.)
-        const paymentIntentStatus =
-          subscription.latest_invoice?.payment_intent?.status;
-
-        console.log("💳 Payment Intent Status:", paymentIntentStatus);
-        console.log("🔍 Latest Invoice:", subscription.latest_invoice);
-
-        if (paymentIntentStatus === "requires_action") {
-          console.log(
-            "🔐 Payment requires additional authentication (3D Secure)"
-          );
-          const clientSecret =
-            subscription.latest_invoice.payment_intent.client_secret;
-          console.log("🔑 Client Secret:", clientSecret ? "Found" : "Missing");
-
-          const { error: confirmError } = await stripe.confirmCardPayment(
-            clientSecret
-          );
-
-          if (confirmError) {
-            console.error("❌ 3D Secure confirmation failed:", confirmError);
-            console.error("🔍 Confirmation error details:", {
-              code: confirmError.code,
-              message: confirmError.message,
-              type: confirmError.type,
-            });
-            onError(confirmError.message);
-          } else {
-            console.log("✅ 3D Secure confirmation successful");
-            onSuccess(result);
-          }
-        } else if (paymentIntentStatus === "succeeded") {
-          console.log("✅ Payment succeeded without additional authentication");
-          onSuccess(result);
-        } else if (paymentIntentStatus === "requires_payment_method") {
-          console.error("❌ Payment method was declined");
-          onError("Payment method was declined. Please try a different card.");
-        } else {
-          console.error("❌ Unexpected payment status:", paymentIntentStatus);
-          onError(`Payment was not successful. Status: ${paymentIntentStatus}`);
-        }
-      } else {
-        console.error("❌ Subscription creation failed:", result.message);
-        console.error("🔍 Backend error details:", result);
-        onError(result.message || "Subscription creation failed");
-      }
     } catch (err) {
       console.error("💥 Payment error caught:", err);
-      console.error("🔍 Error stack:", err.stack);
-      console.error("🔍 Error details:", {
-        name: err.name,
-        message: err.message,
-        code: err.code,
-      });
       onError(err.message || "An unexpected error occurred during payment");
     } finally {
       console.log("🏁 Payment process finished");
@@ -197,17 +207,10 @@ function StripePaymentForm({
     }).format(amount);
   };
 
-  console.log("🎨 Rendering StripePaymentForm");
-  console.log("⚡ Stripe ready:", !!stripe);
-  console.log("🧩 Elements ready:", !!elements);
-
   return (
     <div className="stripe-payment-form mt-3">
       {/* Plan Summary Box */}
       <div className="plan-summary-box mb-4">
-        {/* <h5 className="mb-2" style={{ fontWeight: '700', fontSize: '20px', color: 'black' }}>
-          {selectedPlan?.productName || `${selectedPlan?.interval === "month" ? "Monthly" : "Yearly"} Plan`}
-        </h5> */}
         <div>
           <p className="mb-0" style={{ fontSize: "14px", opacity: "0.9" }}>
             3 days free trial, then
@@ -221,9 +224,30 @@ function StripePaymentForm({
         </div>
       </div>
 
+      {/* Apple Pay / Google Pay Button */}
+      {paymentRequest && (
+        <div className="mb-3">
+          <PaymentRequestButtonElement 
+            options={{
+              paymentRequest,
+              style: {
+                paymentRequestButton: {
+                  type: 'default',
+                  theme: 'dark',
+                  height: '48px',
+                },
+              },
+            }}
+          />
+          <div className="text-center my-3">
+            <span className="text-muted">or pay with card</span>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handlePayment}>
         <div className="mb-3 text-start">
-          <label className="form-label fw-semibold ">Card Information</label>
+          <label className="form-label fw-semibold">Card Information</label>
           <div className="dv_card_info">
             <CardElement
               options={{
@@ -279,8 +303,9 @@ function StripePaymentForm({
           )}
         </button>
         <button
-          className="prev-link  continue-btn mt-3"
-        // onClick={handleBackToPlans}
+          type="button"
+          className="prev-link continue-btn mt-3"
+          onClick={() => window.history.back()}
         >
           <span>Back to Plans</span>
         </button>
@@ -292,76 +317,6 @@ function StripePaymentForm({
         </p>
       </div>
     </div>
-
-    // <div className="stripe-payment-form mt-3">
-    //   <form onSubmit={handlePayment}>
-    //     <div className="mb-3">
-    //       <label className="form-label fw-semibold">Card Information</label>
-    //       <div className="dv_card_info">
-    //         <CardElement
-    //           options={{
-    //             style: {
-    //               base: {
-    //                 fontSize: "16px",
-    //                 color: "#424770",
-    //                 "::placeholder": {
-    //                   color: "#aab7c4",
-    //                 },
-    //               },
-    //               invalid: {
-    //                 color: "#9e2146",
-    //               },
-    //             },
-    //           }}
-    //           onReady={(element) => {
-    //             console.log("✅ CardElement is ready:", element);
-    //           }}
-    //           onChange={(event) => {
-    //             console.log("💳 Card input changed:", {
-    //               complete: event.complete,
-    //               error: event.error?.message,
-    //               brand: event.brand,
-    //             });
-    //           }}
-    //         />
-    //       </div>
-    //     </div>
-
-    //     <button
-    //       type="submit"
-    //       disabled={loading || !stripe || !elements}
-    //       className="custom-btn continue-btn"
-    //       style={{
-    //         fontSize: "16px",
-    //         fontWeight: "600",
-
-    //         border: "none",
-    //         borderRadius: "8px",
-    //       }}
-    //     >
-    //       {loading ? (
-    //         <>
-    //           <span
-    //             className="spinner-border spinner-border-sm me-2"
-    //             role="status"
-    //             aria-hidden="true"
-    //           ></span>
-    //           Processing Payment...
-    //         </>
-    //       ) : (
-    //         `Subscribe for ${formatAmount(
-    //           selectedPlan?.amount || selectedPlan?.price
-    //         )}/${selectedPlan?.interval}`
-    //       )}
-    //     </button>
-    //   </form>
-
-    //   <div className="payment-info mt-4 text-center">
-    //     <p className="small text-muted mt-2 mb-0">
-    //       Your payment information is encrypted and secure
-    //     </p>
-    //   </div>
-    // </div>
   );
 }
 
@@ -384,7 +339,7 @@ function SubscriptionPage() {
         setError("");
       }, 2000);
 
-      return () => clearTimeout(timer); // cleanup on unmount or error change
+      return () => clearTimeout(timer);
     }
   }, [error]);
 
@@ -410,7 +365,7 @@ function SubscriptionPage() {
 
   useEffect(() => {
     fetchSubscriptionPlans();
-  }, []); // <- empty array, runs once
+  }, []);
 
   const fetchSubscriptionPlans = async () => {
     console.log("🔄 Fetching subscription plans...");
@@ -423,7 +378,6 @@ function SubscriptionPage() {
         console.log("✅ Plans loaded successfully:", response.result);
         setPlans(response.result);
 
-        // Auto-select first plan if available
         if (response.result.length > 0) {
           console.log("🎯 Auto-selecting first plan:", response.result[0]);
           setSelectedPlan(response.result[0]);
@@ -434,11 +388,6 @@ function SubscriptionPage() {
       }
     } catch (err) {
       console.error("💥 Error fetching plans:", err);
-      console.error("🔍 Error details:", {
-        name: err.name,
-        message: err.message,
-        stack: err.stack,
-      });
       setError("Failed to load subscription plans");
     } finally {
       console.log("🏁 Plan fetching finished");
@@ -448,16 +397,12 @@ function SubscriptionPage() {
 
   const handlePlanSelect = (plan) => {
     console.log("🎯 Plan selected:", plan);
-    console.log("📋 Previous plan:", selectedPlan);
     setSelectedPlan(plan);
     setError("");
   };
 
   const handlePurchase = () => {
     console.log("💰 Purchase button clicked");
-    console.log("📋 Selected plan:", selectedPlan);
-    console.log("📜 Terms accepted:", termsAccepted);
-    console.log("👤 User Info ID:", userInfoId);
 
     if (!selectedPlan) {
       console.error("❌ No plan selected");
@@ -470,12 +415,9 @@ function SubscriptionPage() {
       return;
     }
 
-    // Check if userInfoId exists before proceeding to payment
     if (!userInfoId) {
-      console.error("❌ User information missing - userInfoId not found");
-      setError(
-        "User information is missing. Please complete registration again."
-      );
+      console.error("❌ User information missing");
+      setError("User information is missing. Please complete registration again.");
       setTimeout(() => {
         router.push("/register");
       }, 2000);
@@ -488,18 +430,13 @@ function SubscriptionPage() {
 
   const handlePaymentSuccess = async (result) => {
     console.log("🎉 Payment successful:", result);
-    // setSuccess("Subscription successful! Welcome to TROMS Fitness");
     setShowPayment(false);
     setError("");
 
-    // Call social-login API again with userInfoId after successful payment
     try {
       const userData = state.user || {};
       if (userData.email && userInfoId) {
-        console.log(
-          "🔄 Calling social-login API after payment completion with userInfoId:",
-          userInfoId
-        );
+        console.log("🔄 Calling social-login API after payment completion");
 
         const socialLoginPayload = {
           email: userData.email,
@@ -508,45 +445,24 @@ function SubscriptionPage() {
           userInfoId: userInfoId,
         };
 
-        console.log("socialLoginPayload", socialLoginPayload);
-
-        console.log(
-          "📤 Social login payload after payment:",
-          socialLoginPayload
-        );
-        const socialLoginResponse = await apiService.socialLogin(
-          socialLoginPayload
-        );
+        console.log("📤 Social login payload:", socialLoginPayload);
+        const socialLoginResponse = await apiService.socialLogin(socialLoginPayload);
 
         if (socialLoginResponse.success) {
-          console.log(
-            "✅ Social login API called successfully after payment:",
-            socialLoginResponse
-          );
+          console.log("✅ Social login API called successfully");
         } else {
-          console.error(
-            "❌ Social login API failed after payment:",
-            socialLoginResponse.message
-          );
+          console.error("❌ Social login API failed:", socialLoginResponse.message);
         }
-      } else {
-        console.warn(
-          "⚠️ Missing user data or userInfoId for social login call after payment"
-        );
-        console.log("User data:", userData);
-        console.log("UserInfoId:", userInfoId);
       }
     } catch (error) {
-      console.error("💥 Error calling social-login API after payment:", error);
-      // Don't show error to user as payment was successful, just log it
+      console.error("💥 Error calling social-login API:", error);
     }
 
-    // Redirect to home page after 2 seconds and clear success message
-    console.log("⏰ Setting redirect timer (2 seconds)");
+    console.log("⏰ Setting redirect timer");
     setTimeout(() => {
-      console.log("🔄 Redirecting to home page...");
-      setSuccess(""); // Clear success message
-      router.push("/download-app"); // Redirect to home page
+      console.log("🔄 Redirecting to download page");
+      setSuccess("");
+      router.push("/download-app");
     }, 0);
   };
 
@@ -557,25 +473,7 @@ function SubscriptionPage() {
     setSuccess("");
   };
 
-  const handleBackToPlans = () => {
-    console.log("⬅️ Back to plans clicked");
-    setShowPayment(false);
-    setError("");
-  };
-
-  console.log("🎨 Rendering SubscriptionPage");
-  console.log("📊 Component state:", {
-    loading,
-    plansCount: plans.length,
-    selectedPlan: selectedPlan?.priceId,
-    showPayment,
-    termsAccepted,
-    error,
-    success,
-  });
-
   if (loading) {
-    console.log("⏳ Showing loading state");
     return (
       <section className="auth-section">
         <div className="container">
@@ -606,26 +504,25 @@ function SubscriptionPage() {
                 </Link>
               </div>
               <div className="auth-cards">
-                {!showPayment && <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="new_back_btn"
-                >
-                  Previous
-                </button>}
-
-                {showPayment && (
+                {!showPayment && (
                   <button
                     type="button"
-                    onClick={() => setShowPayment(false)} // hide payment form
+                    onClick={() => router.back(-2)}
                     className="new_back_btn"
                   >
                     Previous
                   </button>
                 )}
 
-
-
+                {showPayment && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPayment(false)}
+                    className="new_back_btn"
+                  >
+                    Previous
+                  </button>
+                )}
 
                 <p className="text-uppercase mb-2">Subscriptions</p>
                 {!showPayment && (
@@ -710,10 +607,7 @@ function SubscriptionPage() {
                         id="checkDefault"
                         checked={termsAccepted}
                         onChange={(e) => {
-                          console.log(
-                            "📜 Terms acceptance changed:",
-                            e.target.checked
-                          );
+                          console.log("📜 Terms acceptance changed:", e.target.checked);
                           setTermsAccepted(e.target.checked);
                         }}
                       />
@@ -754,7 +648,7 @@ function SubscriptionPage() {
                         }}
                       >
                         <div>
-                          <h3>Monthly Plan</h3>
+                          <h3>{selectedPlan.title}</h3>
 
                           <StripePaymentForm
                             selectedPlan={selectedPlan}
@@ -772,9 +666,6 @@ function SubscriptionPage() {
             </div>
           </div>
           <div className="auth-bttm">
-            {/* <p>
-              <span>25/</span> 25
-            </p> */}
             <p>
               <span>{state.currentStep}/</span> {state.totalSteps}
             </p>
