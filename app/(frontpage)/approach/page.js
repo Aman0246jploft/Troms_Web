@@ -90,9 +90,9 @@ function ApproachPage() {
         "error",
         "Required information is missing. Redirecting to registration to complete setup..."
       );
-      // setTimeout(() => {
-      //   router.push("/register");
-      // }, 2000);
+      setTimeout(() => {
+        router.push("/register");
+      }, 2000);
       return;
     }
   }, [
@@ -182,7 +182,7 @@ function ApproachPage() {
         console.log("All fields complete, auto-clicking continue button");
         setTimeout(() => {
           handleContinue();
-        }, 1000); // Small delay to ensure UI is ready
+        }, 500); // Small delay to ensure UI is ready
       }
     }
   }, [state.currentStep, isSubmitting, isCompleted, alert.show, state]);
@@ -372,7 +372,7 @@ function ApproachPage() {
                 )}
 
                 <div className="text-center mt-3">
-                  <button
+                  {/* <button
                     onClick={handleContinue}
                     className="custom-btn continue-btn"
                     disabled={isSubmitting || state.loading}
@@ -380,7 +380,7 @@ function ApproachPage() {
                     {isSubmitting || state.loading
                       ? "Processing..."
                       : "Continue"}
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
