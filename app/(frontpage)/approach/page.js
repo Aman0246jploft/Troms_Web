@@ -262,6 +262,9 @@ function ApproachPage() {
           }, 2000);
         } else {
           showAlert("error", errorMessage);
+             setTimeout(() => {
+          router.push("/register");
+        }, 2000);
         }
       }
     } catch (error) {
@@ -331,7 +334,7 @@ function ApproachPage() {
     >
                   Previous
                 </button> */}
-                <p className="text-uppercase mb-5">Approach</p>
+                {/* <p className="text-uppercase mb-5">Approach</p> */}
 
                 <div className="text-center mt-3 mb-3">
                   {isCompleted ? (
