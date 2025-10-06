@@ -28,7 +28,7 @@ export default function Home() {
   };
 
 
-useEffect(() => {
+  useEffect(() => {
     const fetchLocationData = async (latitude, longitude) => {
       try {
         const apiKey = process.env.NEXT_PUBLIC_LOCATION_API_KEY; // replace with your LocationIQ key
@@ -38,7 +38,7 @@ useEffect(() => {
         );
         const data = await response.json();
         if (data && data.address) {
-          const { country, state,city } = data.address;
+          const { country, state, city } = data.address;
           // Store in localStorage
           localStorage.setItem("country", country || "");
           localStorage.setItem("state", state || "");
@@ -80,8 +80,7 @@ useEffect(() => {
 
     try {
       const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
         }/contact-us/create`,
         {
           method: "POST",
@@ -401,11 +400,10 @@ useEffect(() => {
                 {/* Success/Error Message */}
                 {submitStatus.message && (
                   <div
-                    className={`alert ${
-                      submitStatus.type === "success"
+                    className={`alert ${submitStatus.type === "success"
                         ? "alert-success"
                         : "alert-danger"
-                    } mb-3`}
+                      } mb-3`}
                   >
                     {submitStatus.message}
                   </div>
@@ -465,9 +463,8 @@ useEffect(() => {
                   </div>
                   <div>
                     <button
-                      className={`custom-btn light-btn ${
-                        isSubmitting ? "disabled" : ""
-                      }`}
+                      className={`custom-btn light-btn ${isSubmitting ? "disabled" : ""
+                        }`}
                       type="submit"
                       disabled={isSubmitting}
                     >
@@ -491,7 +488,7 @@ useEffect(() => {
               <Accordion.Header>How does Fitness AI work? </Accordion.Header>
               <Accordion.Body>
                 <p>
-                 You enter your goal, the food you like, and if you have equipment. TROMS then builds a plan for you with workouts and meals to follow step by step.
+                  You enter your goal, the food you like, and if you have equipment. TROMS then builds a plan for you with workouts and meals to follow step by step.
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -501,7 +498,7 @@ useEffect(() => {
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-               Yes. Just choose “no equipment” when you set it up. TROMS will give you easy bodyweight exercises you can do at home. 
+                  Yes. Just choose “no equipment” when you set it up. TROMS will give you easy bodyweight exercises you can do at home.
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -511,7 +508,7 @@ useEffect(() => {
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-You put in things like your weight, age, goal, and food choices. TROMS uses that to make a plan just for you. 
+                  You put in things like your weight, age, goal, and food choices. TROMS uses that to make a plan just for you.
                 </p>
               </Accordion.Body>
             </Accordion.Item>
@@ -521,7 +518,7 @@ You put in things like your weight, age, goal, and food choices. TROMS uses that
               </Accordion.Header>
               <Accordion.Body>
                 <p>
-              Yes. When you log your workouts or meals, TROMS updates your plan. You can also change exercises or meals anytime with one tap.
+                  Yes. When you log your workouts or meals, TROMS updates your plan. You can also change exercises or meals anytime with one tap.
                 </p>
               </Accordion.Body>
             </Accordion.Item>

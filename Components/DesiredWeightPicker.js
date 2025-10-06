@@ -15,6 +15,8 @@ const DesiredWeightPicker = ({
   // Use provided min/max or default based on unit
 const defaultMinWeight = isMetric ? 35 : 77;  // Changed from 30 to 35 kg
 const defaultMaxWeight = isMetric ? 317 : 699; 
+const sensitivity = 0.15; // smaller = slower, bigger = faster
+
 
   const min = minWeight !== null && minWeight !== undefined ? minWeight : defaultMinWeight;
   const max = maxWeight !== null && maxWeight !== undefined ? maxWeight : defaultMaxWeight;
@@ -107,23 +109,52 @@ const defaultMaxWeight = isMetric ? 317 : 699;
     document.removeEventListener("touchend", handlePointerUp);
   };
 
-  const moveHandle = (e) => {
-    if (!pickerRef.current) return;
-    const bounds = pickerRef.current.getBoundingClientRect();
-    const clientX =
-      e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    let posX = clientX - bounds.left;
-    let newWeight = getWeightFromPos(posX);
+  // const moveHandle = (e) => {
+  //   if (!pickerRef.current) return;
+  //   const bounds = pickerRef.current.getBoundingClientRect();
+  //   const clientX =
+  //     e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+  //   let posX = clientX - bounds.left;
+  //   let newWeight = getWeightFromPos(posX);
 
-    // Ensure weight is within bounds
-    newWeight = Math.max(min, Math.min(max, newWeight));
+  //   // Ensure weight is within bounds
+  //   newWeight = Math.max(min, Math.min(max, newWeight));
 
-    setWeight(newWeight);
-    if (onChange) onChange(newWeight);
-  };
+  //   setWeight(newWeight);
+  //   if (onChange) onChange(newWeight);
+  // };
 
   // Keyboard navigation support
+  
+  
+  const moveHandle = (e) => {
+  if (!pickerRef.current) return;
+  const bounds = pickerRef.current.getBoundingClientRect();
+  const clientX =
+    e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+  let posX = clientX - bounds.left;
+
+  const pickerWidth = pickerRef.current.clientWidth;
+  const relativePos = Math.min(Math.max(posX, 0), pickerWidth) / pickerWidth;
+
+  // Target weight based on pointer
+  let targetWeight = min + relativePos * (max - min);
+
+  // Slow it down using sensitivity
+  let newWeight = weight + (targetWeight - weight) * sensitivity;
+
+  // Round to nearest 0.25 and clamp to min/max
+  newWeight = Math.round(Math.max(min, Math.min(max, newWeight)) * 4) / 4;
+
+  setWeight(newWeight);
+  if (onChange) onChange(newWeight);
+};
+
+  
   const handleKeyDown = (e) => {
+
+
+    
     if (disabled) return; // Don't handle events when disabled
     if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
       const newWeight = Math.max(min, Math.round((weight - 0.25) * 4) / 4);

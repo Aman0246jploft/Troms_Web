@@ -17,6 +17,7 @@ const WeightPicker = ({
   
   const [weight, setWeight] = useState(externalWeight);
   // const [dragging, setDragging] = useState(false);
+  const sensitivity = 0.25;
 
   const draggingRef = useRef(false);
 
@@ -91,20 +92,28 @@ draggingRef.current = true;
     document.removeEventListener('touchend', handlePointerUp);
   };
 
-  const moveHandle = (e) => {
-    if (!pickerRef.current) return;
-    const bounds = pickerRef.current.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    let posX = clientX - bounds.left;
-    let newWeight = getWeightFromPos(posX);
-    
-    // Ensure weight is within bounds and round to reasonable precision
-    newWeight = Math.max(min, Math.min(max, newWeight));
-    newWeight = Math.round(newWeight * 4) / 4; // Round to nearest 0.25
-    
-    setWeight(newWeight);
-    if (onChange) onChange(newWeight);
-  };
+const moveHandle = (e) => {
+  if (!pickerRef.current) return;
+  const bounds = pickerRef.current.getBoundingClientRect();
+  const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+  let posX = clientX - bounds.left;
+
+  // Get relative position (0–1)
+  const pickerWidth = pickerRef.current.clientWidth;
+  const relativePos = Math.min(Math.max(posX, 0), pickerWidth) / pickerWidth;
+
+  // Map to weight and apply sensitivity
+  let newWeight = min + relativePos * (max - min);
+  // Slow down weight changes
+  newWeight = weight + (newWeight - weight) * sensitivity;
+
+  // Round to nearest 0.25 and clamp
+  newWeight = Math.round(Math.max(min, Math.min(max, newWeight)) * 4) / 4;
+
+  setWeight(newWeight);
+  if (onChange) onChange(newWeight);
+};
+
 
   // Keyboard navigation support
   const handleKeyDown = (e) => {
