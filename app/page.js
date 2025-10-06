@@ -350,6 +350,12 @@ export default function Home() {
                 </p>
                 <div className="row">
                   <div className="col-lg-6 col-md-6">
+                     <div className="col-lg-6 col-md-6">
+                    <div className="cta-cards">
+                      <h4>email</h4>
+                      <Link href="mailto:nazim@bratesai.com">nazim@bratesai.com</Link>
+                    </div>
+                  </div>
                     {/* <div className="cta-cards">
                       <h4>Contact Us</h4>
                       <Link href="tel:+31 20 123 4567">+31 20 123 4567</Link>
@@ -361,12 +367,12 @@ export default function Home() {
                       <p>Horizon Convention Center Amsterdam, Netherlands</p>
                     </div>
                   </div> */}
-                  <div className="col-lg-6 col-md-6">
+                  {/* <div className="col-lg-6 col-md-6">
                     <div className="cta-cards">
                       <h4>email</h4>
                       <Link href="mailto:nazim@bratesai.com">nazim@bratesai.com</Link>
                     </div>
-                  </div>
+                  </div> */}
                   {/* <div className="col-lg-6 col-md-6">
                     <div className="cta-cards ">
                       <h4>Follow Us</h4>
