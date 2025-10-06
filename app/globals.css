@@ -1292,6 +1292,14 @@ input[type="number"]::-webkit-outer-spin-button {
   gap: 5px;
   justify-content: center;
 }
+
+.equipment-list.gym {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: flex-start; /* align items to left */
+}
+
 .equipment-bx label {
   padding: 10px 20px;
   border-radius: 25px;

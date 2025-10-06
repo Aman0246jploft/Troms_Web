@@ -175,24 +175,24 @@ function EquipmentContent() {
   //   }
   // };
 
-  const fetchEquipments = (location, data = allEquipments) => {
-    if (!data) return;
+const fetchEquipments = (location, data = allEquipments) => {
+  if (!data) return;
 
-    let list = [];
-    switch (location.toLowerCase()) {
-      case "gym":
-        list = data.gym_equipments.flatMap((cat) => cat.list_data || []);
-        break;
-      case "home":
-        list = data.home_equipments || [];
-        break;
-      case "outdoors":
-        list = data.outdoor_equipments || [];
-        break;
-    }
+  let list = [];
+  switch (location.toLowerCase()) {
+    case "gym":
+      list = data.gym_equipments || [];
+      break;
+    case "home":
+      list = data.home_equipments || [];
+      break;
+    case "outdoors":
+      list = data.outdoor_equipments || [];
+      break;
+  }
 
-    setEquipments(list);
-  };
+  setEquipments(list);
+};
 
   const handleLocationChange = (location) => {
     setWorkoutLocation(location);
@@ -349,7 +349,7 @@ function EquipmentContent() {
                       ) : (
                         <div className="food-list">
                           <div className="equipment-list mb-4">
-                            {equipments.map((equipment) => (
+                            {/* {equipments.map((equipment) => (
                               <div key={equipment.id} className="equipment-bx">
                                 <input
                                   type="checkbox"
@@ -380,7 +380,74 @@ function EquipmentContent() {
                                   {equipment.name}
                                 </label>
                               </div>
-                            ))}
+                            ))} */}
+
+{workoutLocation && !loading && equipments && (
+  <div className="food-list">
+    {workoutLocation === "gym" &&
+      equipments.map((category) => (
+        <div key={category.name} className="equipment-category">
+          <h6 className="category-heading">{category.name}</h6> {/* Heading */}
+          <div className={`equipment-list mb-4 ${workoutLocation === "gym" ? "gym" : ""}`}>
+
+            {category.list_data.map((equipment) => (
+              <div key={equipment.id} className="equipment-bx">
+                <input
+                  type="checkbox"
+                  id={`equipment-${equipment.id}`}
+                  className="d-none"
+                  checked={selectedEquipments.includes(equipment.id)}
+                  onChange={() => handleEquipmentToggle(equipment.id)}
+                />
+                <label
+                  htmlFor={`equipment-${equipment.id}`}
+                  className={
+                    selectedEquipments.includes(equipment.id) ? "selected" : ""
+                  }
+                >
+                  <img
+                    src={equipment.icon}
+                    alt={equipment.name || "icon"}
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                  {equipment.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+    {workoutLocation !== "gym" && (
+      <div className="equipment-list mb-4">
+        {equipments.map((equipment) => (
+          <div key={equipment.id} className="equipment-bx">
+            <input
+              type="checkbox"
+              id={`equipment-${equipment.id}`}
+              className="d-none"
+              checked={selectedEquipments.includes(equipment.id)}
+              onChange={() => handleEquipmentToggle(equipment.id)}
+            />
+            <label
+              htmlFor={`equipment-${equipment.id}`}
+              className={selectedEquipments.includes(equipment.id) ? "selected" : ""}
+            >
+              <img
+                src={equipment.icon}
+                alt={equipment.name || "icon"}
+                style={{ width: "20px", height: "20px" }}
+              />
+              {equipment.name}
+            </label>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+
                           </div>
                         </div>
                       )}
