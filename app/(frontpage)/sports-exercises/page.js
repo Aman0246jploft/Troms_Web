@@ -17,18 +17,10 @@ function SportsExercisesContent() {
   const exerciseOptions = [
     "Running",
     "Swimming",
-    "Walking",
-    "Cycling",
-    ,
-    "Yoga",
-    "Pilates",
-    "Cardio",
-    "CrossFit",
-    "Basketball",
-    "Football",
-    "Tennis",
-    "Badminton",
-    "Boxing",
+    "Treadmill",
+    "Cross Trainer",
+    "Jumping Jacks",
+    "Stair Master"
   ];
 
   useEffect(() => {
@@ -135,14 +127,14 @@ function SportsExercisesContent() {
   };
 
 
-const handleSkip = () => {
-  // Clear exercises if skipped (optional)
-  updateField("sportExercises", []);
+  const handleSkip = () => {
+    // Clear exercises if skipped (optional)
+    updateField("sportExercises", []);
 
-  // Move to the next step
-  updateStep(14);
-  router.push("/goal-reach");
-};
+    // Move to the next step
+    updateStep(14);
+    router.push("/goal-reach");
+  };
 
 
 
@@ -166,20 +158,20 @@ const handleSkip = () => {
               />
 
               <div className="auth-cards">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
-           <button
-  type="button"
-  className="new_skips_btn"
-  onClick={handleSkip}
->
-  Skip
-</button>
+                <button
+                  type="button"
+                  className="new_skips_btn"
+                  onClick={handleSkip}
+                >
+                  Skip
+                </button>
 
                 <p className="text-uppercase mb-2">Sports & Exercises</p>
                 <h3 className="mb-4">

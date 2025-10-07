@@ -20,7 +20,7 @@ const months = [
 function WheelColumn({ items, selectedIndex, onSelectionChange }) {
   const containerRef = useRef(null);
   const itemHeight = 40;
-
+const scrollTimeoutRef = useRef(null);
   useEffect(() => {
     if (containerRef.current) {
       const scrollTop = selectedIndex * itemHeight;
@@ -28,19 +28,41 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
     }
   }, [selectedIndex]);
 
-  const handleScroll = () => {
+  // const handleScroll = () => {
+  //   if (containerRef.current) {
+  //     const scrollTop = containerRef.current.scrollTop;
+  //     const newIndex = Math.round(scrollTop / itemHeight);
+  //     if (
+  //       newIndex !== selectedIndex &&
+  //       newIndex >= 0 &&
+  //       newIndex < items.length
+  //     ) {
+  //       onSelectionChange(newIndex);
+  //     }
+  //   }
+  // };
+
+
+const handleScroll = () => {
+  if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+
+  scrollTimeoutRef.current = setTimeout(() => {
     if (containerRef.current) {
       const scrollTop = containerRef.current.scrollTop;
       const newIndex = Math.round(scrollTop / itemHeight);
-      if (
-        newIndex !== selectedIndex &&
-        newIndex >= 0 &&
-        newIndex < items.length
-      ) {
+
+      // snap to nearest item
+      containerRef.current.scrollTo({
+        top: newIndex * itemHeight,
+        behavior: "smooth",
+      });
+
+      if (newIndex !== selectedIndex && newIndex >= 0 && newIndex < items.length) {
         onSelectionChange(newIndex);
       }
     }
-  };
+  }, 100); // wait 100ms after scrolling stops
+};
 
   return (
     <div className="wheel-column">

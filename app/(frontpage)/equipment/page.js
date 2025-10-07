@@ -417,11 +417,11 @@ function EquipmentContent() {
                                             name="equipment"
                                             className="d-none"
                                             checked={selectedEquipments.includes(
-                                              equipment.id
+                                              equipment.name
                                             )}
                                             onChange={() =>
                                               handleEquipmentToggle(
-                                                equipment.id
+                                                equipment.name
                                               )
                                             }
                                           />
@@ -429,7 +429,7 @@ function EquipmentContent() {
                                             htmlFor={`equipment-${equipment.id}`}
                                             className={
                                               selectedEquipments.includes(
-                                                equipment.id
+                                                equipment.name
                                               )
                                                 ? "selected"
                                                 : ""
@@ -466,17 +466,17 @@ function EquipmentContent() {
                                         name="equipment"
                                         className="d-none"
                                         checked={selectedEquipments.includes(
-                                          equipment.id
+                                          equipment.name
                                         )}
                                         onChange={() =>
-                                          handleEquipmentToggle(equipment.id)
+                                          handleEquipmentToggle(equipment.name)
                                         }
                                       />
                                       <label
                                         htmlFor={`equipment-${equipment.id}`}
                                         className={
                                           selectedEquipments.includes(
-                                            equipment.id
+                                            equipment.name
                                           )
                                             ? "selected"
                                             : ""
