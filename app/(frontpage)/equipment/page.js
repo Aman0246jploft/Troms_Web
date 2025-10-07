@@ -194,13 +194,30 @@ function EquipmentContent() {
     setEquipments(list);
   };
 
+  // const handleLocationChange = (location) => {
+  //   setWorkoutLocation(location);
+  //   updateField("workoutLocation", location);
+  //   setSelectedEquipments([]); // Reset equipment selection
+  //   updateField("selectedEquipments", []);
+  //   fetchEquipments(location);
+  // };
+
   const handleLocationChange = (location) => {
     setWorkoutLocation(location);
     updateField("workoutLocation", location);
     setSelectedEquipments([]); // Reset equipment selection
     updateField("selectedEquipments", []);
+
+    // ✅ Update the URL query param
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set("location", location);
+    const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+
     fetchEquipments(location);
   };
+
+
 
   const handleEquipmentToggle = (equipmentId) => {
     setSelectedEquipments((prev) => {
@@ -255,11 +272,11 @@ function EquipmentContent() {
               />
 
               <div className="auth-cards equipment location">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-2">Equipments</p>
@@ -348,7 +365,7 @@ function EquipmentContent() {
                         </div>
                       ) : (
                         <div className="food-list">
-                          <div className="equipment-list mb-4">
+                          {/* <div className="equipment-list mb-4">
                             {equipments.map((equipment) => (
                               <div key={equipment.id} className="equipment-bx">
                                 <input
@@ -381,7 +398,76 @@ function EquipmentContent() {
                                 </label>
                               </div>
                             ))}
+                          </div> */}
+
+                          <div className="equipment-list mb-4">
+                            {workoutLocation === "gym" ? (
+                              // ✅ Gym grouped view
+                              allEquipments?.gym_equipments?.map((group) => (
+                                <div key={group.name} className="mb-4 gym">
+                                  <h6 className="text-uppercase fw-bold mb-2">{group.name}</h6>
+                                  <div className="">
+                                    {group?.list_data?.map((equipment) => (
+                                      <div key={equipment.id} className="equipment-bx">
+                                        <input
+                                          type="checkbox"
+                                          id={`equipment-${equipment.id}`}
+                                          name="equipment"
+                                          className="d-none"
+                                          checked={selectedEquipments.includes(equipment.id)}
+                                          onChange={() => handleEquipmentToggle(equipment.id)}
+                                        />
+                                        <label
+                                          htmlFor={`equipment-${equipment.id}`}
+                                          className={
+                                            selectedEquipments.includes(equipment.id)
+                                              ? "selected"
+                                              : ""
+                                          }
+                                        >
+                                          <img
+                                            src={equipment.icon}
+                                            alt={equipment.name || "icon"}
+                                            style={{ width: "20px", height: "20px" }}
+                                          />
+                                          {equipment.name}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              // ✅ Home / Outdoors flat list
+                              equipments.map((equipment) => (
+                                <div key={equipment.id} className="equipment-bx">
+                                  <input
+                                    type="checkbox"
+                                    id={`equipment-${equipment.id}`}
+                                    name="equipment"
+                                    className="d-none"
+                                    checked={selectedEquipments.includes(equipment.id)}
+                                    onChange={() => handleEquipmentToggle(equipment.id)}
+                                  />
+                                  <label
+                                    htmlFor={`equipment-${equipment.id}`}
+                                    className={
+                                      selectedEquipments.includes(equipment.id) ? "selected" : ""
+                                    }
+                                  >
+                                    <img
+                                      src={equipment.icon}
+                                      alt={equipment.name || "icon"}
+                                      style={{ width: "20px", height: "20px" }}
+                                    />
+                                    {equipment.name}
+                                  </label>
+                                </div>
+                              ))
+                            )}
                           </div>
+
+
                         </div>
                       )}
 
