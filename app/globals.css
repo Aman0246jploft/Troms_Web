@@ -2412,6 +2412,15 @@ input[type="number"]::-webkit-outer-spin-button {
   left: auto;
   right: 10px;
 }
+.gym-eq-list .gym-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 20px 0;
+}
+.gym-eq-list .equipment-list {
+  justify-content: flex-start;
+}
 
 /* responsive-css-start */
 @media (max-width: 1399px) {
