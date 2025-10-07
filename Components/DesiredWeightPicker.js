@@ -144,7 +144,7 @@ const sensitivity = 0.15; // smaller = slower, bigger = faster
   let newWeight = weight + (targetWeight - weight) * sensitivity;
 
   // Round to nearest 0.25 and clamp to min/max
-  newWeight = Math.round(Math.max(min, Math.min(max, newWeight)) * 4) / 4;
+  newWeight = Math.round(Math.max(min, Math.min(max, newWeight)) );
 
   setWeight(newWeight);
   if (onChange) onChange(newWeight);
@@ -157,11 +157,11 @@ const sensitivity = 0.15; // smaller = slower, bigger = faster
     
     if (disabled) return; // Don't handle events when disabled
     if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
-      const newWeight = Math.max(min, Math.round((weight - 0.25) * 4) / 4);
+      const newWeight = Math.max(min, Math.round((weight - 0.25) ));
       setWeight(newWeight);
       if (onChange) onChange(newWeight);
     } else if (e.key === "ArrowRight" || e.key === "ArrowUp") {
-      const newWeight = Math.min(max, Math.round((weight + 0.25) * 4) / 4);
+      const newWeight = Math.min(max, Math.round((weight + 0.25) ));
       setWeight(newWeight);
       if (onChange) onChange(newWeight);
     }

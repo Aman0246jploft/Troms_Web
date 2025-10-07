@@ -17,7 +17,7 @@ const WeightPicker = ({
   
   const [weight, setWeight] = useState(externalWeight);
   // const [dragging, setDragging] = useState(false);
-  const sensitivity = 0.25;
+  const sensitivity = 0.2;
 
   const draggingRef = useRef(false);
 
@@ -108,7 +108,7 @@ const moveHandle = (e) => {
   newWeight = weight + (newWeight - weight) * sensitivity;
 
   // Round to nearest 0.25 and clamp
-  newWeight = Math.round(Math.max(min, Math.min(max, newWeight)) * 4) / 4;
+  newWeight = Math.round(Math.max(min, Math.min(max, newWeight))) ;
 
   setWeight(newWeight);
   if (onChange) onChange(newWeight);
@@ -118,11 +118,11 @@ const moveHandle = (e) => {
   // Keyboard navigation support
   const handleKeyDown = (e) => {
     if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
-      const newWeight = Math.max(min, Math.round((weight - 0.25) * 4) / 4);
+      const newWeight = Math.max(min, Math.round((weight - 0.25) ) );
       setWeight(newWeight);
       if (onChange) onChange(newWeight);
     } else if (e.key === "ArrowRight" || e.key === "ArrowUp") {
-      const newWeight = Math.min(max, Math.round((weight + 0.25) * 4) / 4);
+      const newWeight = Math.min(max, Math.round((weight + 0.25) ) );
       setWeight(newWeight);
       if (onChange) onChange(newWeight);
     }
