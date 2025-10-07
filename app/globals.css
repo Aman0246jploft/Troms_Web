@@ -2980,6 +2980,9 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 15px;
     font-weight: 600;
   }
+  .track-button .prev-link{
+    padding: 10px 20px;
+  }
 }
 
 @media (max-width: 767px) {
