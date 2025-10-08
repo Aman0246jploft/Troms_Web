@@ -17,67 +17,97 @@ const months = [
   "December",
 ];
 
+
 function WheelColumn({ items, selectedIndex, onSelectionChange }) {
   const containerRef = useRef(null);
   const itemHeight = 40;
-const scrollTimeoutRef = useRef(null);
+  const isScrollingRef = useRef(false);
+
+  // Focus handling
   useEffect(() => {
     if (containerRef.current) {
-      const scrollTop = selectedIndex * itemHeight;
-      containerRef.current.scrollTop = scrollTop;
+      containerRef.current.setAttribute("tabIndex", 0); // make focusable
+    }
+  }, []);
+
+  // Sync scroll position
+  useEffect(() => {
+    if (containerRef.current && !isScrollingRef.current) {
+      containerRef.current.scrollTo({
+        top: selectedIndex * itemHeight,
+        behavior: "smooth",
+      });
     }
   }, [selectedIndex]);
 
-  // const handleScroll = () => {
-  //   if (containerRef.current) {
-  //     const scrollTop = containerRef.current.scrollTop;
-  //     const newIndex = Math.round(scrollTop / itemHeight);
-  //     if (
-  //       newIndex !== selectedIndex &&
-  //       newIndex >= 0 &&
-  //       newIndex < items.length
-  //     ) {
-  //       onSelectionChange(newIndex);
-  //     }
-  //   }
-  // };
-
-
-const handleScroll = () => {
-  if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-
-  scrollTimeoutRef.current = setTimeout(() => {
-    if (containerRef.current) {
-      const scrollTop = containerRef.current.scrollTop;
-      const newIndex = Math.round(scrollTop / itemHeight);
-
-      // snap to nearest item
-      containerRef.current.scrollTo({
-        top: newIndex * itemHeight,
-        behavior: "smooth",
-      });
-
-      if (newIndex !== selectedIndex && newIndex >= 0 && newIndex < items.length) {
-        onSelectionChange(newIndex);
-      }
+  const scrollToIndex = (newIndex) => {
+    containerRef.current.scrollTo({
+      top: newIndex * itemHeight,
+      behavior: "smooth",
+    });
+    if (newIndex !== selectedIndex) {
+      onSelectionChange(newIndex);
     }
-  }, 100); // wait 100ms after scrolling stops
-};
+  };
+
+  // 🖱️ Handle wheel scroll (mouse)
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (isScrollingRef.current) return;
+    isScrollingRef.current = true;
+
+    const direction = e.deltaY > 0 ? 1 : -1;
+    let newIndex = selectedIndex + direction;
+    newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+    scrollToIndex(newIndex);
+
+    setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 200);
+  };
+
+  // ⌨️ Handle arrow keys
+  const handleKeyDown = (e) => {
+    if (isScrollingRef.current) return;
+
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+      isScrollingRef.current = true;
+
+      const direction = e.key === "ArrowDown" ? 1 : -1;
+      let newIndex = selectedIndex + direction;
+      newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+      scrollToIndex(newIndex);
+
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 200);
+    }
+  };
 
   return (
     <div className="wheel-column">
       <div
-        className="wheel-container"
         ref={containerRef}
-        onScroll={handleScroll}
+        onWheel={handleWheel}
+        onKeyDown={handleKeyDown}
+        style={{
+          overflowY: "hidden",
+          height: `${itemHeight * 5}px`,
+          outline: "none", // remove focus border
+        }}
       >
         <div className="wheel-padding"></div>
         {items.map((item, index) => (
           <div
             key={index}
-            className={`wheel-item ${
-              index === selectedIndex ? "selected" : ""
-            }`}
+            className={`wheel-item ${index === selectedIndex ? "selected" : ""}`}
+            style={{
+              height: `${itemHeight}px`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             {item}
           </div>
@@ -89,9 +119,91 @@ const handleScroll = () => {
   );
 }
 
-export default function WheelPicker({ 
-  initialMonth = 0, 
-  initialDay = 0, 
+
+// function WheelColumn({ items, selectedIndex, onSelectionChange }) {
+//   const containerRef = useRef(null);
+//   const itemHeight = 40;
+//   const isScrollingRef = useRef(false);
+
+//   // Snap to correct position when selectedIndex changes externally
+//   useEffect(() => {
+//     if (containerRef.current && !isScrollingRef.current) {
+//       containerRef.current.scrollTo({
+//         top: selectedIndex * itemHeight,
+//         behavior: "smooth",
+//       });
+//     }
+//   }, [selectedIndex]);
+
+//   // 👇 Custom scroll logic for "one-step" scrolling
+//   const handleWheel = (e) => {
+//     e.preventDefault();
+//     if (isScrollingRef.current) return;
+
+//     isScrollingRef.current = true;
+
+//     const direction = e.deltaY > 0 ? 1 : -1;
+//     let newIndex = selectedIndex + direction;
+
+//     // limit range
+//     if (newIndex < 0) newIndex = 0;
+//     if (newIndex >= items.length) newIndex = items.length - 1;
+
+//     // smooth scroll to new item
+//     containerRef.current.scrollTo({
+//       top: newIndex * itemHeight,
+//       behavior: "smooth",
+//     });
+
+//     // notify parent
+//     if (newIndex !== selectedIndex) {
+//       onSelectionChange(newIndex);
+//     }
+
+//     // allow next scroll after animation finishes
+//     setTimeout(() => {
+//       isScrollingRef.current = false;
+//     }, 200);
+//   };
+
+//   return (
+//     <div className="wheel-column">
+//       <div
+//         className="wheel-container"
+//         ref={containerRef}
+//         onWheel={handleWheel}
+//         style={{
+//           overflowY: "hidden",
+//           height: `${itemHeight * 5}px`, // visible window (optional)
+//         }}
+//       >
+//         <div className="wheel-padding"></div>
+//         {items.map((item, index) => (
+//           <div
+//             key={index}
+//             className={`wheel-item ${index === selectedIndex ? "selected" : ""}`}
+//             style={{
+//               height: `${itemHeight}px`,
+//               display: "flex",
+//               alignItems: "center",
+//               justifyContent: "center",
+//             }}
+//           >
+//             {item}
+//           </div>
+//         ))}
+//         <div className="wheel-padding"></div>
+//       </div>
+//       <div className="wheel-highlight"></div>
+//     </div>
+//   );
+// }
+
+
+
+export default function WheelPicker({
+  initialMonth = 0,
+  initialDay = 0,
   initialYear = 0,
   onChange,
   onMonthChange,
@@ -109,12 +221,12 @@ export default function WheelPicker({
   const [selectedMonth, setSelectedMonth] = useState(initialMonth);
   const [selectedDay, setSelectedDay] = useState(initialDay);
   const [selectedYear, setSelectedYear] = useState(initialYear);
-  
+
   // Height states
   const [selectedFeet, setSelectedFeet] = useState(5);
   const [selectedInches, setSelectedInches] = useState(5);
   const [selectedCm, setSelectedCm] = useState(165);
-  
+
   // Weight states
   const [selectedKg, setSelectedKg] = useState(45);
   const [selectedLbs, setSelectedLbs] = useState(90);
