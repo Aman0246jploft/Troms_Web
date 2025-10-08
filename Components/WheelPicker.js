@@ -18,114 +18,19 @@ const months = [
 ];
 
 
-function WheelColumn({ items, selectedIndex, onSelectionChange }) {
-  const containerRef = useRef(null);
-  const itemHeight = 40;
-  const isScrollingRef = useRef(false);
-
-  // Focus handling
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.setAttribute("tabIndex", 0); // make focusable
-    }
-  }, []);
-
-  // Sync scroll position
-  useEffect(() => {
-    if (containerRef.current && !isScrollingRef.current) {
-      containerRef.current.scrollTo({
-        top: selectedIndex * itemHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [selectedIndex]);
-
-  const scrollToIndex = (newIndex) => {
-    containerRef.current.scrollTo({
-      top: newIndex * itemHeight,
-      behavior: "smooth",
-    });
-    if (newIndex !== selectedIndex) {
-      onSelectionChange(newIndex);
-    }
-  };
-
-  // 🖱️ Handle wheel scroll (mouse)
-  const handleWheel = (e) => {
-    e.preventDefault();
-    if (isScrollingRef.current) return;
-    isScrollingRef.current = true;
-
-    const direction = e.deltaY > 0 ? 1 : -1;
-    let newIndex = selectedIndex + direction;
-    newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
-    scrollToIndex(newIndex);
-
-    setTimeout(() => {
-      isScrollingRef.current = false;
-    }, 200);
-  };
-
-  // ⌨️ Handle arrow keys
-  const handleKeyDown = (e) => {
-    if (isScrollingRef.current) return;
-
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-      e.preventDefault();
-      isScrollingRef.current = true;
-
-      const direction = e.key === "ArrowDown" ? 1 : -1;
-      let newIndex = selectedIndex + direction;
-      newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
-      scrollToIndex(newIndex);
-
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 200);
-    }
-  };
-
-  return (
-    <div className="wheel-column">
-      <div
-        ref={containerRef}
-        onWheel={handleWheel}
-        onKeyDown={handleKeyDown}
-        style={{
-          overflowY: "hidden",
-          height: `${itemHeight * 5}px`,
-          outline: "none", // remove focus border
-        }}
-      >
-        <div className="wheel-padding"></div>
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className={`wheel-item ${index === selectedIndex ? "selected" : ""}`}
-            style={{
-              height: `${itemHeight}px`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {item}
-          </div>
-        ))}
-        <div className="wheel-padding"></div>
-      </div>
-      <div className="wheel-highlight"></div>
-    </div>
-  );
-}
-
-
 // function WheelColumn({ items, selectedIndex, onSelectionChange }) {
 //   const containerRef = useRef(null);
 //   const itemHeight = 40;
 //   const isScrollingRef = useRef(false);
 
-//   // Snap to correct position when selectedIndex changes externally
+//   // Focus handling
+//   useEffect(() => {
+//     if (containerRef.current) {
+//       containerRef.current.setAttribute("tabIndex", 0); // make focusable
+//     }
+//   }, []);
+
+//   // Sync scroll position
 //   useEffect(() => {
 //     if (containerRef.current && !isScrollingRef.current) {
 //       containerRef.current.scrollTo({
@@ -135,46 +40,61 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
 //     }
 //   }, [selectedIndex]);
 
-//   // 👇 Custom scroll logic for "one-step" scrolling
-//   const handleWheel = (e) => {
-//     e.preventDefault();
-//     if (isScrollingRef.current) return;
-
-//     isScrollingRef.current = true;
-
-//     const direction = e.deltaY > 0 ? 1 : -1;
-//     let newIndex = selectedIndex + direction;
-
-//     // limit range
-//     if (newIndex < 0) newIndex = 0;
-//     if (newIndex >= items.length) newIndex = items.length - 1;
-
-//     // smooth scroll to new item
+//   const scrollToIndex = (newIndex) => {
 //     containerRef.current.scrollTo({
 //       top: newIndex * itemHeight,
 //       behavior: "smooth",
 //     });
-
-//     // notify parent
 //     if (newIndex !== selectedIndex) {
 //       onSelectionChange(newIndex);
 //     }
+//   };
 
-//     // allow next scroll after animation finishes
+//   // 🖱️ Handle wheel scroll (mouse)
+//   const handleWheel = (e) => {
+//     e.preventDefault();
+//     if (isScrollingRef.current) return;
+//     isScrollingRef.current = true;
+
+//     const direction = e.deltaY > 0 ? 1 : -1;
+//     let newIndex = selectedIndex + direction;
+//     newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+//     scrollToIndex(newIndex);
+
 //     setTimeout(() => {
 //       isScrollingRef.current = false;
 //     }, 200);
 //   };
 
+//   // ⌨️ Handle arrow keys
+//   const handleKeyDown = (e) => {
+//     if (isScrollingRef.current) return;
+
+//     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+//       e.preventDefault();
+//       isScrollingRef.current = true;
+
+//       const direction = e.key === "ArrowDown" ? 1 : -1;
+//       let newIndex = selectedIndex + direction;
+//       newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+//       scrollToIndex(newIndex);
+
+//       setTimeout(() => {
+//         isScrollingRef.current = false;
+//       }, 200);
+//     }
+//   };
+
 //   return (
 //     <div className="wheel-column">
 //       <div
-//         className="wheel-container"
 //         ref={containerRef}
 //         onWheel={handleWheel}
+//         onKeyDown={handleKeyDown}
 //         style={{
 //           overflowY: "hidden",
-//           height: `${itemHeight * 5}px`, // visible window (optional)
+//           height: `${itemHeight * 5}px`,
+//           outline: "none", // remove focus border
 //         }}
 //       >
 //         <div className="wheel-padding"></div>
@@ -198,6 +118,118 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
 //     </div>
 //   );
 // }
+
+
+function WheelColumn({ items, selectedIndex, onSelectionChange }) {
+  const containerRef = useRef(null);
+  const itemHeight = 40;
+  const isScrollingRef = useRef(false);
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+
+  // Make div focusable for keyboard
+  useEffect(() => {
+    if (containerRef.current) containerRef.current.setAttribute("tabIndex", 0);
+  }, []);
+
+  // Keep scroll synced with selectedIndex
+  useEffect(() => {
+    if (containerRef.current && !isScrollingRef.current) {
+      containerRef.current.scrollTo({
+        top: selectedIndex * itemHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [selectedIndex]);
+
+  const scrollToIndex = (newIndex) => {
+    const clampedIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+    containerRef.current.scrollTo({
+      top: clampedIndex * itemHeight,
+      behavior: "smooth",
+    });
+    if (clampedIndex !== selectedIndex) onSelectionChange(clampedIndex);
+  };
+
+  /** 🖱️ One-step scroll (desktop wheel) */
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (isScrollingRef.current) return;
+    isScrollingRef.current = true;
+
+    const direction = e.deltaY > 0 ? 1 : -1;
+    scrollToIndex(selectedIndex + direction);
+
+    setTimeout(() => (isScrollingRef.current = false), 180);
+  };
+
+  /** ⌨️ Keyboard navigation */
+  const handleKeyDown = (e) => {
+    if (isScrollingRef.current) return;
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+      isScrollingRef.current = true;
+
+      const direction = e.key === "ArrowDown" ? 1 : -1;
+      scrollToIndex(selectedIndex + direction);
+
+      setTimeout(() => (isScrollingRef.current = false), 180);
+    }
+  };
+
+  /** 📱 Touch (mobile) – detect swipe direction manually */
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndY.current = e.changedTouches[0].clientY;
+    const diff = touchStartY.current - touchEndY.current;
+
+    if (Math.abs(diff) < 10) return; // ignore tiny movements
+    const direction = diff > 0 ? 1 : -1; // down → next, up → prev
+    scrollToIndex(selectedIndex + direction);
+  };
+
+  return (
+    <div className="wheel-column">
+      <div
+        ref={containerRef}
+        onWheel={handleWheel}
+        onKeyDown={handleKeyDown}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          overflowY: "hidden", // disable free scrolling
+          height: `${itemHeight * 5}px`,
+          outline: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <div className="wheel-padding" />
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className={`wheel-item ${index === selectedIndex ? "selected" : ""}`}
+            style={{
+              height: `${itemHeight}px`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {item}
+          </div>
+        ))}
+        <div className="wheel-padding" />
+      </div>
+      <div className="wheel-highlight" />
+    </div>
+  );
+}
+
+
+
 
 
 
