@@ -216,6 +216,15 @@ function ApproachPage() {
       }
 
       let payload = getFinalPayload();
+    const localCity = localStorage.getItem("city") || null;
+    const localCountry = localStorage.getItem("country") || null;
+    const localLatitude = localStorage.getItem("latitude") || null;
+    const localLongitude = localStorage.getItem("longitude") || null;
+    if (localCity) payload.city = localCity;
+if (localCountry) payload.country = localCountry;
+if (localLatitude) payload.latitude = localLatitude;
+if (localLongitude) payload.longitude = localLongitude;
+
       payload = {
         ...payload,
         trainMoreThanOnce: payload?.trainMoreThanOnce?.isMoreThanOnce,
