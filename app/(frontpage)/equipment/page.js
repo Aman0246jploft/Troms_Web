@@ -217,6 +217,8 @@ function EquipmentContent() {
     fetchEquipments(location);
   };
 
+
+
   const handleEquipmentToggle = (equipmentId) => {
     setSelectedEquipments((prev) => {
       const newSelection = prev.includes(equipmentId)
@@ -398,98 +400,74 @@ function EquipmentContent() {
                             ))}
                           </div> */}
 
-                          <div className="gym-eq-list mb-4">
-                            {workoutLocation === "gym"
-                              ? // ✅ Gym grouped view
-                                allEquipments?.gym_equipments?.map((group) => (
-                                  <div key={group.name} className="">
-                                    <h6 className="gym-title">{group.name}</h6>
-                                    <div className="equipment-list">
-                                      {group?.list_data?.map((equipment) => (
-                                        <div
-                                          key={equipment.id}
-                                          className="equipment-bx"
+                          <div className="equipment-list mb-4">
+                            {workoutLocation === "gym" ? (
+                              // ✅ Gym grouped view
+                              allEquipments?.gym_equipments?.map((group) => (
+                                <div key={group.name} className="mb-4 gym">
+                                  <h6 className="text-uppercase fw-bold mb-2">{group.name}</h6>
+                                  <div className="">
+                                    {group?.list_data?.map((equipment) => (
+                                      <div key={equipment.id} className="equipment-bx">
+                                        <input
+                                          type="checkbox"
+                                          id={`equipment-${equipment.id}`}
+                                          name="equipment"
+                                          className="d-none"
+                                          checked={selectedEquipments.includes(equipment.id)}
+                                          onChange={() => handleEquipmentToggle(equipment.id)}
+                                        />
+                                        <label
+                                          htmlFor={`equipment-${equipment.id}`}
+                                          className={
+                                            selectedEquipments.includes(equipment.id)
+                                              ? "selected"
+                                              : ""
+                                          }
                                         >
-                                          <input
-                                            type="checkbox"
-                                            id={`equipment-${equipment.id}`}
-                                            name="equipment"
-                                            className="d-none"
-                                            checked={selectedEquipments.includes(
-                                              equipment.id
-                                            )}
-                                            onChange={() =>
-                                              handleEquipmentToggle(
-                                                equipment.id
-                                              )
-                                            }
+                                          <img
+                                            src={equipment.icon}
+                                            alt={equipment.name || "icon"}
+                                            style={{ width: "20px", height: "20px" }}
                                           />
-                                          <label
-                                            htmlFor={`equipment-${equipment.id}`}
-                                            className={
-                                              selectedEquipments.includes(
-                                                equipment.id
-                                              )
-                                                ? "selected"
-                                                : ""
-                                            }
-                                          >
-                                            <img
-                                              src={equipment.icon}
-                                              alt={equipment.name || "icon"}
-                                              style={{
-                                                width: "20px",
-                                                height: "20px",
-                                              }}
-                                            />
-                                            {equipment.name}
-                                          </label>
-                                        </div>
-                                      ))}
-                                    </div>
+                                          {equipment.name}
+                                        </label>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))
-                              : // ✅ Home / Outdoors flat list
-                                equipments.map((equipment) => (
-                                  <div
-                                    key={equipment.id}
-                                    className="equipment-bx"
+                                </div>
+                              ))
+                            ) : (
+                              // ✅ Home / Outdoors flat list
+                              equipments.map((equipment) => (
+                                <div key={equipment.id} className="equipment-bx">
+                                  <input
+                                    type="checkbox"
+                                    id={`equipment-${equipment.id}`}
+                                    name="equipment"
+                                    className="d-none"
+                                    checked={selectedEquipments.includes(equipment.id)}
+                                    onChange={() => handleEquipmentToggle(equipment.id)}
+                                  />
+                                  <label
+                                    htmlFor={`equipment-${equipment.id}`}
+                                    className={
+                                      selectedEquipments.includes(equipment.id) ? "selected" : ""
+                                    }
                                   >
-                                    <input
-                                      type="checkbox"
-                                      id={`equipment-${equipment.id}`}
-                                      name="equipment"
-                                      className="d-none"
-                                      checked={selectedEquipments.includes(
-                                        equipment.id
-                                      )}
-                                      onChange={() =>
-                                        handleEquipmentToggle(equipment.id)
-                                      }
+                                    <img
+                                      src={equipment.icon}
+                                      alt={equipment.name || "icon"}
+                                      style={{ width: "20px", height: "20px" }}
                                     />
-                                    <label
-                                      htmlFor={`equipment-${equipment.id}`}
-                                      className={
-                                        selectedEquipments.includes(
-                                          equipment.id
-                                        )
-                                          ? "selected"
-                                          : ""
-                                      }
-                                    >
-                                      <img
-                                        src={equipment.icon}
-                                        alt={equipment.name || "icon"}
-                                        style={{
-                                          width: "20px",
-                                          height: "20px",
-                                        }}
-                                      />
-                                      {equipment.name}
-                                    </label>
-                                  </div>
-                                ))}
+                                    {equipment.name}
+                                  </label>
+                                </div>
+                              ))
+                            )}
                           </div>
+
+
                         </div>
                       )}
 
