@@ -217,6 +217,8 @@ function EquipmentContent() {
     fetchEquipments(location);
   };
 
+
+
   const handleEquipmentToggle = (equipmentId) => {
     setSelectedEquipments((prev) => {
       const newSelection = prev.includes(equipmentId)
@@ -498,6 +500,8 @@ function EquipmentContent() {
                               </div>
                             }
                           </div>
+
+
                         </div>
                       )}
 

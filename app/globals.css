@@ -220,6 +220,16 @@ input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
 }
+.custom-frm-bx input.form-control,
+.custom-frm-bx textarea.form-control,
+.custom-frm-bx select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 50px;
+  background-clip: padding-box;
+  box-sizing: border-box;
+}
 @media (min-width: 1440px) {
   .container {
     max-width: 1240px;
@@ -2980,8 +2990,15 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 15px;
     font-weight: 600;
   }
-  .track-button .prev-link{
+  .track-button .prev-link {
     padding: 10px 20px;
+  }
+  .gym-eq-list .gym-title {
+    margin: 10px 0;
+    font-size: 15px;
+  }
+  .location-eq-list.mb-4 {
+    margin-bottom: 15px !important;
   }
 }
 
