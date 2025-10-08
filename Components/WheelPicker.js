@@ -126,6 +126,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
   const isScrollingRef = useRef(false);
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
+  const touchActive = useRef(false); // 👈 Track if user is scrolling by touch
 
   // Make div focusable for keyboard
   useEffect(() => {
@@ -153,6 +154,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
 
   /** 🖱️ One-step scroll (desktop wheel) */
   const handleWheel = (e) => {
+    if (touchActive.current) return; // 👈 Ignore if it's touch scroll mode
     e.preventDefault();
     if (isScrollingRef.current) return;
     isScrollingRef.current = true;
@@ -199,10 +201,11 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        style={{
-          overflowY: "hidden", // disable free scrolling
+      style={{
+          overflowY: touchActive.current ? "scroll" : "hidden", // 👈 Free scroll only during touch
           height: `${itemHeight * 5}px`,
           outline: "none",
+          scrollSnapType: touchActive.current ? "y mandatory" : "none", // 👈 smoother snapping
           WebkitOverflowScrolling: "touch",
         }}
       >
@@ -216,6 +219,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+               scrollSnapAlign: "center", // 👈 works with scrollSnapType
             }}
           >
             {item}
