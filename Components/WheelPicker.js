@@ -181,6 +181,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
 
   /** 📱 Touch (mobile) – detect swipe direction manually */
   const handleTouchStart = (e) => {
+    touchActive.current = true;
     touchStartY.current = e.touches[0].clientY;
   };
 
@@ -188,9 +189,14 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
     touchEndY.current = e.changedTouches[0].clientY;
     const diff = touchStartY.current - touchEndY.current;
 
-    if (Math.abs(diff) < 10) return; // ignore tiny movements
+    if (Math.abs(diff) < 10) {
+      touchActive.current = false;
+      return; // ignore tiny movements
+    }
+
     const direction = diff > 0 ? 1 : -1; // down → next, up → prev
     scrollToIndex(selectedIndex + direction);
+    touchActive.current = false;
   };
 
   return (
@@ -201,7 +207,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-      style={{
+        style={{
           overflowY: touchActive.current ? "scroll" : "hidden", // 👈 Free scroll only during touch
           height: `${itemHeight * 5}px`,
           outline: "none",
@@ -219,7 +225,7 @@ function WheelColumn({ items, selectedIndex, onSelectionChange }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-               scrollSnapAlign: "center", // 👈 works with scrollSnapType
+              scrollSnapAlign: "center", // 👈 works with scrollSnapType
             }}
           >
             {item}
