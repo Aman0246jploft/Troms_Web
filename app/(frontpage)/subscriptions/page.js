@@ -74,7 +74,7 @@ function StripePaymentForm({
 
     try {
       // Call backend to create subscription
-      console.log("🔄 Calling backend to create subscription...");
+      console.log("🔄 Calling backend to create subscription...",selectedPlan.priceId,userInfoId);
       const result = await apiService.purchaseSubscription(
         selectedPlan.priceId,
         {
@@ -103,17 +103,46 @@ function StripePaymentForm({
             clientSecret
           );
 
+
+          console.log("paymentIntentStatus",paymentIntentStatus)
+
           if (confirmError) {
             console.error("❌ Authentication failed:", confirmError);
             if (event) event.complete('fail');
             onError(confirmError.message);
           } else {
             console.log("✅ Authentication successful");
+            // Update subscription status to TRIALING after successful payment
+            console.log("🔄 Updating subscription status to TRIALING...");
+            try {
+              await apiService.updateSubscriptionStatus(
+                userInfoId,
+                selectedPlan.priceId,
+                "TRIALING"
+              );
+              console.log("✅ Subscription status updated to TRIALING");
+            } catch (updateError) {
+              console.error("⚠️ Failed to update status to TRIALING:", updateError);
+              // Continue anyway - webhook will handle it
+            }
             if (event) event.complete('success');
             onSuccess(result);
           }
         } else if (paymentIntentStatus === "succeeded") {
           console.log("✅ Payment succeeded");
+          // Update subscription status to TRIALING after successful payment
+          console.log("🔄 Updating subscription status to TRIALING...");
+          try {
+            await apiService.updateSubscriptionStatus(
+              userInfoId,
+              selectedPlan.priceId,
+              "TRIALING"
+            );
+            console.log("✅ Subscription status updated to TRIALING");
+          } catch (updateError) {
+            console.error("⚠️ Failed to update status to TRIALING:", updateError);
+            // Continue anyway - webhook will handle it
+          }
           if (event) event.complete('success');
           onSuccess(result);
         } else if (paymentIntentStatus === "requires_payment_method") {

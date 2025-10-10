@@ -45,7 +45,7 @@ function ApproachPage() {
 
     // Redirect if not authenticated
     if (state.isAuthChecked && state.isAuthenticated === false) {
-      router.push("/register");
+      // router.push("/register");
       return;
     }
 
@@ -60,7 +60,7 @@ function ApproachPage() {
       console.log("Missing user credentials - redirecting to register");
       showAlert("error", "User information is missing. Please register again.");
       setTimeout(() => {
-        router.push("/register");
+        // router.push("/register");
       }, 2000);
       return;
     }
@@ -91,7 +91,7 @@ function ApproachPage() {
         "Required information is missing. Redirecting to registration to complete setup..."
       );
       setTimeout(() => {
-        router.push("/register");
+        // router.push("/register");
       }, 2000);
       return;
     }
@@ -210,20 +210,21 @@ function ApproachPage() {
           "User credentials are missing. Redirecting to registration..."
         );
         setTimeout(() => {
-          router.push("/register");
+          // router.push("/register");
         }, 2000);
         return;
       }
 
       let payload = getFinalPayload();
-    const localCity = localStorage.getItem("city") || null;
-    const localCountry = localStorage.getItem("country") || null;
-    const localLatitude = localStorage.getItem("latitude") || null;
-    const localLongitude = localStorage.getItem("longitude") || null;
-    if (localCity) payload.city = localCity;
-if (localCountry) payload.country = localCountry;
-if (localLatitude) payload.latitude = localLatitude;
-if (localLongitude) payload.longitude = localLongitude;
+      const localCity = localStorage.getItem("city") || "";
+      const localCountry = localStorage.getItem("country") || "";
+      const localLatitude = localStorage.getItem("latitude") || 0;
+      const localLongitude = localStorage.getItem("longitude") || 0;
+      if (localCity) payload.city = localCity;
+      if (localCountry) payload.country = localCountry;
+      if (localLatitude) payload.latitude = parseFloat(localLatitude);
+      if (localLongitude) payload.longitude = parseFloat(localLongitude);
+
 
       payload = {
         ...payload,
@@ -267,13 +268,13 @@ if (localLongitude) payload.longitude = localLongitude;
         ) {
           showAlert("error", "Authentication failed. Please register again.");
           setTimeout(() => {
-            router.push("/register");
+            // router.push("/register");
           }, 2000);
         } else {
           showAlert("error", errorMessage);
-             setTimeout(() => {
-          router.push("/register");
-        }, 2000);
+          setTimeout(() => {
+            // router.push("/register");
+          }, 2000);
         }
       }
     } catch (error) {
@@ -286,7 +287,7 @@ if (localLongitude) payload.longitude = localLongitude;
       ) {
         showAlert("error", "Authentication failed. Please register again.");
         setTimeout(() => {
-          router.push("/register");
+          // router.push("/register");
         }, 2000);
       } else {
         showAlert(
@@ -309,7 +310,7 @@ if (localLongitude) payload.longitude = localLongitude;
         "User credentials are missing. Redirecting to registration..."
       );
       setTimeout(() => {
-        router.push("/register");
+        // router.push("/register");
       }, 2000);
       return;
     }
