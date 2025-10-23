@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         {/* Meta Pixel Code */}
-        <Script id="meta-pixel" strategy="afterInteractive">
+        <script id="meta-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
             fbq('init', '1335765837984569');
             fbq('track', 'PageView');
           `}
-        </Script>
+        </script>
         <noscript>
           <img
             height="1"
