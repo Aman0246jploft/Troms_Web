@@ -501,6 +501,10 @@ function SubscriptionPage() {
     setTimeout(() => {
       console.log("🔄 Redirecting to download page");
       setSuccess("");
+      fbq('track', 'Purchase', {
+        value: selectedPlan.amount || selectedPlan.price,
+        currency: 'USD'
+      });
       router.push("/download-app");
     }, 0);
   };
