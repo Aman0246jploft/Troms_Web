@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <head>
+      
           {process.env.NEXT_PUBLIC_ENV === "production" && (
             <>
               <script
@@ -48,7 +48,6 @@ export default function RootLayout({ children }) {
         </head>
 
 
-      </head>
       <body className={`${inter.variable}`}>
         <OnboardingProvider>{children}</OnboardingProvider>
       </body>
