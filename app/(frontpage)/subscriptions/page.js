@@ -74,7 +74,7 @@ function StripePaymentForm({
 
     try {
       // Call backend to create subscription
-      console.log("🔄 Calling backend to create subscription...",selectedPlan.priceId,userInfoId);
+      console.log("🔄 Calling backend to create subscription...", selectedPlan.priceId, userInfoId);
       const result = await apiService.purchaseSubscription(
         selectedPlan.priceId,
         {
@@ -104,7 +104,7 @@ function StripePaymentForm({
           );
 
 
-          console.log("paymentIntentStatus",paymentIntentStatus)
+          console.log("paymentIntentStatus", paymentIntentStatus)
 
           if (confirmError) {
             console.error("❌ Authentication failed:", confirmError);
@@ -406,33 +406,68 @@ function SubscriptionPage() {
     fetchSubscriptionPlans();
   }, []);
 
-  const fetchSubscriptionPlans = async () => {
-    console.log("🔄 Fetching subscription plans...");
-    try {
-      setLoading(true);
-      const response = await apiService.getSubscriptionPlans();
-      console.log("📨 Subscription plans response:", response);
+  // const fetchSubscriptionPlans = async () => {
+  //   console.log("🔄 Fetching subscription plans...");
+  //   try {
+  //     setLoading(true);
+  //     const response = await apiService.getSubscriptionPlans();
+  //     console.log("📨 Subscription plans response:", response);
 
-      if (response.success && response.result) {
-        console.log("✅ Plans loaded successfully:", response.result);
-        setPlans(response.result);
+  //     if (response.success && response.result) {
+  //       console.log("✅ Plans loaded successfully:", response.result);
+  //       setPlans(response.result);
 
-        if (response.result.length > 0) {
-          console.log("🎯 Auto-selecting first plan:", response.result[0]);
-          setSelectedPlan(response.result[0]);
-        }
-      } else {
-        console.error("❌ Failed to load subscription plans:", response);
-        setError("Failed to load subscription plans");
+  //       if (response.result.length > 0) {
+  //         console.log("🎯 Auto-selecting first plan:", response.result[0]);
+  //         setSelectedPlan(response.result[0]);
+  //       }
+  //     } else {
+  //       console.error("❌ Failed to load subscription plans:", response);
+  //       setError("Failed to load subscription plans");
+  //     }
+  //   } catch (err) {
+  //     console.error("💥 Error fetching plans:", err);
+  //     setError("Failed to load subscription plans");
+  //   } finally {
+  //     console.log("🏁 Plan fetching finished");
+  //     setLoading(false);
+  //   }
+  // };
+const fetchSubscriptionPlans = async () => {
+  console.log("🔄 Fetching subscription plans...");
+  try {
+    setLoading(true);
+    const response = await apiService.getSubscriptionPlans();
+    console.log("📨 Subscription plans response:", response);
+
+    if (response.success && response.result) {
+      let plans = response.result;
+
+      // Sort plans: WEEK first, then MONTH, then YEAR
+      const order = ["week", "month", "year"];
+      plans.sort(
+        (a, b) => order.indexOf(a.interval.toLowerCase()) - order.indexOf(b.interval.toLowerCase())
+      );
+
+      console.log("✅ Plans loaded and sorted:", plans);
+      setPlans(plans);
+
+      if (plans.length > 0) {
+        console.log("🎯 Auto-selecting first plan:", plans[0]);
+        setSelectedPlan(plans[0]);
       }
-    } catch (err) {
-      console.error("💥 Error fetching plans:", err);
+    } else {
+      console.error("❌ Failed to load subscription plans:", response);
       setError("Failed to load subscription plans");
-    } finally {
-      console.log("🏁 Plan fetching finished");
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("💥 Error fetching plans:", err);
+    setError("Failed to load subscription plans");
+  } finally {
+    console.log("🏁 Plan fetching finished");
+    setLoading(false);
+  }
+};
 
   const handlePlanSelect = (plan) => {
     console.log("🎯 Plan selected:", plan);
@@ -610,20 +645,18 @@ function SubscriptionPage() {
                               name="plan"
                               id={plan.priceId}
                               checked={selectedPlan?.priceId === plan.priceId}
-                              onChange={() => handlePlanSelect(plan)}
+                              onChange={() => handlePlanSelect(plan)}                                                         
                             />
                             <label
-                              className="form-check-label"
+                              className="form-check-label"                                                                                 
                               htmlFor={plan.priceId}
                             >
                               <div>
                                 <strong>
                                   {plan.productName ||
-                                    `${plan.interval === "month"
-                                      ? "Monthly"
-                                      : "Yearly"
-                                    } Plan`}
-                                </strong>
+                                    (plan.interval === "month" ? "Monthly" : plan.interval === "year" ? "Yearly" : "Weekly") + " Plan"}
+
+                                </strong>                               
                                 <p>
                                   3 days free, then ${plan.amount || plan.price}
                                   /{plan.interval}
