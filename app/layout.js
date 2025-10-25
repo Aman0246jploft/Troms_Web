@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import { OnboardingProvider } from "../context/OnboardingContext";
-import Script from "next/script";
+
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -15,9 +15,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Meta Pixel Code */}
-        <script id="meta-pixel" strategy="afterInteractive">
-          {`
+        <head>
+          {process.env.NEXT_PUBLIC_ENV === "production" && (
+            <>
+              <script
+                id="meta-pixel"
+                dangerouslySetInnerHTML={{
+                  __html: `
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -28,16 +32,22 @@ export default function RootLayout({ children }) {
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1335765837984569');
             fbq('track', 'PageView');
-          `}
-        </script>
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1335765837984569&ev=PageView&noscript=1"
-          />
-        </noscript>
+          `,
+                }}
+              />
+              <noscript>
+                <img
+                  height="1"
+                  width="1"
+                  style={{ display: "none" }}
+                  src="https://www.facebook.com/tr?id=1335765837984569&ev=PageView&noscript=1"
+                />
+              </noscript>
+            </>
+          )}
+        </head>
+
+
       </head>
       <body className={`${inter.variable}`}>
         <OnboardingProvider>{children}</OnboardingProvider>
@@ -45,3 +55,6 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+
+

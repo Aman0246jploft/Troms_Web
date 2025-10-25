@@ -433,41 +433,41 @@ function SubscriptionPage() {
   //     setLoading(false);
   //   }
   // };
-const fetchSubscriptionPlans = async () => {
-  console.log("🔄 Fetching subscription plans...");
-  try {
-    setLoading(true);
-    const response = await apiService.getSubscriptionPlans();
-    console.log("📨 Subscription plans response:", response);
+  const fetchSubscriptionPlans = async () => {
+    console.log("🔄 Fetching subscription plans...");
+    try {
+      setLoading(true);
+      const response = await apiService.getSubscriptionPlans();
+      console.log("📨 Subscription plans response:", response);
 
-    if (response.success && response.result) {
-      let plans = response.result;
+      if (response.success && response.result) {
+        let plans = response.result;
 
-      // Sort plans: WEEK first, then MONTH, then YEAR
-      const order = ["week", "month", "year"];
-      plans.sort(
-        (a, b) => order.indexOf(a.interval.toLowerCase()) - order.indexOf(b.interval.toLowerCase())
-      );
+        // Sort plans: WEEK first, then MONTH, then YEAR
+        const order = ["week", "month", "year"];
+        plans.sort(
+          (a, b) => order.indexOf(a.interval.toLowerCase()) - order.indexOf(b.interval.toLowerCase())
+        );
 
-      console.log("✅ Plans loaded and sorted:", plans);
-      setPlans(plans);
+        console.log("✅ Plans loaded and sorted:", plans);
+        setPlans(plans);
 
-      if (plans.length > 0) {
-        console.log("🎯 Auto-selecting first plan:", plans[0]);
-        setSelectedPlan(plans[0]);
+        if (plans.length > 0) {
+          console.log("🎯 Auto-selecting first plan:", plans[0]);
+          setSelectedPlan(plans[0]);
+        }
+      } else {
+        console.error("❌ Failed to load subscription plans:", response);
+        setError("Failed to load subscription plans");
       }
-    } else {
-      console.error("❌ Failed to load subscription plans:", response);
+    } catch (err) {
+      console.error("💥 Error fetching plans:", err);
       setError("Failed to load subscription plans");
+    } finally {
+      console.log("🏁 Plan fetching finished");
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("💥 Error fetching plans:", err);
-    setError("Failed to load subscription plans");
-  } finally {
-    console.log("🏁 Plan fetching finished");
-    setLoading(false);
-  }
-};
+  };
 
   const handlePlanSelect = (plan) => {
     console.log("🎯 Plan selected:", plan);
@@ -536,10 +536,18 @@ const fetchSubscriptionPlans = async () => {
     setTimeout(() => {
       console.log("🔄 Redirecting to download page");
       setSuccess("");
-      fbq('track', 'Purchase', {
-        value: selectedPlan.amount || selectedPlan.price,
-        currency: 'USD'
-      });
+
+      if (process.env.NEXT_PUBLIC_ENV === "production") {
+        fbq('track', 'Purchase', {
+          value: selectedPlan.amount || selectedPlan.price,
+          currency: 'USD'
+        });
+      }
+
+      // fbq('track', 'Purchase', {
+      //   value: selectedPlan.amount || selectedPlan.price,
+      //   currency: 'USD'
+      // });
       router.push("/download-app");
     }, 0);
   };
@@ -645,10 +653,10 @@ const fetchSubscriptionPlans = async () => {
                               name="plan"
                               id={plan.priceId}
                               checked={selectedPlan?.priceId === plan.priceId}
-                              onChange={() => handlePlanSelect(plan)}                                                         
+                              onChange={() => handlePlanSelect(plan)}
                             />
                             <label
-                              className="form-check-label"                                                                                 
+                              className="form-check-label"
                               htmlFor={plan.priceId}
                             >
                               <div>
@@ -656,7 +664,7 @@ const fetchSubscriptionPlans = async () => {
                                   {plan.productName ||
                                     (plan.interval === "month" ? "Monthly" : plan.interval === "year" ? "Yearly" : "Weekly") + " Plan"}
 
-                                </strong>                               
+                                </strong>
                                 <p>
                                   3 days free, then ${plan.amount || plan.price}
                                   /{plan.interval}
