@@ -590,7 +590,7 @@ function SubscriptionPage() {
                 </Link>
               </div>
               <div className="auth-cards">
-                {!showPayment && (
+                {/* {!showPayment && (
                   <button
                     type="button"
                     onClick={() => router.back(-2)}
@@ -598,7 +598,7 @@ function SubscriptionPage() {
                   >
                     Previous
                   </button>
-                )}
+                )} */}
 
                 {showPayment && (
                   <button
