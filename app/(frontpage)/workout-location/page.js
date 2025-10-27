@@ -104,11 +104,14 @@ function WorkoutLocationPage() {
       return;
     }
 
-    if (isStepValid(11)) {
-      updateStep(12);
+    // if (isStepValid(11)) {
+      updateStep(13);
       // Navigate to equipment with the selected location as a URL parameter
-      router.push(`/equipment?location=${selectedLocation.toLowerCase()}`);
-    }
+      // router.push(`/equipment?location=${selectedLocation.toLowerCase()}`);
+      
+      router.push(`/goal-reach`);
+
+    // }
   };
 
   return (

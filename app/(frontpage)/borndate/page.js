@@ -174,7 +174,9 @@ function BornDatePage() {
               />
 
               <div className="auth-cards borndate">
-                <button type="button" className="new_back_btn">
+                <button 
+                  onClick={() => router.back()}
+                type="button" className="new_back_btn">
                   Previous
                 </button>
                 <p className="text-uppercase mb-3">Your born date</p>

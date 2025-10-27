@@ -74,10 +74,12 @@ function AccomplishPage() {
       return;
     }
 
-    if (isStepValid(20)) {
-      updateStep(21);
-      router.push("/health-conditions");
-    }
+    // if (isStepValid(20)) {
+      updateStep(26);
+      // router.push("/health-conditions");
+      router.push("/allergies");
+
+    // }
   };
 
   return (

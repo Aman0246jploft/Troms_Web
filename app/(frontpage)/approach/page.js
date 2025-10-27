@@ -74,7 +74,7 @@ function ApproachPage() {
       "weight",
       "weightGoal",
       "workoutLocation",
-      "selectedEquipments",
+      // "selectedEquipments",
       "reachingGoals",
     ];
 
@@ -91,7 +91,7 @@ function ApproachPage() {
         "Required information is missing. Redirecting to registration to complete setup..."
       );
       setTimeout(() => {
-        // router.push("/register");
+        router.push("/register");
       }, 2000);
       return;
     }
@@ -119,7 +119,7 @@ function ApproachPage() {
       "weight",
       "weightGoal",
       "workoutLocation",
-      "selectedEquipments",
+      // "selectedEquipments",
       "reachingGoals",
     ];
 
@@ -167,7 +167,7 @@ function ApproachPage() {
         "weight",
         "weightGoal",
         "workoutLocation",
-        "selectedEquipments",
+        // "selectedEquipments",
         "reachingGoals",
       ];
 
@@ -234,6 +234,7 @@ function ApproachPage() {
         city: payload?.selectedCity,
         budget: payload?.budget || "MEDIUM",
         workActivityLevel: payload?.workActivityLevel || "SIT_AND_STAND",
+        workShift: payload?.workShift || "DAY",
       };
       delete payload.selectedCountry;
       delete payload.selectedCity;

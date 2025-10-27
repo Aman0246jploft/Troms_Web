@@ -183,7 +183,9 @@ function AllergiesPage() {
     updateField("allergicFoodItems", selectedAllergies);
     updateField("allergic_food_other_item", customAllergy.trim());
 
-    router.push("/dislikes");
+    router.push("/crash-goal");
+
+    // router.push("/dislikes");
   };
 
   const handleKeyPress = (e) => {
@@ -214,11 +216,11 @@ function AllergiesPage() {
               />
 
               <div className="auth-cards food">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-3">Allergies</p>
@@ -268,17 +270,17 @@ function AllergiesPage() {
                               {selectedAllergies.includes(
                                 food.ingredients_name
                               ) && (
-                                <></>
-                                // <button
-                                //   type="button"
-                                //   onClick={(e) => {
-                                //     e.preventDefault();
-                                //     handleRemoveAllergy(food.ingredients_name);
-                                //   }}
-                                // >
-                                //   <img src="/images/close.svg" alt="Remove" />
-                                // </button>
-                              )}
+                                  <></>
+                                  // <button
+                                  //   type="button"
+                                  //   onClick={(e) => {
+                                  //     e.preventDefault();
+                                  //     handleRemoveAllergy(food.ingredients_name);
+                                  //   }}
+                                  // >
+                                  //   <img src="/images/close.svg" alt="Remove" />
+                                  // </button>
+                                )}
                             </label>
                           </div>
                         ))}

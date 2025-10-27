@@ -47,10 +47,10 @@ function PreferredDietPage() {
       return;
     }
 
-    if (isStepValid(16)) {
-      updateStep(18);
-      router.push("/favorite-food");
-    }
+    // if (isStepValid(16)) {
+      updateStep(20);
+      router.push("/accomplish");
+    // }
   };
 
   const options = [
