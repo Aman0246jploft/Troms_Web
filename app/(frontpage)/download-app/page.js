@@ -14,7 +14,7 @@ function page() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-5 col-md-6 col-sm-6">
+            {/* <div className="col-lg-5 col-md-6 col-sm-6">
               <div className="dowload-lft">
                 <img src="/images/success.svg" />
                 <h3>Payment Successful!</h3>
@@ -23,7 +23,7 @@ function page() {
                   purchase!
                 </p>
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-5 col-md-6 col-sm-6">
               <div className="dowload-rgt">
                 <img src="/images/work-img.png" />
