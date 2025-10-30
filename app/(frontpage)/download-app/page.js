@@ -26,7 +26,11 @@ function page() {
             </div> */}
             <div className="col-lg-5 col-md-6 col-sm-6">
               <div className="dowload-rgt">
+                  <p>
+                  Download Troms and access your personalised meal plan & workout
+                </p>
                 <img src="/images/work-img.png" />
+                
                 <h4>
                   Take charge of your health <br /> Download Troms Now
                 </h4>
