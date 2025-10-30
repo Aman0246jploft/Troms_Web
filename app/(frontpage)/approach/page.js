@@ -256,7 +256,9 @@ function ApproachPage() {
 
         // Auto-redirect after success
         setTimeout(() => {
-          router.push("/subscriptions");
+          // router.push("/subscriptions");
+          router.push("/download-app");
+
         }, 2000);
       } else {
         // Check if error indicates authentication issues
