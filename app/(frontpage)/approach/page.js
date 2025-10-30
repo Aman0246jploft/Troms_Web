@@ -21,6 +21,7 @@ function ApproachPage() {
   } = useOnboarding();
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [isCompleted, setIsCompleted] = useState(false);
   useEffect(() => {
     if (state.currentStep !== 30) {
@@ -254,6 +255,28 @@ function ApproachPage() {
           userInfoId: response.result.id,
         });
 
+        const userData = state.user || {};
+
+        const socialLoginPayload = {
+          email: userData.email,
+          username: userData.username || userData.email.split("@")[0],
+          platform: userData.platform || "web",
+          userInfoId: response.result.id || userInfoId,
+        };
+
+        const socialLoginResponse = await apiService.socialLogin(socialLoginPayload);
+        if (socialLoginResponse.success) {
+          console.log("✅ Social login API called successfully");
+        } else {
+          console.error("❌ Social login API failed:", socialLoginResponse.message);
+        }
+
+
+
+
+
+
+
         // Auto-redirect after success
         setTimeout(() => {
           // router.push("/subscriptions");
@@ -313,7 +336,7 @@ function ApproachPage() {
         "User credentials are missing. Redirecting to registration..."
       );
       setTimeout(() => {
-        // router.push("/register");
+        router.push("/register");
       }, 2000);
       return;
     }

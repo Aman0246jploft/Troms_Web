@@ -129,6 +129,7 @@ function BornDatePage() {
   }, [selectedMonth, selectedDay, selectedYear]);
 
   const handleContinue = (e) => {
+    console.log('clicked')
     e.preventDefault();
 
     if (
@@ -143,10 +144,10 @@ function BornDatePage() {
       return;
     }
 
-    if (state.age < 13) {
-      showAlert("error", "You must be at least 13 years old to use this app.");
-      return;
-    }
+    // if (state.age < 13) {
+    //   showAlert("error", "You must be at least 13 years old to use this app.");
+    //   return;
+    // }
 
     if (isStepValid(3)) {
       updateStep(4);
@@ -206,8 +207,7 @@ function BornDatePage() {
                     disabled={
                       selectedMonth === undefined ||
                       selectedDay === undefined ||
-                      selectedYear === undefined ||
-                      state.age < 13
+                      selectedYear === undefined 
                     }
                   >
                     Continue
