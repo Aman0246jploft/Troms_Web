@@ -194,11 +194,11 @@ function DislikesPage() {
               />
 
               <div className="auth-cards food">
-                    <button
-      type="button"
-      onClick={() => router.back()}
-      className="new_back_btn"
-    >
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="new_back_btn"
+                >
                   Previous
                 </button>
                 <p className="text-uppercase mb-3">Dislikes</p>
@@ -246,17 +246,17 @@ function DislikesPage() {
                               {selectedDislikes.includes(
                                 food.ingredients_name
                               ) && (
-                                <></>
-                                // <button
-                                //   type="button"
-                                //   onClick={(e) => {
-                                //     e.preventDefault();
-                                //     handleRemoveDislike(food.ingredients_name);
-                                //   }}
-                                // >
-                                //   <img src="/images/close.svg" alt="Remove" />
-                                // </button>
-                              )}
+                                  <></>
+                                  // <button
+                                  //   type="button"
+                                  //   onClick={(e) => {
+                                  //     e.preventDefault();
+                                  //     handleRemoveDislike(food.ingredients_name);
+                                  //   }}
+                                  // >
+                                  //   <img src="/images/close.svg" alt="Remove" />
+                                  // </button>
+                                )}
                             </label>
                           </div>
                         ))}

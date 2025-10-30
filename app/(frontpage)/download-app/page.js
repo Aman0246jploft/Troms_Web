@@ -8,11 +8,11 @@ function page() {
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-lg-12">
-              <div className="auth-logo text-center">
+              {/* <div className="auth-logo text-center">
                 <Link href="/">
                   <img src="/images/dark-logo.svg" alt="Logo" />
                 </Link>
-              </div>
+              </div> */}
             </div>
             {/* <div className="col-lg-5 col-md-6 col-sm-6">
               <div className="dowload-lft">
@@ -23,11 +23,11 @@ function page() {
                   purchase!
                 </p>
               </div>
-            </div> */}
+            </div> */} 
             <div className="col-lg-5 col-md-6 col-sm-6">
               <div className="dowload-rgt">
-                  <p>
-                  Download Troms and access your personalised meal plan & workout
+                  <p className="" style={{fontSize: '16px', fontWeight: '600', marginBottom: '10px', }}>
+                  Download <span style={{color: '#06402b',fontWeight: '800',fontSize: '18px',}}>Troms</span> and access your personalised meal plan & workout
                 </p>
                 <img src="/images/work-img.png" />
                 
