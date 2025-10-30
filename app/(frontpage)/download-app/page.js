@@ -29,7 +29,7 @@ function page() {
                   <p className="" style={{fontSize: '16px', fontWeight: '600', marginBottom: '10px', }}>
                   Download <span style={{color: '#06402b',fontWeight: '800',fontSize: '18px',}}>Troms</span> and access your personalised meal plan & workout
                 </p>
-                <img src="/images/work-img.png" />
+                <img src="/images/Group 20.png" />
                 
                 <h4>
                   Take charge of your health <br /> Download Troms Now
