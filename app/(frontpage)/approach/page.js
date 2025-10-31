@@ -272,11 +272,6 @@ function ApproachPage() {
         // }
 
 
-
-
-
-
-
         // Auto-redirect after success
         setTimeout(() => {
           router.push("/subscriptions");
