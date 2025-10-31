@@ -22,7 +22,7 @@ function NewHeightPage() {
       router.push("/register");
     } else if (!state.gender) {
       router.push("/select-gender");
-    } else if (!state.dateOfBirth || state.age < 13) {
+    } else if (!state.dateOfBirth) {
       router.push("/borndate");
     } else if (!state.trainingDay) {
       router.push("/training-days");
