@@ -257,19 +257,19 @@ function ApproachPage() {
 
         const userData = state.user || {};
 
-        const socialLoginPayload = {
-          email: userData.email,
-          username: userData.username || userData.email.split("@")[0],
-          platform: userData.platform || "web",
-          userInfoId: response.result.id || userInfoId,
-        };
+        // const socialLoginPayload = {
+        //   email: userData.email,
+        //   username: userData.username || userData.email.split("@")[0],
+        //   platform: userData.platform || "web",
+        //   userInfoId: response.result.id || userInfoId,
+        // };
 
-        const socialLoginResponse = await apiService.socialLogin(socialLoginPayload);
-        if (socialLoginResponse.success) {
-          console.log("✅ Social login API called successfully");
-        } else {
-          console.error("❌ Social login API failed:", socialLoginResponse.message);
-        }
+        // const socialLoginResponse = await apiService.socialLogin(socialLoginPayload);
+        // if (socialLoginResponse.success) {
+        //   console.log("✅ Social login API called successfully");
+        // } else {
+        //   console.error("❌ Social login API failed:", socialLoginResponse.message);
+        // }
 
 
 
@@ -279,8 +279,8 @@ function ApproachPage() {
 
         // Auto-redirect after success
         setTimeout(() => {
-          // router.push("/subscriptions");
-          router.push("/download-app");
+          router.push("/subscriptions");
+          // router.push("/download-app");
 
         }, 2000);
       } else {
@@ -294,12 +294,12 @@ function ApproachPage() {
         ) {
           showAlert("error", "Authentication failed. Please register again.");
           setTimeout(() => {
-            // router.push("/register");
+            router.push("/register");
           }, 2000);
         } else {
           showAlert("error", errorMessage);
           setTimeout(() => {
-            // router.push("/register");
+            router.push("/register");
           }, 2000);
         }
       }
@@ -313,7 +313,7 @@ function ApproachPage() {
       ) {
         showAlert("error", "Authentication failed. Please register again.");
         setTimeout(() => {
-          // router.push("/register");
+          router.push("/register");
         }, 2000);
       } else {
         showAlert(
